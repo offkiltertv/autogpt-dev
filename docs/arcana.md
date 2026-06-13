@@ -1,7 +1,17 @@
 # Arcana System Documentation
 
 ## Purpose
-Arcana is OffKilter.TV's curated knowledge-vault system for ingesting YouTube metadata, publishing structured Arcana entries, and attaching forum discussion as the primary value layer.
+Arcana is OffKilter.TV's curated knowledge-vault layer for structuring YouTube-sourced content into Arcana entries, applying taxonomy/classification, and attaching forum discussion as the primary value layer.
+
+## Operating Model
+Primary ingestion engine: **WP Automatic (existing production plugin)**
+
+Arcana role: **enhancement layer**
+- Arcana CPT/taxonomy model
+- Arcana-specific category/tag semantics
+- disclaimer enforcement
+- wpForo discussion linkage
+- optional deterministic scheduler governance
 
 ## Categories
 Arcana uses `arcana_category` taxonomy with initial structure:
@@ -16,11 +26,12 @@ Arcana uses `arcana_category` taxonomy with initial structure:
 - Synchronicities
 - Literature
 
-## Import Workflow
-Supported inputs:
-- Manual YouTube URL import
-- CSV import
-- Google Takeout-derived URL import
+## Ingestion Workflow (WP Automatic First)
+Supported via WP Automatic campaigns:
+- YouTube imports
+- Feed/RSS imports
+- Auto-posting via cron
+- Custom post type targeting (`arcana_entry`)
 
 Rules:
 - Metadata/embed only
@@ -32,17 +43,15 @@ Classification defaults:
 - Source containing `Poem` -> `Poems`
 
 ## Publishing Workflow
-Queue states:
+Queue/publish states may be tracked as:
 - Imported
 - Queued
 - Scheduled
 - Published
 
-Scheduler behavior:
-- Promotes imports into queue
-- Distributes publication slots across 90 days
-- Targets 3-5 entries/day with randomized publish times
-- Uses WP-Cron hook: `okarcana_schedule_queue`
+Scheduling options:
+- WP Automatic interval drip for continuous publishing
+- Arcana scheduler for deterministic 90-day cadence control when needed
 
 ## Forum Integration
 On Arcana entry publication:

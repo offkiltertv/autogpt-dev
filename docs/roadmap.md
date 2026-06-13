@@ -5,6 +5,7 @@
 - Repository access and branch push flow restored.
 - Core documentation baseline established.
 - Production recovery path validated and authoritative environment identified.
+- Production capability audit confirms `wp-automatic` is active and suitable for Arcana ingestion.
 
 ## Next 30 Days
 Priority focus:
@@ -15,14 +16,17 @@ Priority focus:
 5. Creator Communities
 
 Execution targets:
-- Complete Arcana MVP hardening and QA.
-- Validate wpForo auto-topic creation in production-like staging.
+- Complete Arcana MVP hardening and QA as an enhancement layer.
+- Configure WP Automatic campaigns to publish into `arcana_entry`.
+- Map Arcana taxonomy assignment for key campaign sources.
+- Validate wpForo auto-topic creation on Arcana publication.
 - Stand up initial Clip Vault content taxonomy and ingest process.
 - Activate low-risk monetization switches already supported by stack.
 - Publish contribution and moderation playbooks for community scale-up.
 
 ## Next 90 Days
-- Ship Arcana importer reliability improvements and operator tooling.
+- Harden WP Automatic -> Arcana operational workflow and runbooks.
+- Add deterministic scheduling controls only where interval drip is insufficient.
 - Expand forum category strategy and moderator workflows.
 - Launch recurring curation cadence tied to discussion growth metrics.
 - Integrate membership pathways with high-engagement content lanes.
