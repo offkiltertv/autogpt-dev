@@ -33,8 +33,10 @@ function autoload_okarcana()
 {
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-activator.php';
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-db.php';
+    require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-settings.php';
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-post-types.php';
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-disclaimer.php';
+    require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-enhancer.php';
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-importer.php';
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-scheduler.php';
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-wpforo.php';
@@ -46,8 +48,10 @@ function autoload_okarcana()
  */
 function okarcana_bootstrap()
 {
+    OKArcana_Settings::ensure_defaults();
     OKArcana_Post_Types::init();
     OKArcana_Disclaimer::init();
+    OKArcana_Enhancer::init();
     OKArcana_Scheduler::init();
     OKArcana_WPForo::init();
     OKArcana_Admin::init();

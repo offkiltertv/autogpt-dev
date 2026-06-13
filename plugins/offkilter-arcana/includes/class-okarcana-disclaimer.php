@@ -13,6 +13,10 @@ class OKArcana_Disclaimer
 
     public static function append_disclaimer($content)
     {
+        if (!(int) OKArcana_Settings::get('enable_disclaimer', 1)) {
+            return $content;
+        }
+
         if (!is_singular(OKArcana_Post_Types::POST_TYPE) || !in_the_loop() || !is_main_query()) {
             return $content;
         }

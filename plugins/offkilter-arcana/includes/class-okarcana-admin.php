@@ -9,6 +9,9 @@ class OKArcana_Admin
     public static function init()
     {
         add_action('admin_menu', array(__CLASS__, 'register_menu'));
+        add_action('admin_post_okarcana_save_settings', array(__CLASS__, 'handle_save_settings'));
+
+        // Legacy import/scheduler actions are retained for backward compatibility.
         add_action('admin_post_okarcana_import_manual', array(__CLASS__, 'handle_import_manual'));
         add_action('admin_post_okarcana_import_csv', array(__CLASS__, 'handle_import_csv'));
         add_action('admin_post_okarcana_import_takeout', array(__CLASS__, 'handle_import_takeout'));
@@ -34,6 +37,9 @@ class OKArcana_Admin
             wp_die(__('Unauthorized', 'offkilter-arcana'));
         }
 
+        $settings = OKArcana_Settings::all();
+        $mapping_lines = OKArcana_Settings::render_mapping_lines($settings['playlist_mappings']);
+
         global $wpdb;
         $table = OKArcana_DB::table_name();
         $rows = $wpdb->get_results("SELECT id, post_id, source_name, youtube_id, queue_state, imported_at, scheduled_for, published_at FROM {$table} ORDER BY id DESC LIMIT 50", ARRAY_A);
@@ -45,37 +51,64 @@ class OKArcana_Admin
                 <div class="notice notice-success"><p><?php echo esc_html(wp_unslash($_GET['okarcana_msg'])); ?></p></div>
             <?php endif; ?>
 
-            <h2><?php esc_html_e('Manual YouTube URL Import', 'offkilter-arcana'); ?></h2>
+            <h2><?php esc_html_e('Arcana Settings', 'offkilter-arcana'); ?></h2>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
-                <?php wp_nonce_field('okarcana_import_manual'); ?>
-                <input type="hidden" name="action" value="okarcana_import_manual" />
-                <p><label><?php esc_html_e('Source Name (Playlist / Collection)', 'offkilter-arcana'); ?></label><br>
-                    <input type="text" name="source_name" class="regular-text" value="Manual Import"></p>
-                <p><label><?php esc_html_e('YouTube URLs (one per line)', 'offkilter-arcana'); ?></label><br>
-                    <textarea name="urls" rows="8" cols="90"></textarea></p>
-                <p><button class="button button-primary" type="submit"><?php esc_html_e('Import URLs', 'offkilter-arcana'); ?></button></p>
+                <?php wp_nonce_field('okarcana_save_settings'); ?>
+                <input type="hidden" name="action" value="okarcana_save_settings" />
+
+                <table class="form-table" role="presentation">
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Disclaimer Injection', 'offkilter-arcana'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="enable_disclaimer" value="1" <?php checked(!empty($settings['enable_disclaimer'])); ?> />
+                                <?php esc_html_e('Append Arcana disclaimer to arcana_entry content.', 'offkilter-arcana'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('wpForo Integration', 'offkilter-arcana'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="enable_wpforo" value="1" <?php checked(!empty($settings['enable_wpforo'])); ?> />
+                                <?php esc_html_e('Create a wpForo topic when Arcana entries publish.', 'offkilter-arcana'); ?>
+                            </label>
+                            <p>
+                                <label>
+                                    <?php esc_html_e('wpForo Forum ID', 'offkilter-arcana'); ?>
+                                    <input type="number" name="wpforo_forum_id" min="1" value="<?php echo esc_attr((int) $settings['wpforo_forum_id']); ?>" class="small-text" />
+                                </label>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Related Arcana Count', 'offkilter-arcana'); ?></th>
+                        <td>
+                            <input type="number" name="related_count" min="1" max="20" value="<?php echo esc_attr((int) $settings['related_count']); ?>" class="small-text" />
+                            <p class="description"><?php esc_html_e('Number of related Arcana IDs to store per entry.', 'offkilter-arcana'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Default Arcana Tags', 'offkilter-arcana'); ?></th>
+                        <td>
+                            <textarea name="default_tags" rows="3" cols="80" placeholder="Destiny,Choice,Journey"><?php echo esc_textarea((string) $settings['default_tags']); ?></textarea>
+                            <p class="description"><?php esc_html_e('Comma or newline separated tags applied to all Arcana entries.', 'offkilter-arcana'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Playlist to Taxonomy Mapping', 'offkilter-arcana'); ?></th>
+                        <td>
+                            <textarea name="playlist_mapping_lines" rows="8" cols="100"><?php echo esc_textarea($mapping_lines); ?></textarea>
+                            <p class="description"><?php esc_html_e('One mapping per line: playlist_match|category1,category2|tag1,tag2', 'offkilter-arcana'); ?></p>
+                        </td>
+                    </tr>
+                </table>
+
+                <p><button class="button button-primary" type="submit"><?php esc_html_e('Save Arcana Settings', 'offkilter-arcana'); ?></button></p>
             </form>
 
             <hr>
-            <h2><?php esc_html_e('CSV Import', 'offkilter-arcana'); ?></h2>
-            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data">
-                <?php wp_nonce_field('okarcana_import_csv'); ?>
-                <input type="hidden" name="action" value="okarcana_import_csv" />
-                <p><input type="file" name="csv_file" accept=".csv" required></p>
-                <p><button class="button" type="submit"><?php esc_html_e('Import CSV', 'offkilter-arcana'); ?></button></p>
-            </form>
-
-            <hr>
-            <h2><?php esc_html_e('Google Takeout Import', 'offkilter-arcana'); ?></h2>
-            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" enctype="multipart/form-data">
-                <?php wp_nonce_field('okarcana_import_takeout'); ?>
-                <input type="hidden" name="action" value="okarcana_import_takeout" />
-                <p><input type="file" name="takeout_file" accept=".html,.json,.txt" required></p>
-                <p><button class="button" type="submit"><?php esc_html_e('Import Takeout File', 'offkilter-arcana'); ?></button></p>
-            </form>
-
-            <hr>
-            <h2><?php esc_html_e('Publishing Queue', 'offkilter-arcana'); ?></h2>
+            <h2><?php esc_html_e('Publishing Queue (Legacy)', 'offkilter-arcana'); ?></h2>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="margin-bottom:1rem;">
                 <?php wp_nonce_field('okarcana_run_scheduler'); ?>
                 <input type="hidden" name="action" value="okarcana_run_scheduler" />
@@ -123,6 +156,24 @@ class OKArcana_Admin
             </table>
         </div>
         <?php
+    }
+
+    public static function handle_save_settings()
+    {
+        self::assert_admin_nonce('okarcana_save_settings');
+
+        $mappings_raw = isset($_POST['playlist_mapping_lines']) ? wp_unslash($_POST['playlist_mapping_lines']) : '';
+        $settings = array(
+            'enable_disclaimer' => isset($_POST['enable_disclaimer']) ? 1 : 0,
+            'enable_wpforo' => isset($_POST['enable_wpforo']) ? 1 : 0,
+            'wpforo_forum_id' => isset($_POST['wpforo_forum_id']) ? (int) $_POST['wpforo_forum_id'] : 1,
+            'related_count' => isset($_POST['related_count']) ? (int) $_POST['related_count'] : 5,
+            'default_tags' => isset($_POST['default_tags']) ? wp_unslash($_POST['default_tags']) : '',
+            'playlist_mappings' => OKArcana_Settings::parse_mapping_lines($mappings_raw),
+        );
+
+        OKArcana_Settings::update($settings);
+        self::redirect_with_message('Arcana settings saved.');
     }
 
     public static function handle_import_manual()

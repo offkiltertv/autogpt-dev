@@ -17,7 +17,11 @@ class OKArcana_WPForo
             return;
         }
 
-        if ($post->post_type !== OKArcana_Post_Types::POST_TYPE || $new_status !== 'publish') {
+        if (!(int) OKArcana_Settings::get('enable_wpforo', 1)) {
+            return;
+        }
+
+        if ($post->post_type !== OKArcana_Post_Types::POST_TYPE || $new_status !== 'publish' || $old_status === 'publish') {
             return;
         }
 
@@ -32,7 +36,8 @@ class OKArcana_WPForo
 
         if (function_exists('wpforo')) {
             try {
-                $forum_id = (int) apply_filters('okarcana_wpforo_forum_id', 1, $post);
+                $forum_id = (int) OKArcana_Settings::get('wpforo_forum_id', 1);
+                $forum_id = (int) apply_filters('okarcana_wpforo_forum_id', $forum_id, $post);
 
                 if (isset(wpforo()->topic) && method_exists(wpforo()->topic, 'add')) {
                     $result = wpforo()->topic->add(array(
@@ -61,6 +66,8 @@ class OKArcana_WPForo
         if ($topic_id > 0) {
             update_post_meta($post->ID, '_arcana_wpforo_topic_id', $topic_id);
             update_post_meta($post->ID, '_arcana_wpforo_topic_url', esc_url_raw($topic_url));
+            update_post_meta($post->ID, '_arcana_discussion_topic_id', $topic_id);
+            update_post_meta($post->ID, '_arcana_discussion_url', esc_url_raw($topic_url));
         }
     }
 

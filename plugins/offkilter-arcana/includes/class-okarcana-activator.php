@@ -8,6 +8,7 @@ class OKArcana_Activator
 {
     public static function activate()
     {
+        OKArcana_Settings::ensure_defaults();
         OKArcana_Post_Types::register();
         OKArcana_DB::create_tables();
         OKArcana_Post_Types::ensure_default_terms();
