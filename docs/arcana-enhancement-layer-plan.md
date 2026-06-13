@@ -76,7 +76,7 @@ WP Automatic Campaigns
 Arcana Enhancement Layer
   -> disclaimer injection
   -> publication-state metadata / optional scheduler governance
-  -> wpForo topic creation on publish
+  -> optional wpForo topic creation on publish (selected entries/campaigns)
   -> related Arcana surfacing by shared categories/tags
 ```
 
@@ -87,7 +87,7 @@ Arcana Enhancement Layer
 2. Publish into `arcana_entry` directly.
 3. Let Arcana handle post-publish enhancements:
    - disclaimer
-   - wpForo link/topic creation
+   - optional wpForo link/topic creation for selected entries
    - related content logic
 4. Use Arcana scheduler only if deterministic 90-day cadence is required.
 

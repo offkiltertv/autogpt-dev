@@ -54,7 +54,7 @@ Use a non-disruptive campaign template in draft/non-critical state, then duplica
 
 ### Pass 2 validation (publish transition)
 - Publish one test Arcana entry.
-- Validate wpForo topic creation and link metadata:
+- If discussion routing is enabled for the test entry, validate wpForo topic creation and link metadata:
   - `_arcana_wpforo_topic_id`
   - `_arcana_wpforo_topic_url`
   - `_arcana_discussion_topic_id`

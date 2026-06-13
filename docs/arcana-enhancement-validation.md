@@ -8,7 +8,7 @@ WP Automatic
 -> Arcana Entry (`arcana_entry`)
 -> Category/Tag Assignment
 -> Disclaimer Injection
--> Forum Topic Creation
+-> Optional Forum Topic Creation (selected entries)
 -> Related Arcana References
 
 ## Validation Method
@@ -34,7 +34,7 @@ Result: PASS (implementation ready)
 - Disclaimer append filter remains active for Arcana entries.
 - Admin setting now controls enable/disable behavior.
 
-### 4) Forum Topic Creation
+### 4) Optional Forum Topic Creation
 Result: PASS (implementation ready)
 - Runs on Arcana `draft -> publish` transition.
 - Duplicate prevention via existing topic meta guard.
@@ -54,7 +54,7 @@ Result: PASS (implementation ready)
    - `_arcana_imported_at`
    - category and tag terms applied
    - `_arcana_related_post_ids` updated
-5. Publish test post and verify:
+5. Publish test post and verify (if discussion routing is enabled for test):
    - wpForo topic exists
    - `_arcana_wpforo_topic_id` and `_arcana_wpforo_topic_url` are present
 6. Open Arcana entry frontend and confirm disclaimer block renders.

@@ -12,7 +12,7 @@ WP Automatic campaign
 -> Arcana enrichment (playlist/source metadata + taxonomy + related refs)
 -> disclaimer rendering
 -> publish transition
--> wpForo topic creation (no duplicates)
+-> optional wpForo topic creation for selected entries (no duplicates)
 
 ## Current campaign observations (read-only audit)
 - `wp_automatic_camps` rows: 18
@@ -34,7 +34,7 @@ Notable low-risk template candidate:
 
 ### Target configuration for test campaign
 1. Post type: `arcana_entry`
-2. Post status: `draft` for first pass, then `publish` for forum/discussion validation
+2. Post status: `draft` for first pass, then `publish` for optional forum/discussion validation
 3. Source: controlled YouTube source with low volume (single playlist or single channel)
 4. Category/taxonomy mapping:
    - If source contains `Poem` -> include `Poems`
@@ -68,7 +68,7 @@ Notable low-risk template candidate:
 
 ### C. Publish validation pass
 1. Publish the test Arcana entry.
-2. Verify wpForo topic created:
+2. If discussion routing is enabled for this test entry, verify wpForo topic created:
    - `_arcana_wpforo_topic_id`
    - `_arcana_wpforo_topic_url`
    - `_arcana_discussion_topic_id`
@@ -85,7 +85,7 @@ Notable low-risk template candidate:
 - Arcana enrichment runs automatically on WP Automatic-created entries.
 - Taxonomy mapping applies correctly.
 - Disclaimer renders on frontend.
-- wpForo topic is created exactly once per published Arcana entry.
+- If discussion routing is enabled, wpForo topic is created exactly once per selected published Arcana entry.
 
 ## Failure handling
 If any step fails:

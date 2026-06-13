@@ -1,7 +1,7 @@
 # Arcana System Documentation
 
 ## Purpose
-Arcana is OffKilter.TV's curated knowledge-vault layer for structuring YouTube-sourced content into Arcana entries, applying taxonomy/classification, and attaching forum discussion as the primary value layer.
+Arcana is OffKilter.TV's curated knowledge-vault layer for structuring YouTube-sourced content into Arcana entries, applying taxonomy/classification, and enabling optional community discussion for selected items.
 
 ## Operating Model
 Primary ingestion engine: **WP Automatic (existing production plugin)**
@@ -10,7 +10,7 @@ Arcana role: **enhancement layer**
 - Arcana CPT/taxonomy model
 - Arcana-specific category/tag semantics
 - disclaimer enforcement
-- wpForo discussion linkage
+- optional wpForo discussion linkage
 - optional deterministic scheduler governance
 
 ## Categories
@@ -54,11 +54,16 @@ Scheduling options:
 - Arcana scheduler for deterministic 90-day cadence control when needed
 
 ## Forum Integration
-On Arcana entry publication:
+Forum is an optional community layer.
+
+For selected Arcana entries:
 - Create wpForo topic titled: `Discuss: {Arcana Entry Title}`
 - Store bidirectional references in post meta:
   - `_arcana_wpforo_topic_id`
   - `_arcana_wpforo_topic_url`
+
+Default behavior:
+- Arcana content publishes normally without requiring a forum topic for every item.
 
 ## Disclaimer System
 Every Arcana entry must display the entertainment disclaimer.
