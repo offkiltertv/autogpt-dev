@@ -1,0 +1,11 @@
+path	http_status	final_url	notes
+https://www.offkilter.tv/	200	https://www.offkilter.tv/	
+https://www.offkilter.tv/video/	200	https://www.offkilter.tv/video/	
+https://www.offkilter.tv/videos/	200	https://www.offkilter.tv/video/	now aliased to canonical /video/
+https://www.offkilter.tv/member-list/	200	https://www.offkilter.tv/member-list/	
+https://www.offkilter.tv/channel/	200	https://www.offkilter.tv/channel/	route live but still sparse vs member-list
+https://www.offkilter.tv/community/	200	https://www.offkilter.tv/community/	
+https://www.offkilter.tv/video-category/arcana/	200	https://www.offkilter.tv/video-category/arcana/	
+https://www.offkilter.tv/video-category/arcana/premonitions/	200	https://www.offkilter.tv/video-category/arcana/premonitions/	
+https://www.offkilter.tv/video-category/arcana/outcomes/	200	https://www.offkilter.tv/video-category/arcana/outcomes/	
+https://www.offkilter.tv/arcana/	200	https://www.offkilter.tv/video-category/arcana/	now aliased to canonical Arcana category URL

@@ -159,3 +159,92 @@ Local state artifacts:
 - reduce visual dominance on mobile while preserving compliance.
 4. Controlled creator curation:
 - promote high-readiness creators in discovery surfaces only.
+
+## Optimization Sprint Update (June 14, 2026)
+
+Scope for this pass:
+- Homepage freshness and relevance audit.
+- Creator discovery flow audit.
+- Mobile-first friction review.
+- Arcana landing page plan (`/arcana/`) using VidMov-native blocks.
+- Low-risk discovery remediations in production.
+
+### Production Changes Applied
+1. Homepage rail query tuning (Elementor widget IDs on homepage `1244`):
+- `884acac` (`The Arcana`): scoped to Arcana category terms (`2258,2259,2260`), dynamic query.
+- `d7deecd` (`Featured Readers`): curated IDs for active Arcana creators (`8093,8226,8102,8096,8095`).
+- `954fa60` (`Trending This Week`): scoped to broader discovery terms (`youtube, oktv-ftv`) to reduce Arcana rail overlap.
+- `fab6803` (`Latest Uploads`): scoped to broader upload discovery terms (`youtube, oktv-ftv`).
+- `fe0ddc4` (`Recent Discussion`): focused back to Arcana terms (`2258,2259,2260`).
+
+2. Discovery route alias remediation (NGINX):
+- `/videos/` -> `https://www.offkilter.tv/video/`
+- `/arcana/` -> `https://www.offkilter.tv/video-category/arcana/`
+
+This removes two high-friction 404 paths without theme/plugin modifications.
+
+### Freshness Audit Findings
+- Rails are now semantically separated, but duplicated video surfaces remain high due shared high-performing content across multiple rails.
+- Duplicate metric snapshot:
+- See `docs/assets/platform-polish-sprint/optimization/homepage-duplication-metrics.tsv`.
+- Current state: duplication still material and should be addressed in next iteration with tighter per-rail exclusion logic.
+
+### Creator Discovery Audit (Flow Map)
+Current flow:
+- Homepage -> video cards -> creator profile links (`/channel/channel-id/@.../`).
+- Primary nav `Creators` -> `/member-list/`.
+- Video pages -> creator profile / discussion tab links.
+- Community nav -> `/community/`.
+
+Validated route status:
+- See `docs/assets/platform-polish-sprint/optimization/discovery-route-status.tsv`.
+
+Friction observed:
+1. `/channel/` route is live but sparse compared with `/member-list/`.
+2. `member-list` still includes hashed/low-context creator handles for some imported accounts.
+3. Creator discovery quality depends heavily on profile completeness (avatar/banner/bio).
+
+### Mobile-First Findings
+Based on current responsive state and existing mobile captures:
+- Arcana remains discoverable early in the scroll hierarchy.
+- Menu is functional for anonymous users.
+- Main friction remains vertical crowding from overlays/consent UI and dense card metadata on smaller viewports.
+
+Top mobile improvements (next pass):
+1. Reduce metadata density on mobile cards (keep title + creator + one engagement metric).
+2. Tighten section spacing between rails.
+3. Keep Arcana + Featured Readers within first two viewport heights.
+4. De-emphasize non-essential sidebar-like widgets on mobile.
+5. Ensure tap targets in nav and creator chips remain comfortably spaced.
+
+### Arcana Landing Page Plan (`/arcana/`)
+Implementation approach (VidMov-native, no custom architecture):
+1. Keep canonical source as `video_category` archive (`/video-category/arcana/`).
+2. Maintain short vanity entrypoint `/arcana/` as alias redirect to canonical archive.
+3. On Arcana archive template configuration, prioritize:
+- Newest Readings
+- Premonitions
+- Outcomes
+- Featured Readers links
+4. Keep taxonomy children canonical:
+- `/video-category/arcana/premonitions/`
+- `/video-category/arcana/outcomes/`
+
+### Evidence
+- Homepage meta state (pre/post):
+- `docs/assets/platform-polish-sprint/optimization/post_1244_elementor.pre-optimization.json`
+- `docs/assets/platform-polish-sprint/optimization/post_1244_elementor.post-optimization-final.json`
+- Route health: `docs/assets/platform-polish-sprint/optimization/discovery-route-status.tsv`
+- Member-list sample links: `docs/assets/platform-polish-sprint/optimization/member-list-channel-links-sample.txt`
+
+### Rollback Notes (Optimization Pass)
+- Homepage widget state can be rolled back using:
+- `post_1244_elementor.pre-optimization.json`
+- NGINX config backup created on origin:
+- `/opt/bitnami/nginx/conf/server_blocks/wordpress-https-server-block.conf.bak.20260614-134719`
+
+### Immediate Next Actions
+1. Channel directory alignment: make `/channel/` as useful as `/member-list/` or route it to member-list.
+2. Creator curation pass: suppress low-context imported handles from top discovery surfaces.
+3. Rail de-duplication pass: apply stronger exclude logic per rail to reduce repeat cards.
+4. Mobile density pass: simplify card metadata stack for smaller viewports.
