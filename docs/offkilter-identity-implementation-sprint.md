@@ -37,6 +37,10 @@ Implement OFFKILTER identity updates using existing VidMov + Elementor architect
 ### 2. Remaining Inherited Icon Cleanup
 - Replaced remaining homepage/Elementor maple icon usage (`fab fa-canadian-maple-leaf`) with OFFKILTER icon set.
 - Verification: no `fab fa-canadian-maple-leaf` references remain in current homepage render output.
+- Database verification:
+  - `wp_postmeta`: 0 matches
+  - `wp_options`: 0 matches
+  - `wp_posts`: 0 matches
 
 ### 3. Render Consistency Fix
 - Root cause found during rollout:
@@ -60,6 +64,13 @@ Public checks passed:
 Platform health checks during rollout:
 - Origin VM reachable
 - NGINX/PHP-FPM/MariaDB healthy
+
+Mobile-first hierarchy check:
+- Homepage rail order now surfaces:
+  1. `🔮 The Arcana`
+  2. `⚡ Signals`
+  3. `👥 Featured Creators`
+- This places Arcana + Signals + creator discovery in the top homepage sequence without needing deep scroll.
 
 ## Backups/Safety
 - Pre-sync homepage snapshot captured on origin:
