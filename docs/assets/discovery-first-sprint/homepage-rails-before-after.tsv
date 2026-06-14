@@ -1,0 +1,10 @@
+state	position	block_title	block_sub_title	post_type	order_by
+before	1	ud83dudd2e The Arcana	Newest readings u2022 Premonitions u2022 Outcomes	vidmov_video	date
+before	2	ud83dudc65 Featured Readers	Active Arcana creators u2022 latest uploads	vidmov_video	date
+before	3	Latest on OKTV	Video u2022 Audio u2022 Playlists u2022 Series	vidmov_video,vidmov_audio,vidmov_playlist,vidmov_series	None
+after	1	The Arcana	Newest readings - Premonitions - Outcomes	vidmov_video	date
+after	2	Featured Readers	Active Arcana creators - latest uploads	vidmov_video	date
+after	3	Latest on OKTV	Video - Audio - Playlists - Series	vidmov_video,vidmov_audio,vidmov_playlist,vidmov_series	None
+after	4	Latest Uploads	Newest videos across OffKilter	vidmov_video	date
+after	5	Trending This Week	Most discussed videos	vidmov_video	comment_count
+after	6	Recent Discussion	Fresh conversation starters	vidmov_video	modified
