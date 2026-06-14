@@ -1,0 +1,6 @@
+widget_id	block_title	filter_items	category	ids	order_by	order	items_per_page
+884acac	The Arcana	arcana,premonitions,outcomes	2258,2259,2260		date	DESC	6
+d7deecd	Featured Readers	arcana,premonitions,outcomes	2258,2259,2260	8220,8226,8102,8096,8095	date	DESC	5
+954fa60	Trending This Week	youtube,oktv-ftv	968,2053		comment_count	DESC	6
+fab6803	Latest Uploads	youtube,oktv-ftv	968,2053		date	DESC	8
+fe0ddc4	Recent Discussion	youtube,oktv-ftv	968,2053		modified	DESC	6
