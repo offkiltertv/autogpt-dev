@@ -1,0 +1,609 @@
+{
+    "generated_at": "2026-06-14T15:45:46+00:00",
+    "threshold_seconds": 90,
+    "totals": {
+        "total_imported": 691,
+        "signals": 180,
+        "videos": 262,
+        "unknown_duration": 249
+    },
+    "by_creator": [
+        {
+            "creator": "LC",
+            "total": 211,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 211
+        },
+        {
+            "creator": "\ud83d\udc8bCasey (Lipps)\ud83d\udc8b",
+            "total": 176,
+            "signals": 113,
+            "videos": 63,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "\ud83d\udc8bLipps\ud83d\udc8b",
+            "total": 125,
+            "signals": 46,
+            "videos": 79,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "DaniElle Luminati",
+            "total": 61,
+            "signals": 13,
+            "videos": 48,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "rfdesw ujhy",
+            "total": 6,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 6
+        },
+        {
+            "creator": "3BradlySap",
+            "total": 5,
+            "signals": 0,
+            "videos": 2,
+            "unknown_duration": 3
+        },
+        {
+            "creator": "Redditmmcgww2",
+            "total": 5,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 5
+        },
+        {
+            "creator": "Astraea 5D",
+            "total": 5,
+            "signals": 0,
+            "videos": 5,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "FOOD FOR THOUGHT 313",
+            "total": 3,
+            "signals": 0,
+            "videos": 3,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "itsjustrobby",
+            "total": 3,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 3
+        },
+        {
+            "creator": "Mystic Arcana Tarot",
+            "total": 3,
+            "signals": 0,
+            "videos": 3,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Ocean Deep Intuition Tarot",
+            "total": 3,
+            "signals": 0,
+            "videos": 3,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Spiritual Advisor LLC",
+            "total": 3,
+            "signals": 0,
+            "videos": 3,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Earth Angel Goddess 313",
+            "total": 3,
+            "signals": 0,
+            "videos": 3,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Earth Angel Goddess Oracle",
+            "total": 3,
+            "signals": 0,
+            "videos": 3,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "L c",
+            "total": 2,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 2
+        },
+        {
+            "creator": "Nikodem Sobieraj-Tv",
+            "total": 2,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 1
+        },
+        {
+            "creator": "DesereGarrigan",
+            "total": 2,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 1
+        },
+        {
+            "creator": "Redditlovertg4",
+            "total": 2,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 1
+        },
+        {
+            "creator": "4reddit-mmrr",
+            "total": 2,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 1
+        },
+        {
+            "creator": "6Redditmmhu",
+            "total": 2,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 2
+        },
+        {
+            "creator": "Rebecca de Ruijter-Tv",
+            "total": 2,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 2
+        },
+        {
+            "creator": "Reddit-crtu",
+            "total": 2,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 2
+        },
+        {
+            "creator": "Intuitive Kev\ud83d\udcab\ud83e\uddff",
+            "total": 2,
+            "signals": 0,
+            "videos": 2,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "TheAfroZen",
+            "total": 2,
+            "signals": 0,
+            "videos": 2,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "THE SPIRITUAL SAVAGE",
+            "total": 2,
+            "signals": 0,
+            "videos": 2,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Angelissa 333",
+            "total": 2,
+            "signals": 0,
+            "videos": 2,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "\ud83d\udc8bCasey (Lipps)\ud83d\udc8bMG",
+            "total": 2,
+            "signals": 1,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "\ud83d\udc8bCasey Sue has some shyt to say\ud83d\udc8b",
+            "total": 2,
+            "signals": 1,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "AllseeingisisOracle",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "POSHRANDY55",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Redditccby66",
+            "total": 1,
+            "signals": 1,
+            "videos": 0,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "2reddit-mmee",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Redditlovedfov3",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Terrence Grundy",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Kazh",
+            "total": 1,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 1
+        },
+        {
+            "creator": "Worldview Channel",
+            "total": 1,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 1
+        },
+        {
+            "creator": "video_creator\ud83e\uddff\ud83d\udcf7",
+            "total": 1,
+            "signals": 1,
+            "videos": 0,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "SetWillFree",
+            "total": 1,
+            "signals": 1,
+            "videos": 0,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Venture Blazers",
+            "total": 1,
+            "signals": 1,
+            "videos": 0,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "FireTags",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Edward Sturm",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Colin DeHaan",
+            "total": 1,
+            "signals": 1,
+            "videos": 0,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Th\u1ecb Li\u00ean Tr\u1ea7n",
+            "total": 1,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 1
+        },
+        {
+            "creator": "baobao6TV",
+            "total": 1,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 1
+        },
+        {
+            "creator": "Patryk Kozlowksi-Tv",
+            "total": 1,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 1
+        },
+        {
+            "creator": "KayleeMaggio5",
+            "total": 1,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 1
+        },
+        {
+            "creator": "5redditchrbg",
+            "total": 1,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 1
+        },
+        {
+            "creator": "Web2App",
+            "total": 1,
+            "signals": 1,
+            "videos": 0,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Rutger Olk-Tv",
+            "total": 1,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 1
+        },
+        {
+            "creator": "Dorota Z-Tv",
+            "total": 1,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 1
+        },
+        {
+            "creator": "Divine Libras Only",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "I'MDEAD\ud83e\udebe2THAWORLD\ud83c\udf0e",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Divine Feminine Tarot Tea",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "AngelTherapy333",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Linda Likes Tarot",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "The Bee Priestess",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "EtherealG",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "My Queens EYE",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Goddess Scorpio North Node",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "MYSTIC ROSE \ud83c\udf391111",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Omnipresentinsight \u2695\ufe0f",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Angelic Golden Eyes",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Lee With The Tea Tarot \u2615\ufe0f",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "LORD DRAKO NOBODY",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Beez Intuition",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "iMWesLee",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "MYSTIC BEAUUTIE",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Ancient Emperor Tarot",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Majestic Potions LLC Tarot",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Brittany The Intuitive Cosmic Wifey",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "AMAZING GRACE \ud83d\ude18",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "MYSTIK 9 THE INTUITIVE",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "\ud83e\uddffGiftedTarot777",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "MADAMEBUTTERFLY444",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "Child Support Made Simple",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        },
+        {
+            "creator": "RobbbRyder",
+            "total": 1,
+            "signals": 0,
+            "videos": 1,
+            "unknown_duration": 0
+        }
+    ],
+    "by_category": [
+        {
+            "category": "YouTube Embedded Library",
+            "total": 691,
+            "signals": 180,
+            "videos": 262,
+            "unknown_duration": 249
+        },
+        {
+            "category": "OffKilter.TV Creator - Free To View",
+            "total": 628,
+            "signals": 180,
+            "videos": 203,
+            "unknown_duration": 245
+        },
+        {
+            "category": "@lipps",
+            "total": 417,
+            "signals": 167,
+            "videos": 214,
+            "unknown_duration": 36
+        },
+        {
+            "category": "@LC",
+            "total": 213,
+            "signals": 0,
+            "videos": 0,
+            "unknown_duration": 213
+        },
+        {
+            "category": "Arcana",
+            "total": 62,
+            "signals": 0,
+            "videos": 59,
+            "unknown_duration": 3
+        },
+        {
+            "category": "@DaniElleLuminati",
+            "total": 61,
+            "signals": 13,
+            "videos": 48,
+            "unknown_duration": 0
+        },
+        {
+            "category": "Premonitions",
+            "total": 59,
+            "signals": 0,
+            "videos": 56,
+            "unknown_duration": 3
+        },
+        {
+            "category": "Outcomes",
+            "total": 3,
+            "signals": 0,
+            "videos": 3,
+            "unknown_duration": 0
+        }
+    ]
+}

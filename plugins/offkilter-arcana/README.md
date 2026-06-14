@@ -1,7 +1,7 @@
 # OffKilter Arcana Plugin
 
 Plugin slug: `offkilter-arcana`
-Version: `0.1.0`
+Version: `0.1.1`
 
 ## Implemented Subsystems
 - CPT: `arcana_entry`
@@ -17,6 +17,14 @@ Version: `0.1.0`
   - Google Takeout file upload (URL extraction)
 - Disclaimer injection on all `arcana_entry` pages
 - wpForo topic creation attempt on publish with bidirectional link metadata
+- Signals classification layer for imported `vidmov_video` posts:
+  - `signal` = `0-90` seconds
+  - `video` = `90+` seconds
+  - `unknown` = duration unavailable
+- Signals backfill cron + manual backfill action in Arcana admin
+- Signals shortcodes:
+  - `[oktv_signals_latest]`
+  - `[oktv_arcana_signals_latest]`
 
 ## Install
 1. Copy `plugins/offkilter-arcana` into your WordPress `wp-content/plugins` directory.
@@ -42,6 +50,13 @@ Version: `0.1.0`
 ## Classification Rules
 - Source name contains `Prem and Outcome 2026` -> default categories `Premonitions` + `Outcomes` under `The Arcana`
 - Source name contains `Poem` -> default category `Poems` under `The Arcana`
+
+## Signals Metadata
+- `_oktv_content_class` (`signal` / `video` / `unknown`)
+- `_oktv_is_signal` (`1` / `0`)
+- `_oktv_duration_seconds` (integer)
+- `_oktv_duration_source` (detection source)
+- `_oktv_signals_classified_at` (timestamp)
 
 ## Disclaimer
 The plugin auto-appends Arcana disclaimer text to Arcana entries.

@@ -23,6 +23,10 @@ class OKArcana_Settings
             'wpforo_forum_id' => 1,
             'related_count' => 5,
             'default_tags' => '',
+            'enable_signals_classification' => 1,
+            'signals_threshold_seconds' => 90,
+            'signals_backfill_batch_size' => 75,
+            'signals_duration_meta_keys' => 'beeteam368_video_duration',
             'playlist_mappings' => array(
                 array(
                     'match' => 'Poem',
@@ -71,6 +75,10 @@ class OKArcana_Settings
         $out['wpforo_forum_id'] = isset($settings['wpforo_forum_id']) ? max(1, (int) $settings['wpforo_forum_id']) : (int) $defaults['wpforo_forum_id'];
         $out['related_count'] = isset($settings['related_count']) ? max(1, min(20, (int) $settings['related_count'])) : (int) $defaults['related_count'];
         $out['default_tags'] = isset($settings['default_tags']) ? sanitize_textarea_field((string) $settings['default_tags']) : '';
+        $out['enable_signals_classification'] = !empty($settings['enable_signals_classification']) ? 1 : 0;
+        $out['signals_threshold_seconds'] = isset($settings['signals_threshold_seconds']) ? max(10, min(3600, (int) $settings['signals_threshold_seconds'])) : (int) $defaults['signals_threshold_seconds'];
+        $out['signals_backfill_batch_size'] = isset($settings['signals_backfill_batch_size']) ? max(1, min(500, (int) $settings['signals_backfill_batch_size'])) : (int) $defaults['signals_backfill_batch_size'];
+        $out['signals_duration_meta_keys'] = isset($settings['signals_duration_meta_keys']) ? sanitize_textarea_field((string) $settings['signals_duration_meta_keys']) : (string) $defaults['signals_duration_meta_keys'];
 
         $out['playlist_mappings'] = array();
         if (!empty($settings['playlist_mappings']) && is_array($settings['playlist_mappings'])) {

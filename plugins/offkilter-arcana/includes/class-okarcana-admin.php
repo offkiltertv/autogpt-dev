@@ -10,6 +10,7 @@ class OKArcana_Admin
     {
         add_action('admin_menu', array(__CLASS__, 'register_menu'));
         add_action('admin_post_okarcana_save_settings', array(__CLASS__, 'handle_save_settings'));
+        add_action('admin_post_okarcana_run_signals_backfill', array(__CLASS__, 'handle_run_signals_backfill'));
 
         // Legacy import/scheduler actions are retained for backward compatibility.
         add_action('admin_post_okarcana_import_manual', array(__CLASS__, 'handle_import_manual'));
@@ -39,6 +40,7 @@ class OKArcana_Admin
 
         $settings = OKArcana_Settings::all();
         $mapping_lines = OKArcana_Settings::render_mapping_lines($settings['playlist_mappings']);
+        $signals_summary = OKArcana_Signals::get_summary_counts();
 
         global $wpdb;
         $table = OKArcana_DB::table_name();
@@ -52,6 +54,34 @@ class OKArcana_Admin
             <?php endif; ?>
 
             <h2><?php esc_html_e('Arcana Settings', 'offkilter-arcana'); ?></h2>
+
+            <h3><?php esc_html_e('Signals Classification Status', 'offkilter-arcana'); ?></h3>
+            <table class="widefat striped" style="max-width:760px;margin-bottom:1rem;">
+                <thead>
+                    <tr>
+                        <th><?php esc_html_e('Imported Videos', 'offkilter-arcana'); ?></th>
+                        <th><?php esc_html_e('Signals (0-90s)', 'offkilter-arcana'); ?></th>
+                        <th><?php esc_html_e('Videos (90+s)', 'offkilter-arcana'); ?></th>
+                        <th><?php esc_html_e('Unknown Duration', 'offkilter-arcana'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><?php echo (int) $signals_summary['total']; ?></td>
+                        <td><?php echo (int) $signals_summary['signals']; ?></td>
+                        <td><?php echo (int) $signals_summary['videos']; ?></td>
+                        <td><?php echo (int) $signals_summary['unknown']; ?></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="margin-bottom:1.5rem;">
+                <?php wp_nonce_field('okarcana_run_signals_backfill'); ?>
+                <input type="hidden" name="action" value="okarcana_run_signals_backfill" />
+                <button class="button button-secondary" type="submit"><?php esc_html_e('Run Signals Backfill Batch', 'offkilter-arcana'); ?></button>
+                <p class="description"><?php esc_html_e('Classifies imported vidmov_video posts that do not yet have Signals metadata.', 'offkilter-arcana'); ?></p>
+            </form>
+
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <?php wp_nonce_field('okarcana_save_settings'); ?>
                 <input type="hidden" name="action" value="okarcana_save_settings" />
@@ -93,6 +123,34 @@ class OKArcana_Admin
                         <td>
                             <textarea name="default_tags" rows="3" cols="80" placeholder="Destiny,Choice,Journey"><?php echo esc_textarea((string) $settings['default_tags']); ?></textarea>
                             <p class="description"><?php esc_html_e('Comma or newline separated tags applied to all Arcana entries.', 'offkilter-arcana'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Signals Classification', 'offkilter-arcana'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="enable_signals_classification" value="1" <?php checked(!empty($settings['enable_signals_classification'])); ?> />
+                                <?php esc_html_e('Automatically classify imported vidmov_video content as Signal (0-90s) or Video (90+s).', 'offkilter-arcana'); ?>
+                            </label>
+                            <p>
+                                <label>
+                                    <?php esc_html_e('Signal Threshold (seconds)', 'offkilter-arcana'); ?>
+                                    <input type="number" min="10" max="3600" class="small-text" name="signals_threshold_seconds" value="<?php echo esc_attr((int) $settings['signals_threshold_seconds']); ?>" />
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <?php esc_html_e('Backfill Batch Size', 'offkilter-arcana'); ?>
+                                    <input type="number" min="1" max="500" class="small-text" name="signals_backfill_batch_size" value="<?php echo esc_attr((int) $settings['signals_backfill_batch_size']); ?>" />
+                                </label>
+                            </p>
+                            <p>
+                                <label for="signals_duration_meta_keys"><?php esc_html_e('Duration Meta Keys (comma/newline separated)', 'offkilter-arcana'); ?></label><br>
+                                <textarea id="signals_duration_meta_keys" name="signals_duration_meta_keys" rows="3" cols="80" placeholder="beeteam368_video_duration"><?php echo esc_textarea((string) $settings['signals_duration_meta_keys']); ?></textarea>
+                            </p>
+                            <p class="description">
+                                <?php esc_html_e('Default shortcodes: [oktv_signals_latest] and [oktv_arcana_signals_latest].', 'offkilter-arcana'); ?>
+                            </p>
                         </td>
                     </tr>
                     <tr>
@@ -169,6 +227,10 @@ class OKArcana_Admin
             'wpforo_forum_id' => isset($_POST['wpforo_forum_id']) ? (int) $_POST['wpforo_forum_id'] : 1,
             'related_count' => isset($_POST['related_count']) ? (int) $_POST['related_count'] : 5,
             'default_tags' => isset($_POST['default_tags']) ? wp_unslash($_POST['default_tags']) : '',
+            'enable_signals_classification' => isset($_POST['enable_signals_classification']) ? 1 : 0,
+            'signals_threshold_seconds' => isset($_POST['signals_threshold_seconds']) ? (int) $_POST['signals_threshold_seconds'] : 90,
+            'signals_backfill_batch_size' => isset($_POST['signals_backfill_batch_size']) ? (int) $_POST['signals_backfill_batch_size'] : 75,
+            'signals_duration_meta_keys' => isset($_POST['signals_duration_meta_keys']) ? wp_unslash($_POST['signals_duration_meta_keys']) : '',
             'playlist_mappings' => OKArcana_Settings::parse_mapping_lines($mappings_raw),
         );
 
@@ -216,6 +278,13 @@ class OKArcana_Admin
         self::assert_admin_nonce('okarcana_run_scheduler');
         OKArcana_Scheduler::run_scheduler();
         self::redirect_with_message('Scheduler executed.');
+    }
+
+    public static function handle_run_signals_backfill()
+    {
+        self::assert_admin_nonce('okarcana_run_signals_backfill');
+        $processed = (int) OKArcana_Signals::run_backfill_batch();
+        self::redirect_with_message(sprintf('Signals backfill processed %d posts.', $processed));
     }
 
     private static function assert_admin_nonce($action)
