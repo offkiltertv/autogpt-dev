@@ -1,0 +1,12 @@
+state	position	block_title	block_sub_title	post_type	order_by	filter_items
+before	1	The Arcana	Newest readings - Premonitions - Outcomes	vidmov_video	date	arcana,premonitions,outcomes
+before	2	Featured Readers	Active Arcana creators - latest uploads	vidmov_video	date	arcana,premonitions,outcomes
+before	3	Latest on OKTV	Video - Audio - Playlists - Series	vidmov_video,vidmov_audio,vidmov_playlist,vidmov_series		tv-shows,romance,entertainment,gaming,movies,sports,music
+before	4	Latest Uploads	Newest videos across OffKilter	vidmov_video	date	youtube,oktv-ftv,arcana,premonitions,outcomes
+before	5	Trending This Week	Most discussed videos	vidmov_video	comment_count	youtube,oktv-ftv,arcana,premonitions,outcomes
+before	6	Recent Discussion	Fresh conversation starters	vidmov_video	modified	arcana,premonitions,outcomes,youtube,oktv-ftv
+after	1	The Arcana	Newest readings - Premonitions - Outcomes	vidmov_video	date	arcana,premonitions,outcomes
+after	2	Featured Readers	Active Arcana creators - latest uploads	vidmov_video	date	arcana,premonitions,outcomes
+after	3	Trending This Week	Most discussed videos	vidmov_video	comment_count	youtube,oktv-ftv,arcana,premonitions,outcomes
+after	4	Latest Uploads	Newest videos across OffKilter	vidmov_video	date	youtube,oktv-ftv,arcana,premonitions,outcomes
+after	5	Recent Discussion	Fresh conversation starters	vidmov_video	modified	arcana,premonitions,outcomes,youtube,oktv-ftv
