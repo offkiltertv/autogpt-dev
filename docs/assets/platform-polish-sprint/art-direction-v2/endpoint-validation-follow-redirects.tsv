@@ -1,0 +1,4 @@
+url	final_http_status	final_url
+https://offkilter.tv	200	https://www.offkilter.tv/
+https://offkilter.tv/wp-admin	200	https://www.offkilter.tv/main-login/?redirect_to=https%3A%2F%2Fwww.offkilter.tv%2Fwp-admin%2F&reauth=1
+https://www.offkilter.tv/video-category/arcana/	200	

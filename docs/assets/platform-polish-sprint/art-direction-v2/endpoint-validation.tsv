@@ -1,0 +1,5 @@
+url	http_status	location
+https://offkilter.tv	308	https://www.offkilter.tv/
+https://offkilter.tv/wp-admin	308	https://www.offkilter.tv/wp-admin
+https://www.offkilter.tv/	200	
+https://www.offkilter.tv/video-category/arcana/	200	

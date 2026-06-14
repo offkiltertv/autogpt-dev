@@ -137,3 +137,75 @@ Use existing VidMov structures only.
 
 ## Summary
 This sprint improved curation and creator prominence without introducing new features or custom architecture. Arcana now reads as a stronger destination and creator focus is materially clearer, with remaining gains concentrated in mobile density and legacy creator surfacing cleanup.
+
+## Screenshot Review: Top 10 Visual Improvements (Ranked)
+Ranking basis: perceived quality impact across homepage hierarchy, creator prominence, Arcana presentation, mobile first impression, and duplicate-content reduction.
+
+1. Remove above-the-fold "Spread the love" share strip from homepage and Arcana archive templates.
+2. Replace generic/incorrect rail iconography with semantically correct rail icons.
+3. Tighten first-scroll rail density so hero + Arcana + Featured Readers are visible faster.
+4. Reduce adjacent rail repetition by shrinking non-primary rail card counts.
+5. Clarify rail subtitles so each rail's purpose is obvious in under 2 seconds.
+6. Keep Arcana rail as the primary discovery rail directly under the hero.
+7. Keep Featured Readers focused on active Arcana creators only.
+8. Normalize metadata emphasis by prioritizing title/creator/discussion cues over noisy secondary text.
+9. Improve mobile discovery by reducing non-essential header/utility visual dominance.
+10. Continue replacing stale 2023 imagery in high-visibility discovery surfaces.
+
+## High-Confidence Improvements Implemented (v2)
+Date: June 14, 2026 (America/Los_Angeles)
+Scope: configuration-only changes; no theme-core/plugin-code edits.
+
+### A. Homepage Rail Tuning (Elementor page `1244`)
+Applied:
+- `884acac` (`The Arcana`)
+  - icon: `fas fa-eye`
+  - subtitle: `Latest Readings - Premonitions - Outcomes`
+  - card count: `6 -> 4`
+- `d7deecd` (`Featured Readers`)
+  - icon: `fas fa-users`
+  - subtitle: `Top Arcana creators`
+  - curated IDs preserved: `8220,8226,8102,8096,8095`
+- `954fa60` (`Trending This Week`)
+  - icon: `fas fa-fire`
+  - subtitle: `Most discussed this week`
+- `fab6803` (`Latest Uploads`)
+  - icon: `fas fa-clock`
+  - subtitle: `Newest uploads across OffKilter`
+  - card count: `8 -> 6`
+- `fe0ddc4` (`Recent Discussion`)
+  - icon: `fas fa-comments`
+  - card count: `6 -> 4`
+
+Evidence:
+- `docs/assets/platform-polish-sprint/art-direction-v2/post_1244_elementor.post-art-direction-v2.json`
+- `docs/assets/platform-polish-sprint/art-direction-v2/homepage-rail-settings.post-art-direction-v2.tsv`
+
+### B. Share Strip Suppression on Discovery Archives
+Applied custom CSS marker:
+- `Art Direction Sprint (2026-06-14)`
+
+Rule added:
+- Hide `heateor_sss_sharing_title` and `heateor_sss_sharing_container` on:
+  - `body.home`
+  - `body.tax-vidmov_video_category`
+
+Evidence:
+- `docs/assets/platform-polish-sprint/art-direction-v2/custom-css-current.css`
+
+### C. Validation
+- Endpoint status:
+  - `docs/assets/platform-polish-sprint/art-direction-v2/endpoint-validation.tsv`
+  - `docs/assets/platform-polish-sprint/art-direction-v2/endpoint-validation-follow-redirects.tsv`
+- Current homepage duplication snapshot:
+  - `docs/assets/platform-polish-sprint/art-direction-v2/homepage-duplication-snapshot.tsv`
+
+### D. Rollback (v2)
+Backups on origin:
+- `/opt/bitnami/backups/art-direction-v2-20260614-075604/elementor_1244_before.json`
+- `/opt/bitnami/backups/art-direction-v2-20260614-080227/custom_css_before.css`
+
+Rollback actions:
+1. Restore Elementor meta for post `1244` from backup JSON.
+2. Restore custom CSS from `custom_css_before.css`.
+3. Flush WordPress cache.

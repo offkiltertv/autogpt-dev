@@ -1,0 +1,9 @@
+
+
+/* Art Direction Sprint (2026-06-14): reduce above-the-fold clutter on discovery archives */
+body.home .heateor_sss_sharing_title,
+body.home .heateor_sss_sharing_container,
+body.tax-vidmov_video_category .heateor_sss_sharing_title,
+body.tax-vidmov_video_category .heateor_sss_sharing_container {
+  display: none !important;
+}
