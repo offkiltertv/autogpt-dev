@@ -1,0 +1,24 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OFFKILTER social preview">
+  <rect width="1200" height="630" fill="#F7F9FC"/>
+  <rect x="0" y="0" width="1200" height="10" fill="#D90429"/>
+  <circle cx="1060" cy="125" r="220" fill="#FFFFFF"/>
+  <circle cx="1060" cy="125" r="120" fill="none" stroke="#0077B6" stroke-width="14"/>
+  <path d="M1060 12L1096 130L1060 118L1024 130L1060 12Z" fill="#0077B6"/>
+  <text x="90" y="190" fill="#121826" font-family="Arial, Helvetica, sans-serif" font-size="96" font-weight="700" letter-spacing="4">OFFKILTER.TV</text>
+  <text x="90" y="255" fill="#4A5568" font-family="Arial, Helvetica, sans-serif" font-size="34">Watch. Interpret. Discuss.</text>
+  <g transform="translate(90,325)">
+    <rect width="300" height="190" rx="24" fill="#FFFFFF"/>
+    <text x="28" y="56" fill="#0077B6" font-family="Arial" font-size="26" font-weight="700">Signals</text>
+    <text x="28" y="102" fill="#4A5568" font-family="Arial" font-size="22">0-90 second drops</text>
+  </g>
+  <g transform="translate(430,325)">
+    <rect width="300" height="190" rx="24" fill="#FFFFFF"/>
+    <text x="28" y="56" fill="#6D28D9" font-family="Arial" font-size="26" font-weight="700">Arcana</text>
+    <text x="28" y="102" fill="#4A5568" font-family="Arial" font-size="22">Premonitions + Outcomes</text>
+  </g>
+  <g transform="translate(770,325)">
+    <rect width="300" height="190" rx="24" fill="#FFFFFF"/>
+    <text x="28" y="56" fill="#D90429" font-family="Arial" font-size="26" font-weight="700">Creators</text>
+    <text x="28" y="102" fill="#4A5568" font-family="Arial" font-size="22">One ecosystem</text>
+  </g>
+</svg>

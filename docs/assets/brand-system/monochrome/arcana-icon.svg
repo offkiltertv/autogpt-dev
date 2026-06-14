@@ -1,0 +1,7 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Arcana icon">
+  <rect width="128" height="128" rx="26" fill="#0F1115"/>
+  <path d="M64 18L94 44L80 98H48L34 44L64 18Z" fill="none" stroke="#E5E7EB" stroke-width="8"/>
+  <path d="M64 30L78 46L71 86H57L50 46L64 30Z" fill="#E5E7EB" opacity="0.35"/>
+  <circle cx="32" cy="28" r="5" fill="#FFFFFF"/>
+  <circle cx="96" cy="36" r="4" fill="#B7BDC9"/>
+</svg>

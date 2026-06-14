@@ -1,0 +1,10 @@
+<svg width="1500" height="500" viewBox="0 0 1500 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Default channel banner">
+  <rect width="1500" height="500" fill="#07090D"/>
+  <rect x="0" y="0" width="1500" height="12" fill="#E50914"/>
+  <circle cx="1270" cy="250" r="210" fill="#11151D"/>
+  <circle cx="1270" cy="250" r="128" fill="none" stroke="#00C2FF" stroke-width="12"/>
+  <path d="M1270 96L1306 250L1270 236L1234 250L1270 96Z" fill="#00C2FF"/>
+  <text x="96" y="190" fill="#F3F6FB" font-family="Arial, Helvetica, sans-serif" font-size="82" font-weight="700" letter-spacing="3">OFFKILTER CREATOR CHANNEL</text>
+  <text x="96" y="252" fill="#B8C1D1" font-family="Arial, Helvetica, sans-serif" font-size="34">Signals · Arcana · Community</text>
+  <line x1="96" y1="286" x2="920" y2="286" stroke="#E50914" stroke-width="6" stroke-linecap="round"/>
+</svg>

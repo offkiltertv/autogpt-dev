@@ -1,0 +1,8 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OFFKILTER app icon">
+  <rect width="512" height="512" rx="112" fill="#0F1115"/>
+  <circle cx="256" cy="256" r="170" fill="none" stroke="#FFFFFF" stroke-width="24"/>
+  <circle cx="256" cy="256" r="22" fill="#FFFFFF"/>
+  <path d="M256 110L304 266L256 248L208 266L256 110Z" fill="#B7BDC9"/>
+  <path d="M256 402L224 284L256 296L288 284L256 402Z" fill="#FFFFFF"/>
+  <text x="256" y="462" text-anchor="middle" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="700" letter-spacing="6">OKTV</text>
+</svg>

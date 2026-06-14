@@ -1,0 +1,5 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Community icon">
+  <rect width="128" height="128" rx="26" fill="#0F1115"/>
+  <path d="M22 30h56a10 10 0 0 1 10 10v26a10 10 0 0 1-10 10H50l-18 16v-16h-10a10 10 0 0 1-10-10V40a10 10 0 0 1 10-10z" fill="#1A1D24" stroke="#FFFFFF" stroke-width="6"/>
+  <path d="M62 52h44a10 10 0 0 1 10 10v18a10 10 0 0 1-10 10H88l-12 10v-10H62a10 10 0 0 1-10-10V62a10 10 0 0 1 10-10z" fill="#1A1D24" stroke="#B7BDC9" stroke-width="6"/>
+</svg>

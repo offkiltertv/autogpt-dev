@@ -1,0 +1,5 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Signals icon">
+  <rect width="128" height="128" rx="26" fill="#F7F9FC"/>
+  <circle cx="64" cy="64" r="42" fill="none" stroke="#0077B6" stroke-width="8"/>
+  <path d="M72 20L44 68H62L54 108L84 56H66L72 20Z" fill="#D90429"/>
+</svg>
