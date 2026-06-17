@@ -78,3 +78,52 @@ Result:
 
 ## Conclusion
 No live `34.105.65.179` references were found in requested DB scope or validated production HTML outputs. Public navigation and channel/video tab routes are functioning and canonicalized to `https://www.offkilter.tv`.
+
+## 2026-06-17 Closeout Revalidation
+
+### Backup
+- `/opt/bitnami/backups/oktv-url-pass-20260617T101540Z/pre-url-pass.sql`
+
+### Recheck Scope
+- `wp_options`
+- `wp_posts`
+- `wp_postmeta`
+- `wp_usermeta`
+- `wp_termmeta`
+- nav menu items + nav menu meta
+- Elementor payloads (`_elementor_data`, `_elementor_page_settings`)
+- VidMov/Beeteam option names
+- cached menu/transient option patterns
+
+### Database Results
+Pre and post counts for `34.105.65.179` were all `0`:
+- `wp_options`
+- `wp_posts`
+- `wp_postmeta`
+- `wp_usermeta`
+- `wp_termmeta`
+- nav menu items
+- nav menu meta
+- Elementor data
+- VidMov/Beeteam options
+- cached menu data
+
+Executed search-replace for:
+- `http://34.105.65.179` -> `https://www.offkilter.tv`
+- `https://34.105.65.179` -> `https://www.offkilter.tv`
+- `//34.105.65.179` -> `//www.offkilter.tv`
+
+Result:
+- `Success: Made 0 replacements.` for all three patterns.
+
+### Public HTML + Route Validation
+- `https://www.offkilter.tv/` -> `200`, `ip_hits=0`
+- `https://www.offkilter.tv/channel/` -> `200`, `ip_hits=0`
+- `https://www.offkilter.tv/video-category/arcana/` -> `200`, `ip_hits=0`
+- `https://www.offkilter.tv/video-category/signals/` -> `200`, `ip_hits=0`
+- sample video `https://www.offkilter.tv/video/the-youtube-streets/` -> `200`, `ip_hits=0`
+
+### Channel Tabs (Anonymous View)
+- Channel tab entries for Videos, Audios, Playlists, Posts, Transfer History, Subscriptions, Watch Later, Notifications, History, Rated, Reacted, and About are present on `/channel/` with canonical `https://www.offkilter.tv` links/redirects.
+- Discussion was not rendered in anonymous `/channel/` HTML during this pass (likely auth/context-gated).
+- No rendered `/channel/` HTML references to `34.105.65.179` were found.
