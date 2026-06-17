@@ -3,7 +3,7 @@
 Date: 2026-06-12
 Branch: `feature/arcana-plugin`
 Latest branch commit at review start: `9588033`
-Packaged artifact: `/Users/mbp-apple-m1/autogpt-dev/offkilter-arcana.zip`
+Packaged artifact: `<repo-root>/offkilter-arcana.zip`
 Artifact SHA256: `bbf9be72942c9616fd444f8a234bec75c9eacc75a54ee8f52915f3f81dd204dc`
 
 ## 1) Packaging Verification

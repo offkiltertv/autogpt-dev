@@ -57,6 +57,6 @@ This keeps each publish event tied to engagement, not just content volume.
 
 ## Inventory file
 Full playlist inventory is in:
-- `/Users/mbp-apple-m1/autogpt-dev/youtube_inventory.csv`
+- `<repo-root>/youtube_inventory.csv`
 
 Important: the Playlists view includes owned and saved playlists; external saved playlists (for example, SNL) should be excluded from Arcana source campaigns.

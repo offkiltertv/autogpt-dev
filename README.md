@@ -1,16 +1,23 @@
-# OffKilter.TV Platform Repository
+# OKTV Platform Repository
 
-This repository is the canonical source of truth for OffKilter.TV development.
+This repository is the canonical source of truth for the OKTV Platform.
 
-## What Is OffKilter.TV
-OffKilter.TV is an independent creator platform focused on video discovery, interpretation, community discussion, and creator-owned audience growth.
+## Platform Scope
+The OKTV Platform unifies:
+- OffKilter.tv
+- DifficultResearch.com
+- RocketServe AI tooling
+- shared identity, search, and research assistant infrastructure
 
-## Project Vision
-Build a creator-first ecosystem that combines:
+## Product Direction
+Build a creator-first media and research ecosystem that combines:
 - video publishing and curation
-- forum-led discussion and community identity
-- memberships and monetization
-- long-term knowledge vaults (starting with Arcana)
+- long-form editorial analysis
+- evidence-backed research dossiers
+- discussion and community intelligence
+- member-supported monetization
+
+The platform is content-driven and community-driven, not agent-driven.
 
 ## Current Stack
 - WordPress (Bitnami on GCP)
@@ -23,11 +30,29 @@ Build a creator-first ecosystem that combines:
 - Bunny.net (video/CDN services)
 - Google Analytics / Site Kit (measurement)
 
+## Primary Experience Areas
+- Home
+- Watch
+- Research
+- Community
+- Intelligence
+- Creator Studio
+
+## Content Model
+- Articles
+- Videos
+- Discussions
+- Research dossiers
+- Timelines
+- Source collections
+- Community notes
+
 ## Architecture Overview
 - Platform runtime: WordPress application server on Google Cloud VM.
 - Edge/network: Cloudflare DNS + TLS + proxy controls.
 - Content/community: VidMov + wpForo + ARMember + myCred.
 - Arcana module: custom plugin in `plugins/offkilter-arcana/`.
+- Research assistant: sidebar assistant UX for summarization, discovery, and source navigation.
 - Documentation: repository `docs/` directory.
 
 ## Development Workflow

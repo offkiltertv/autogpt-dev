@@ -1,20 +1,20 @@
-# Repository Audit - offkiltertv/autogpt-dev
+# Repository Audit - offkiltertv/offkilter-platform
 
 Date: 2026-06-12
 Branch audited: `feature/arcana-plugin`
-Remote: `https://github.com/offkiltertv/autogpt-dev.git`
+Remote target: `https://github.com/offkiltertv/offkilter-platform.git`
 
 ## Scope and Method
 - Scanned tracked repository files and directories.
-- Searched for AutoGPT indicators: `autogpt`, `auto-gpt`, `agpt`, `forge`, `benchmark`, `classic`, `platform`.
+- Searched for legacy framework indicators: `legacy-agent`, `forge`, `benchmark`, `classic`, `platform`, and outdated repository naming.
 - Reviewed branch/commit lineage and remote branch list.
 
 ## Findings Summary
-- No AutoGPT source code detected in current repository contents.
-- No AutoGPT configuration files detected.
-- No AutoGPT dependency manifests detected (no `package.json`, `pyproject.toml`, `requirements.txt`, etc.).
-- No AutoGPT docs/workflows detected (no `.github/workflows` automation present).
-- Repository appears to be a single-commit OffKilter Arcana codebase snapshot.
+- No legacy framework runtime source code detected in current repository contents.
+- No legacy framework configuration files detected.
+- No framework dependency manifests detected (no `package.json`, `pyproject.toml`, `requirements.txt`, etc.).
+- No framework docs/workflows detected (no `.github/workflows` automation present).
+- Repository appears to be an OffKilter Arcana codebase snapshot with platform docs and operations records.
 
 ## A. Active OffKilter Assets
 - `plugins/offkilter-arcana/offkilter-arcana.php`
@@ -34,9 +34,9 @@ Remote: `https://github.com/offkiltertv/autogpt-dev.git`
 - `deployment/offkilter-arcana-deployment.md`
 - `scripts/deploy_offkilter_arcana.sh`
 
-## B. Historical AutoGPT Assets
+## B. Historical Legacy Branding Assets
 - None found in the audited branch/tree.
-- Branch history check result: only `feature/arcana-plugin` exists remotely and locally; no additional branch containing AutoGPT assets was visible from this clone.
+- Branch history check result: only `feature/arcana-plugin` exists remotely and locally; no additional branch containing legacy framework assets was visible from this clone.
 
 ## C. Unused Files (Current State)
 - `plugins/offkilter-arcana/assets/` (empty directory, no runtime impact).

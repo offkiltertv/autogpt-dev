@@ -1,9 +1,9 @@
 # Repository Remediation Plan
 
 ## Current Repository
-- Current name: `offkiltertv/autogpt-dev`
+- Current target name: `offkiltertv/offkilter-platform`
 - Current content: OffKilter.TV platform and Arcana plugin assets
-- Current issue: repository name no longer reflects actual purpose
+- Current issue: naming and path references must stay aligned with the OKTV Platform identity across all artifacts.
 
 ## Candidate Name Evaluation
 
@@ -42,7 +42,7 @@ Reason:
 
 ## Migration Plan (Do Not Execute Yet)
 1. Freeze merges briefly during rename window.
-2. Rename GitHub repository from `autogpt-dev` to `offkilter-platform`.
+2. Ensure GitHub repository canonical name is `offkilter-platform`.
 3. Update local remotes:
    - `git remote set-url origin https://github.com/offkiltertv/offkilter-platform.git`
 4. Validate access:
