@@ -41,9 +41,14 @@ class OKArcana_Cleanup
         // and strip authoring shortcodes that leak the submission/edit form.
         add_action('wp', array(__CLASS__, 'guard_singular_video'));
         add_filter('the_content', array(__CLASS__, 'strip_authoring_shortcodes'), 4);
+        // Label-anchored strip of authoring blocks that appear inside post content.
+        add_filter('the_content', array(__CLASS__, 'strip_authoring_labels'), 6);
 
         // Admin-only forensic diagnostic to pinpoint the exact theme hook/meta keys.
         add_action('wp_footer', array(__CLASS__, 'maybe_render_diagnostic'), 999);
+        // Admin-only, opt-in page scan that reports the exact element rendering each
+        // authoring label (the precise culprit-finder).
+        add_action('template_redirect', array(__CLASS__, 'maybe_start_diag_buffer'));
     }
 
     /**
@@ -80,9 +85,34 @@ class OKArcana_Cleanup
             '/(^|_)purchase($|_)/i',
             '/expir/i',
             '/monetiz/i',
+            '/subscription/i',
+            '/(^|_)wallet($|_)/i',
+            '/(^|_)coins?($|_)/i',
+            '/token[_-]?price/i',
         );
 
         return apply_filters('okarcana_guard_meta_patterns', $patterns);
+    }
+
+    /**
+     * Visible labels of the authoring/monetization controls that must never appear
+     * on the public surface. The output leak is keyed on these exact strings (the
+     * user observed them), so we can strip the enclosing block regardless of the
+     * theme's markup. Filterable.
+     *
+     * @return string[]
+     */
+    private static function authoring_labels()
+    {
+        return apply_filters('okarcana_guard_authoring_labels', array(
+            'Purchase Price',
+            'Pay Per View',
+            'Pay-Per-View',
+            'Expiration',
+            'Expiration Date',
+            'Video Categories',
+            'Audio Categories',
+        ));
     }
 
     /**
@@ -190,6 +220,123 @@ class OKArcana_Cleanup
         }
 
         return $content;
+    }
+
+    /**
+     * Strip authoring/monetization blocks that appear *inside* post content, keyed
+     * on their visible labels (Purchase Price, Pay Per View, Expiration, Video/Audio
+     * Categories). Scoped to the public surface and to content only (not the whole
+     * page — whole-page rewriting is unsafe). For each label, the smallest enclosing
+     * row/list/field block is removed. Anything rendered by the theme OUTSIDE the
+     * content requires the operator to supply the hook (see the diagnostic).
+     *
+     * @param string $content
+     * @return string
+     */
+    public static function strip_authoring_labels($content)
+    {
+        if (is_admin() || !is_string($content) || $content === '' || stripos($content, '<') === false) {
+            return $content;
+        }
+
+        $object_id = get_the_ID();
+        if ($object_id && !self::is_public_view($object_id)) {
+            return $content;
+        }
+
+        // Quick bail if none of the labels are present.
+        $labels = self::authoring_labels();
+        $present = false;
+        foreach ($labels as $label) {
+            if (stripos($content, $label) !== false) {
+                $present = true;
+                break;
+            }
+        }
+        if (!$present) {
+            return $content;
+        }
+
+        // Remove the smallest enclosing block (tr/li/p/div/label/fieldset) that
+        // contains a label. Non-greedy, single-level — safe within content scope.
+        foreach ($labels as $label) {
+            $l = preg_quote($label, '#');
+            foreach (array('tr', 'li', 'p', 'fieldset', 'label', 'div') as $tag) {
+                $content = preg_replace(
+                    '#<' . $tag . '\b[^>]*>(?:(?!</?' . $tag . '\b).)*?' . $l . '.*?</' . $tag . '>#is',
+                    '',
+                    $content
+                );
+            }
+        }
+
+        return $content;
+    }
+
+    /**
+     * Admin-only, opt-in: when visiting with `?okarcana_diag=surface`, buffer the
+     * page and append (in an HTML comment) the exact element — tag, class, id —
+     * wrapping each authoring label, so the precise selector/template region is
+     * known. Report-only: the page HTML itself is returned unchanged.
+     */
+    public static function maybe_start_diag_buffer()
+    {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+        if (!isset($_GET['okarcana_diag']) || sanitize_key(wp_unslash($_GET['okarcana_diag'])) !== 'surface') {
+            return;
+        }
+        if (!is_singular()) {
+            return;
+        }
+        ob_start(array(__CLASS__, 'diag_scan_buffer'));
+    }
+
+    /**
+     * Scan the buffered page for authoring labels and append a findings report.
+     *
+     * @param string $html
+     * @return string
+     */
+    public static function diag_scan_buffer($html)
+    {
+        if (!is_string($html) || $html === '') {
+            return $html;
+        }
+
+        $findings = array();
+        foreach (self::authoring_labels() as $label) {
+            $l = preg_quote($label, '#');
+            // Capture the nearest opening tag preceding the label occurrence.
+            if (preg_match_all('#(<([a-zA-Z0-9]+)\b[^>]*>)(?:(?!<[a-zA-Z0-9]).)*?' . $l . '#is', $html, $m, PREG_SET_ORDER)) {
+                foreach ($m as $hit) {
+                    $tag  = strtolower($hit[2]);
+                    $open = $hit[1];
+                    $class = preg_match('#class=["\']([^"\']+)["\']#i', $open, $cm) ? $cm[1] : '';
+                    $id    = preg_match('#id=["\']([^"\']+)["\']#i', $open, $im) ? $im[1] : '';
+                    $sel   = $tag . ($id ? '#' . $id : '') . ($class ? '.' . str_replace(' ', '.', trim($class)) : '');
+                    $findings[] = $label . '  ->  ' . $sel;
+                }
+            } else {
+                $findings[] = $label . '  ->  (not found in rendered HTML)';
+            }
+        }
+
+        $report = "\n<!-- OKARCANA SURFACE SCAN (admin only)\n";
+        $report .= "Each authoring label and the nearest element wrapping it.\n";
+        $report .= "Use the class/id below to add a precise okarcana_guard_remove_actions\n";
+        $report .= "entry or child-theme template guard.\n";
+        foreach (array_unique($findings) as $f) {
+            $report .= "  - " . $f . "\n";
+        }
+        $report .= "-->\n";
+
+        // Append the report just before </body> if present, else at the end.
+        if (stripos($html, '</body>') !== false) {
+            return str_ireplace('</body>', $report . '</body>', $html);
+        }
+        return $html . $report;
     }
 
     /**

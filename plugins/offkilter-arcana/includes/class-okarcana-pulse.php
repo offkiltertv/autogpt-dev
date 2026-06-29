@@ -107,6 +107,8 @@ class OKArcana_Pulse
             'post_ids'      => '',
             'layout'        => 'cards',
             'status'        => self::STATUS_READY,
+            'orderby'       => 'date', // date | trending (engagement proxy)
+            'pillar'        => 'pulse',
             'wrapper_class' => '',
         ), $atts, 'oktv_pulse_feed');
 
@@ -127,8 +129,13 @@ class OKArcana_Pulse
             $query_args['posts_per_page'] = count($explicit_ids);
         } else {
             $query_args['posts_per_page'] = $limit;
-            $query_args['orderby']        = 'date';
-            $query_args['order']          = 'DESC';
+            if ($atts['orderby'] === 'trending') {
+                // Engagement proxy until a dedicated views/score metric exists.
+                $query_args['orderby'] = array('comment_count' => 'DESC', 'date' => 'DESC');
+            } else {
+                $query_args['orderby'] = 'date';
+                $query_args['order']   = 'DESC';
+            }
 
             // Public surface: only show ready items.
             $meta_query = array();
@@ -252,12 +259,18 @@ class OKArcana_Pulse
     public static function render_pulse_destination($atts)
     {
         $atts = shortcode_atts(array(
-            'headline'      => 'OFFKILTER Pulse',
-            'sub'           => 'Fast observations. Breaking developments. Quick reactions.',
-            'limit'         => 12,
-            'show_creators' => 1,
-            'show_discuss'  => 1, // reserved slot only
-            'wrapper_class' => '',
+            'headline'        => 'OFFKILTER Pulse',
+            'sub'             => 'Fast observations. Breaking developments. Quick reactions.',
+            'show_explainer'  => 1,
+            'featured_ids'    => '',
+            'featured_label'  => 'Featured Pulse',
+            'trending_label'  => 'Trending Pulse',
+            'latest_label'    => 'Latest Pulse',
+            'trending_limit'  => 6,
+            'latest_limit'    => 12,
+            'show_creators'   => 1,
+            'show_discuss'    => 1, // reserved slot only
+            'wrapper_class'   => '',
         ), $atts, 'oktv_pulse_destination');
 
         $outer_class = 'ok-pulse-destination';
@@ -274,7 +287,38 @@ class OKArcana_Pulse
                 <p class="ok-pulse-destination__sub"><?php echo esc_html($atts['sub']); ?></p>
             </header>
 
-            <?php echo self::render_pulse_feed_shortcode(array('limit' => (int) $atts['limit'])); ?>
+            <?php if (!empty($atts['show_explainer'])) : ?>
+                <div class="ok-pulse-explainer">
+                    <p class="ok-pulse-explainer__title"><?php esc_html_e('What is Pulse?', 'offkilter-arcana'); ?></p>
+                    <p class="ok-pulse-explainer__body">
+                        <?php esc_html_e('Pulse is OFFKILTER’s short-form discovery layer — fast observations, breaking developments, quick creator updates, and transformative commentary. Not shorts for their own sake: moments worth sharing, with something added.', 'offkilter-arcana'); ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+
+            <?php // Featured Pulse — editorial, hand-picked. ?>
+            <?php if ($atts['featured_ids']) : ?>
+                <?php echo self::render_pulse_feed_shortcode(array(
+                    'title'    => $atts['featured_label'],
+                    'post_ids' => $atts['featured_ids'],
+                    'layout'   => 'cards',
+                )); ?>
+            <?php endif; ?>
+
+            <?php // Trending Pulse — engagement proxy. ?>
+            <?php echo self::render_pulse_feed_shortcode(array(
+                'title'   => $atts['trending_label'],
+                'orderby' => 'trending',
+                'limit'   => (int) $atts['trending_limit'],
+                'layout'  => 'cards',
+            )); ?>
+
+            <?php // Latest Pulse — chronological. ?>
+            <?php echo self::render_pulse_feed_shortcode(array(
+                'title'  => $atts['latest_label'],
+                'limit'  => (int) $atts['latest_limit'],
+                'layout' => 'cards',
+            )); ?>
 
             <?php if (!empty($atts['show_creators'])) : ?>
                 <div class="ok-pulse-destination__creators">

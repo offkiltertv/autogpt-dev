@@ -26,6 +26,7 @@
   --ok-signal:         #00C2FF;   /* Signals blue    */
   --ok-arcana:         #8B5CF6;   /* Arcana purple   */
   --ok-community:      #22C55E;   /* Community green */
+  --ok-pulse:          #2DE0C0;   /* Pulse teal — its own accent */
 
   /* Text */
   --ok-text:           #F3F6FB;
@@ -3743,8 +3744,8 @@ body.single-vidmov_video table.compat-attachment-fields {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: rgba(0, 194, 255, 0.12);
-  color: var(--ok-signal);
+  background: rgba(45, 224, 192, 0.14);
+  color: var(--ok-pulse);
   font-size: 1.5rem;
   margin-bottom: 0.75rem;
 }
@@ -3770,24 +3771,47 @@ body.single-vidmov_video table.compat-attachment-fields {
   margin: 1rem 0;
 }
 
-/* Live "Pulse" badge on the card thumb */
+/* Pulse card — its own treatment: teal accent edge + live badge */
 .ok-pulse-card {
   position: relative;
+  border-left: 2px solid var(--ok-pulse);
 }
 
+.ok-pulse-card:hover {
+  border-color: var(--ok-pulse);
+}
+
+/* Live "Pulse" badge with a gentle heartbeat glow (its own motion language) */
 .ok-pulse-badge {
   position: absolute;
   top: 0.5rem;
   left: 0.5rem;
   z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
   font-size: 0.62rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 0.18em 0.55em;
   border-radius: 100px;
-  background: var(--ok-signal);
+  background: var(--ok-pulse);
   color: var(--ok-bg);
+}
+
+.ok-pulse-badge::before {
+  content: "";
+  width: 0.45em;
+  height: 0.45em;
+  border-radius: 50%;
+  background: var(--ok-bg);
+  animation: ok-pulse-beat 1.8s ease-in-out infinite;
+}
+
+@keyframes ok-pulse-beat {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.45); opacity: 0.55; }
 }
 
 .ok-pulse-status {
@@ -3812,11 +3836,13 @@ body.single-vidmov_video table.compat-attachment-fields {
   justify-content: center;
 }
 
-/* Pulse pillar accent (reuses the signal-blue token to keep the palette tight) */
-.ok-platform-intro__card--pulse .ok-platform-intro__card-icon { color: var(--ok-signal); }
-.ok-pillar-chip--pulse:hover { border-color: var(--ok-signal); }
-.ok-pillar-chip--pulse.ok-pillar-chip--active { background: var(--ok-signal); border-color: var(--ok-signal); color: var(--ok-bg); }
-.ok-destination-hero--pulse { border-top-color: var(--ok-signal); }
+/* Pulse pillar accent — its own teal token, distinct from Signals blue */
+.ok-platform-intro__card--pulse .ok-platform-intro__card-icon { color: var(--ok-pulse); }
+.ok-pillar-chip--pulse:hover { border-color: var(--ok-pulse); }
+.ok-pillar-chip--pulse.ok-pillar-chip--active { background: var(--ok-pulse); border-color: var(--ok-pulse); color: var(--ok-bg); }
+.ok-destination-hero--pulse { border-top-color: var(--ok-pulse); }
+.ok-curated-section--pulse .ok-curated-section__header::before { background: var(--ok-pulse); }
+.ok-curated-section--pulse .ok-curated-section__label { background: rgba(45, 224, 192, 0.12); color: var(--ok-pulse); }
 
 
 /* ============================================================
@@ -3834,6 +3860,79 @@ body.single-vidmov_video table.compat-attachment-fields {
   margin-left: 0.3em;
   vertical-align: baseline;
 }
+
+/* Honor reduced-motion for the pulse heartbeat */
+@media (prefers-reduced-motion: reduce) {
+  .ok-pulse-badge::before { animation: none !important; }
+}
+
+/* What-is-Pulse explainer + destination sections */
+.ok-pulse-explainer {
+  background: var(--ok-surface);
+  border: 1px solid var(--ok-border);
+  border-left: 3px solid var(--ok-pulse);
+  border-radius: var(--ok-radius);
+  padding: 1.25rem 1.5rem;
+  margin: 1rem 0;
+}
+
+.ok-pulse-explainer__title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ok-text);
+  margin: 0 0 0.4rem;
+}
+
+.ok-pulse-explainer__body {
+  font-size: 0.9rem;
+  color: var(--ok-text-muted);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Homepage story flow */
+.ok-platform-story {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.ok-platform-story__lede {
+  font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+  font-weight: 700;
+  color: var(--ok-text);
+  line-height: 1.3;
+  margin: 0;
+}
+
+.ok-platform-story__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.ok-platform-story__row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--ok-text-muted);
+}
+
+.ok-platform-story__term {
+  font-weight: 700;
+  color: var(--ok-text);
+  min-width: 5.5rem;
+  flex-shrink: 0;
+}
+
+.ok-platform-story__row--pulse .ok-platform-story__term { color: var(--ok-pulse); }
+.ok-platform-story__row--signals .ok-platform-story__term { color: var(--ok-signal); }
+.ok-platform-story__row--arcana .ok-platform-story__term { color: var(--ok-arcana); }
+.ok-platform-story__row--creators .ok-platform-story__term { color: var(--ok-accent); }
+.ok-platform-story__row--community .ok-platform-story__term { color: var(--ok-community); }
 
 .ok-featured-creator__name .ok-verified-badge,
 .ok-creator-page__name .ok-verified-badge {

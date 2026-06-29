@@ -14,6 +14,55 @@ class OKArcana_Discovery
         add_shortcode('oktv_recommended_next',  array(__CLASS__, 'render_recommended_next'));
         add_shortcode('oktv_watch_nav',         array(__CLASS__, 'render_watch_nav'));
         add_shortcode('oktv_featured_creator',  array(__CLASS__, 'render_featured_creator'));
+        add_shortcode('oktv_platform_story',    array(__CLASS__, 'render_platform_story'));
+    }
+
+    // -------------------------------------------------------------------------
+    // [oktv_platform_story]
+    // Homepage narrative — a visitor understands the platform in seconds. One
+    // lede + one line per pillar explaining WHY it exists. Editorial, not generic
+    // mission copy.
+    //
+    // Attributes:
+    //   lede          string  default below
+    //   wrapper_class string  ""
+    // -------------------------------------------------------------------------
+
+    public static function render_platform_story($atts)
+    {
+        $atts = shortcode_atts(array(
+            'lede'          => 'OFFKILTER is a creator discovery network.',
+            'wrapper_class' => '',
+        ), $atts, 'oktv_platform_story');
+
+        $rows = array(
+            'pulse'     => array('term' => 'Pulse',     'desc' => 'Fast observations, breaking developments, and transformative commentary — short-form discovery.'),
+            'signals'   => array('term' => 'Signals',   'desc' => 'The standout clips worth your attention. Under 90 seconds.'),
+            'arcana'    => array('term' => 'Arcana',    'desc' => 'The intuitive layer — readings, premonitions, and outcomes.'),
+            'creators'  => array('term' => 'Creators',  'desc' => 'Independent voices who belong here, with real audiences.'),
+            'community' => array('term' => 'Community',  'desc' => 'Where the conversation lives — discuss what you discover.'),
+        );
+
+        $outer_class = 'ok-platform-story';
+        if ($atts['wrapper_class']) {
+            $outer_class .= ' ' . esc_attr($atts['wrapper_class']);
+        }
+
+        ob_start();
+        ?>
+        <section class="<?php echo esc_attr($outer_class); ?>" role="region" aria-label="<?php esc_attr_e('What OFFKILTER is', 'offkilter-arcana'); ?>">
+            <p class="ok-platform-story__lede"><?php echo esc_html($atts['lede']); ?></p>
+            <div class="ok-platform-story__rows">
+                <?php foreach ($rows as $key => $row) : ?>
+                    <p class="ok-platform-story__row ok-platform-story__row--<?php echo esc_attr($key); ?>">
+                        <span class="ok-platform-story__term"><?php echo esc_html($row['term']); ?></span>
+                        <span class="ok-platform-story__desc"><?php echo esc_html($row['desc']); ?></span>
+                    </p>
+                <?php endforeach; ?>
+            </div>
+        </section>
+        <?php
+        return (string) ob_get_clean();
     }
 
     // -------------------------------------------------------------------------
