@@ -1,0 +1,12 @@
+# Android / Gradle
+.gradle/
+build/
+*/build/
+local.properties
+.idea/
+*.iml
+captures/
+.cxx/
+.kotlin/
+
+# Gradle wrapper jar is generated via `gradle wrapper` (binary, not committed in skeleton)
