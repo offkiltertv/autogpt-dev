@@ -37,9 +37,42 @@ class OKArcana_Pulse
     public static function init()
     {
         add_action('init', array(__CLASS__, 'register'));
+        add_action('init', array(__CLASS__, 'maybe_flush_rewrites'), 99);
+        add_filter('template_include', array(__CLASS__, 'route_archive'));
 
         add_shortcode('oktv_pulse_feed', array(__CLASS__, 'render_pulse_feed_shortcode'));
         add_shortcode('oktv_pulse_destination', array(__CLASS__, 'render_pulse_destination'));
+    }
+
+    /**
+     * Flush rewrite rules once after the CPT is first registered (or after a version
+     * change) so the `/pulse/` archive + single routes resolve without a manual
+     * Settings → Permalinks save.
+     */
+    public static function maybe_flush_rewrites()
+    {
+        if (get_option('okarcana_pulse_rewrites') !== OKARCANA_VERSION) {
+            flush_rewrite_rules(false);
+            update_option('okarcana_pulse_rewrites', OKARCANA_VERSION);
+        }
+    }
+
+    /**
+     * Route the Pulse archive to the plugin template so `/pulse/` renders the
+     * branded destination inside the theme chrome (production-ready, theme-agnostic).
+     *
+     * @param string $template
+     * @return string
+     */
+    public static function route_archive($template)
+    {
+        if (is_post_type_archive(self::POST_TYPE) || is_tax(self::TAX_TAG)) {
+            $custom = OKARCANA_PLUGIN_DIR . 'templates/archive-pulse_item.php';
+            if (file_exists($custom)) {
+                return $custom;
+            }
+        }
+        return $template;
     }
 
     // -------------------------------------------------------------------------
