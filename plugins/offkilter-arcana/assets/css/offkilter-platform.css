@@ -3307,3 +3307,154 @@ img[loading="lazy"] {
 .ok-search-filter {
   font-family: var(--ok-font-sans);
 }
+
+
+/* ============================================================
+   SECTION V — PUBLIC SURFACE LOCKDOWN (PRIORITY ZERO)
+   Suppresses VidMov / ARMember admin-editor metadata that leaks
+   onto public pages: Purchase Price, Expiration, Video/Audio
+   Categories editor fields, Pay Per View controls.
+
+   DEFENSIVE LAYER ONLY. This stylesheet is enqueued exclusively on
+   wp_enqueue_scripts (frontend) and never loads in wp-admin, so
+   hiding admin meta-box markup here is safe — those classes should
+   never legitimately appear on a public page.
+
+   The PERMANENT fix is a child-theme template override on production
+   (capability / is_user_logged_in guards). See:
+   docs/platform-v2-product-review.md → Priority Zero remediation.
+
+   If any field survives suppression on production, paste its real
+   class/id and add a targeted rule in Tier 2.
+   ============================================================ */
+
+/* --- Tier 1: Admin meta-box markup leaking to the frontend --- */
+/* These selectors are admin-only markup; safe to hide aggressively. */
+#categorychecklist,
+.categorydiv,
+.category-tabs,
+#video_categorychecklist,
+#audio_categorychecklist,
+#video_categorydiv,
+#audio_categorydiv,
+.postbox,
+.postbox-header,
+#submitdiv,
+#poststuff .inside,
+.acf-field[data-name*="price"],
+.acf-field[data-name*="ppv"],
+.acf-field[data-name*="purchase"],
+.acf-field[data-name*="expir"] {
+  display: none !important;
+}
+
+/* --- Tier 2: VidMov / ARMember monetization controls --- */
+/* Best-effort class patterns; tune with real markup if any survive. */
+[class*="purchase-price"],
+[class*="pay-per-view"],
+[class*="-ppv"],
+[class*="ppv-"],
+[class*="expiration"],
+[class*="expire-date"],
+[class*="monetiz"],
+.arm_paypal,
+.arm-paypal,
+[class*="arm_ppv"],
+[class*="arm-ppv"],
+[class*="arm_buy"],
+[class*="arm-buy"],
+.armember-buy-now,
+.beeteam368-video-price,
+.beeteam368-ppv,
+.beeteam368-purchase,
+.beeteam368-purchase-price,
+.beeteam368-expiration,
+.bt368-price,
+.bt368-ppv,
+.bt368-purchase,
+.beeteam368-video-form,
+.bt368-submit-video,
+.beeteam368-edit-video,
+.bt368-edit-video {
+  display: none !important;
+}
+
+/* --- Tier 3: Generic custom-field / meta dumps on single video --- */
+/* Conservative: scoped to the single video template only. */
+body.single-vidmov_video ul.post-meta,
+body.single-vidmov_video .post-custom,
+body.single-vidmov_video .custom-fields,
+body.single-vidmov_video .post-meta-keys,
+body.single-vidmov_video table.compat-attachment-fields {
+  display: none !important;
+}
+
+
+/* ============================================================
+   SECTION W — ACCESSIBILITY + CONTENT HIERARCHY POLISH
+   Touch targets, contrast on informational text, reduced-motion
+   guard, and final card hierarchy refinement.
+   ============================================================ */
+
+/* --- Touch targets (WCAG 2.5.5 — min 44x44 for tap targets) --- */
+.ok-pillar-chip,
+.ok-search-filter,
+.ok-btn,
+.ok-discuss-cta,
+.ok-next-actions a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Small-button variant keeps visual size but preserves tap height */
+.ok-btn--sm {
+  min-height: 36px;
+}
+
+/* Watch nav / recommended items — comfortable tap area */
+.ok-watch-nav__prev,
+.ok-watch-nav__next {
+  min-height: 44px;
+}
+
+/* --- Contrast: informational meta text raised from faint to muted --- */
+/* --ok-text-faint (#5A6478) fails AA for small text; use it only for
+   true decoration, not for dates/creator lines users need to read. */
+.oktv-signals-card__date,
+.ok-recommended-next__creator,
+.ok-watch-nav__direction,
+.oktv-signals-meta {
+  color: var(--ok-text-muted);
+}
+
+/* --- Content hierarchy: creator is the primary metadata line --- */
+.oktv-signals-card__creator {
+  font-weight: 600;
+}
+
+.oktv-signals-card__date {
+  font-size: 0.72rem;
+}
+
+/* --- Reduced motion: honor user preference across all OK components --- */
+@media (prefers-reduced-motion: reduce) {
+  .ok-btn,
+  .ok-pillar-chip,
+  .ok-search-filter,
+  .oktv-signals-card,
+  .ok-platform-intro__card,
+  .ok-featured-creator,
+  .ok-recommended-next__item,
+  .ok-watch-nav__title,
+  .ok-recommended-next__title,
+  .ok-creator-page__featured-title,
+  .oktv-signals-card__creator,
+  [class^="ok-"],
+  [class*=" ok-"] {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}

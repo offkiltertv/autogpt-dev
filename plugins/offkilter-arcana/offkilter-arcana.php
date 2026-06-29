@@ -3,7 +3,7 @@
  * Plugin Name: OffKilter Arcana
  * Plugin URI: https://offkilter.tv
  * Description: OFFKILTER platform identity, discovery, and content intelligence layer for OffKilter.TV.
- * Version: 1.4.0
+ * Version: 2.0.0
  * Author: OffKilter.TV
  * License: GPLv2 or later
  * Text Domain: offkilter-arcana
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('OKARCANA_VERSION', '1.4.0');
+define('OKARCANA_VERSION', '2.0.0');
 define('OKARCANA_PLUGIN_FILE', __FILE__);
 define('OKARCANA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('OKARCANA_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -43,6 +43,7 @@ function autoload_okarcana()
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-wpforo.php';
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-identity.php';
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-frontend.php';
+    require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-cleanup.php';
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-editorial.php';
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-destinations.php';
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-discovery.php';
@@ -63,6 +64,7 @@ function okarcana_bootstrap()
     OKArcana_WPForo::init();
     OKArcana_Identity::init();
     OKArcana_Frontend::init();
+    OKArcana_Cleanup::init();
     OKArcana_Editorial::init();
     OKArcana_Destinations::init();
     OKArcana_Discovery::init();

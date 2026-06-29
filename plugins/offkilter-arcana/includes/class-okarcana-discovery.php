@@ -778,8 +778,9 @@ class OKArcana_Discovery
                 <?php while ($q->have_posts()) : $q->the_post();
                     $thumb   = get_the_post_thumbnail_url(get_the_ID(), 'medium');
                     $creator = get_the_author_meta('display_name', (int) get_post_field('post_author', get_the_ID()));
+                    $aria    = $creator ? get_the_title() . ' — ' . $creator : get_the_title();
                 ?>
-                    <a href="<?php echo esc_url(get_permalink()); ?>" class="ok-recommended-next__item">
+                    <a href="<?php echo esc_url(get_permalink()); ?>" class="ok-recommended-next__item" aria-label="<?php echo esc_attr($aria); ?>">
                         <div class="ok-recommended-next__thumb<?php echo $thumb ? '' : ' ok-recommended-next__thumb--empty'; ?>">
                             <?php if ($thumb) : ?>
                                 <img src="<?php echo esc_url($thumb); ?>"
@@ -854,7 +855,8 @@ class OKArcana_Discovery
         ?>
         <nav class="<?php echo esc_attr($outer_class); ?>" aria-label="<?php esc_attr_e('Playlist navigation', 'offkilter-arcana'); ?>">
             <?php if ($prev_id) : ?>
-                <a href="<?php echo esc_url(get_permalink($prev_id)); ?>" class="ok-watch-nav__prev" rel="prev">
+                <a href="<?php echo esc_url(get_permalink($prev_id)); ?>" class="ok-watch-nav__prev" rel="prev"
+                   aria-label="<?php echo esc_attr($atts['prev_label'] . ': ' . get_the_title($prev_id)); ?>">
                     <span class="ok-watch-nav__direction">&#8592; <?php echo esc_html($atts['prev_label']); ?></span>
                     <?php if (!empty($atts['show_title'])) : ?>
                         <span class="ok-watch-nav__title"><?php echo esc_html(get_the_title($prev_id)); ?></span>
@@ -865,7 +867,8 @@ class OKArcana_Discovery
             <?php endif; ?>
 
             <?php if ($next_id) : ?>
-                <a href="<?php echo esc_url(get_permalink($next_id)); ?>" class="ok-watch-nav__next" rel="next">
+                <a href="<?php echo esc_url(get_permalink($next_id)); ?>" class="ok-watch-nav__next" rel="next"
+                   aria-label="<?php echo esc_attr($atts['next_label'] . ': ' . get_the_title($next_id)); ?>">
                     <span class="ok-watch-nav__direction"><?php echo esc_html($atts['next_label']); ?> &#8594;</span>
                     <?php if (!empty($atts['show_title'])) : ?>
                         <span class="ok-watch-nav__title"><?php echo esc_html(get_the_title($next_id)); ?></span>
@@ -940,7 +943,8 @@ class OKArcana_Discovery
                 <?php if ($atts['body']) : ?>
                     <p class="ok-featured-creator__desc"><?php echo wp_kses_post($atts['body']); ?></p>
                 <?php endif; ?>
-                <a href="<?php echo esc_url($cta_href); ?>" class="ok-btn ok-btn--sm">
+                <a href="<?php echo esc_url($cta_href); ?>" class="ok-btn ok-btn--sm"
+                   aria-label="<?php echo esc_attr($atts['cta_label'] . ' — ' . $display_name); ?>">
                     <?php echo esc_html($atts['cta_label']); ?>
                 </a>
             </div>
