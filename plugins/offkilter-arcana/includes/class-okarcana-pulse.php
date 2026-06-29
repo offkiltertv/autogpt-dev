@@ -39,6 +39,7 @@ class OKArcana_Pulse
         add_action('init', array(__CLASS__, 'register'));
         add_action('init', array(__CLASS__, 'maybe_flush_rewrites'), 99);
         add_filter('template_include', array(__CLASS__, 'route_archive'));
+        add_action('rest_api_init', array(__CLASS__, 'register_rest'));
 
         add_shortcode('oktv_pulse_feed', array(__CLASS__, 'render_pulse_feed_shortcode'));
         add_shortcode('oktv_pulse_destination', array(__CLASS__, 'render_pulse_destination'));
@@ -124,6 +125,154 @@ class OKArcana_Pulse
                 },
             ));
         }
+    }
+
+    // -------------------------------------------------------------------------
+    // REST — the OKTV side of the Pulse Clipper publishing contract.
+    // (docs/pulse-integration.md). create + finalize + get are functional;
+    // resumable media upload (tus) is a documented placeholder pending storage infra.
+    // -------------------------------------------------------------------------
+
+    public static function register_rest()
+    {
+        $ns = 'offkilter/v1';
+
+        register_rest_route($ns, '/pulse/items', array(
+            'methods'             => 'POST',
+            'callback'            => array(__CLASS__, 'rest_create'),
+            'permission_callback' => array(__CLASS__, 'rest_can_author'),
+        ));
+
+        register_rest_route($ns, '/pulse/items/(?P<id>\d+)', array(
+            'methods'             => 'GET',
+            'callback'            => array(__CLASS__, 'rest_get'),
+            'permission_callback' => '__return_true',
+        ));
+
+        register_rest_route($ns, '/pulse/items/(?P<id>\d+)/finalize', array(
+            'methods'             => 'POST',
+            'callback'            => array(__CLASS__, 'rest_finalize'),
+            'permission_callback' => array(__CLASS__, 'rest_can_author'),
+        ));
+
+        // Placeholder: resumable media upload (tus). Pending storage/Bunny infra.
+        register_rest_route($ns, '/pulse/items/(?P<id>\d+)/upload', array(
+            'methods'             => array('POST', 'PATCH', 'HEAD'),
+            'callback'            => array(__CLASS__, 'rest_upload_placeholder'),
+            'permission_callback' => array(__CLASS__, 'rest_can_author'),
+        ));
+    }
+
+    public static function rest_can_author()
+    {
+        // Placeholder auth: capability check. Real auth = Google ID token exchange
+        // (shared identity) — see docs/pulse-integration.md §5.
+        return current_user_can('edit_posts');
+    }
+
+    /** Create a pulse_item in the `processing` state and return its id + upload target. */
+    public static function rest_create($request)
+    {
+        $p = $request->get_json_params();
+        if (!is_array($p)) {
+            $p = $request->get_params();
+        }
+
+        $post_id = wp_insert_post(array(
+            'post_type'    => self::POST_TYPE,
+            'post_status'  => 'publish',
+            'post_title'   => sanitize_text_field($p['title'] ?? __('Untitled Pulse', 'offkilter-arcana')),
+            'post_content' => wp_kses_post($p['description'] ?? ''),
+        ), true);
+
+        if (is_wp_error($post_id)) {
+            return new WP_Error('ok_pulse_create_failed', $post_id->get_error_message(), array('status' => 500));
+        }
+
+        update_post_meta($post_id, self::META_STATUS, self::STATUS_PROCESSING);
+        if (isset($p['source']))          { update_post_meta($post_id, self::META_SOURCE, wp_json_encode($p['source'])); }
+        if (isset($p['durationMs']))      { update_post_meta($post_id, self::META_DURATION, (int) $p['durationMs']); }
+        if (isset($p['transformations'])) { update_post_meta($post_id, self::META_TRANSFORMATIONS, sanitize_text_field(is_array($p['transformations']) ? implode(',', $p['transformations']) : $p['transformations'])); }
+        if (isset($p['visibility']))      { update_post_meta($post_id, self::META_VISIBILITY, sanitize_key($p['visibility'])); }
+        if (!empty($p['tags']) && is_array($p['tags'])) {
+            wp_set_object_terms($post_id, array_map('sanitize_text_field', $p['tags']), self::TAX_TAG);
+        }
+
+        return new WP_REST_Response(array(
+            'id'             => $post_id,
+            'status'         => self::STATUS_PROCESSING,
+            // Placeholder: a real tus upload URL is issued once storage infra exists.
+            'uploadUrl'      => null,
+            'uploadProtocol' => 'pending',
+            'note'           => 'Media upload (tus) not yet enabled; metadata accepted.',
+        ), 201);
+    }
+
+    /** Finalize: mark ready and accept media/thumbnail URLs once upload exists. */
+    public static function rest_finalize($request)
+    {
+        $id = (int) $request['id'];
+        if (get_post_type($id) !== self::POST_TYPE) {
+            return new WP_Error('ok_pulse_not_found', 'Not found', array('status' => 404));
+        }
+        $p = $request->get_json_params();
+        if (!is_array($p)) {
+            $p = $request->get_params();
+        }
+
+        update_post_meta($id, self::META_STATUS, self::STATUS_READY);
+        if (isset($p['discussionId'])) {
+            update_post_meta($id, self::META_DISCUSSION, sanitize_text_field($p['discussionId']));
+        }
+
+        return new WP_REST_Response(self::map_item($id), 200);
+    }
+
+    public static function rest_get($request)
+    {
+        $id = (int) $request['id'];
+        if (get_post_type($id) !== self::POST_TYPE || get_post_status($id) !== 'publish') {
+            return new WP_Error('ok_pulse_not_found', 'Not found', array('status' => 404));
+        }
+        $visibility = (string) get_post_meta($id, self::META_VISIBILITY, true);
+        $ready      = get_post_meta($id, self::META_STATUS, true) === self::STATUS_READY;
+        if ((!$ready || $visibility === 'private') && !current_user_can('edit_post', $id)) {
+            return new WP_Error('ok_pulse_forbidden', 'Not available', array('status' => 403));
+        }
+        return new WP_REST_Response(self::map_item($id), 200);
+    }
+
+    public static function rest_upload_placeholder($request)
+    {
+        return new WP_REST_Response(array(
+            'error' => 'not_implemented',
+            'note'  => 'Resumable media upload (tus) is pending storage infra. See docs/pulse-integration.md.',
+        ), 501);
+    }
+
+    /** Map a pulse_item to the platform-neutral Pulse Item shape. */
+    private static function map_item($id)
+    {
+        $author = (int) get_post_field('post_author', $id);
+        return array(
+            'id'              => $id,
+            'creator'         => array(
+                'id'          => $author,
+                'handle'      => get_the_author_meta('user_login', $author),
+                'displayName' => get_the_author_meta('display_name', $author),
+            ),
+            'title'           => get_the_title($id),
+            'description'     => get_post_field('post_content', $id),
+            'durationMs'      => (int) get_post_meta($id, self::META_DURATION, true),
+            'source'          => json_decode((string) get_post_meta($id, self::META_SOURCE, true), true),
+            'tags'            => wp_get_object_terms($id, self::TAX_TAG, array('fields' => 'names')),
+            'transformations' => array_filter(explode(',', (string) get_post_meta($id, self::META_TRANSFORMATIONS, true))),
+            'visibility'      => (string) get_post_meta($id, self::META_VISIBILITY, true),
+            'discussionId'    => (string) get_post_meta($id, self::META_DISCUSSION, true) ?: null,
+            'status'          => (string) get_post_meta($id, self::META_STATUS, true),
+            'mediaUrl'        => null,
+            'thumbnailUrl'    => get_the_post_thumbnail_url($id, 'large') ?: null,
+        );
     }
 
     // -------------------------------------------------------------------------
