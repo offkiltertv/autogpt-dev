@@ -3814,6 +3814,22 @@ body.single-vidmov_video table.compat-attachment-fields {
   50%      { transform: scale(1.45); opacity: 0.55; }
 }
 
+.ok-pulse-new {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.16em 0.5em;
+  border-radius: 100px;
+  background: var(--ok-bg);
+  color: var(--ok-pulse);
+  border: 1px solid var(--ok-pulse);
+}
+
 .ok-pulse-status {
   position: absolute;
   bottom: 0.5rem;

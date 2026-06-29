@@ -399,6 +399,8 @@ class OKArcana_Pulse
         $creator   = get_the_author_meta('display_name', (int) get_post_field('post_author', $post_id));
         $status    = (string) get_post_meta($post_id, self::META_STATUS, true);
         $is_owner  = get_current_user_id() && (int) get_post_field('post_author', $post_id) === get_current_user_id();
+        // "NEW" while the Pulse is fresh (< 48h) — reinforces the "what's happening now" promise.
+        $is_new    = (time() - (int) get_post_time('U', true, $post_id)) < (48 * HOUR_IN_SECONDS);
 
         ob_start();
         ?>
@@ -409,6 +411,9 @@ class OKArcana_Pulse
                         <img src="<?php echo esc_url($thumb); ?>" alt="<?php echo esc_attr(get_the_title($post_id)); ?>" loading="lazy" width="320" height="180">
                     <?php endif; ?>
                     <span class="ok-pulse-badge">Pulse</span>
+                    <?php if ($is_new) : ?>
+                        <span class="ok-pulse-new"><?php esc_html_e('New', 'offkilter-arcana'); ?></span>
+                    <?php endif; ?>
                     <?php if ($is_owner && $status === self::STATUS_PROCESSING) : ?>
                         <span class="ok-pulse-status ok-pulse-status--processing"><?php esc_html_e('Processing…', 'offkilter-arcana'); ?></span>
                     <?php endif; ?>
