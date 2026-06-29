@@ -351,10 +351,11 @@ class OKArcana_Discovery
             'show_playlists'   => 0,
             'playlist_title'   => 'Playlist',
             'playlist_ids'     => '',
-            'show_related'     => 0,
-            'related_ids'      => '',
-            'show_discuss_cta' => 0,
-            'wrapper_class'    => '',
+            'show_related'      => 0,
+            'related_ids'       => '',
+            'show_discuss_cta'  => 0,
+            'show_completeness' => 0,
+            'wrapper_class'     => '',
         ), $atts, 'oktv_creator_page');
 
         $user_id = (int) $atts['user_id'];
@@ -400,6 +401,35 @@ class OKArcana_Discovery
                     </p>
                 </div>
             </div>
+
+            <?php
+            // Profile completeness — owner-only prompt to finish their destination.
+            if (!empty($atts['show_completeness']) && get_current_user_id() === $user_id) :
+                $checks = array(
+                    __('Avatar', 'offkilter-arcana')   => (bool) get_user_meta($user_id, 'okarcana_avatar', true) || (strpos(get_avatar_url($user_id), 'gravatar.com/avatar') === false),
+                    __('Bio', 'offkilter-arcana')      => (bool) get_user_meta($user_id, 'description', true),
+                    __('Content', 'offkilter-arcana')  => $clip_count > 0,
+                    __('Verified', 'offkilter-arcana') => (bool) get_user_meta($user_id, '_ok_creator_verified', true),
+                );
+                $done = count(array_filter($checks));
+                $total = count($checks);
+                $pct = $total ? (int) round($done / $total * 100) : 0;
+            ?>
+                <div class="ok-creator-page__section ok-profile-meter">
+                    <p class="ok-creator-page__section-title">
+                        <?php printf(esc_html__('Profile %d%% complete', 'offkilter-arcana'), $pct); ?>
+                    </p>
+                    <div class="ok-profile-meter__bar"><span style="width:<?php echo (int) $pct; ?>%"></span></div>
+                    <ul class="ok-profile-meter__list">
+                        <?php foreach ($checks as $label => $ok) : ?>
+                            <li class="<?php echo $ok ? 'is-done' : 'is-todo'; ?>">
+                                <i class="fas <?php echo $ok ? 'fa-circle-check' : 'fa-circle'; ?>" aria-hidden="true"></i>
+                                <?php echo esc_html($label); ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
 
             <?php
             // Bio / About
@@ -659,6 +689,9 @@ class OKArcana_Discovery
     public static function render_discover_page($atts)
     {
         $atts = shortcode_atts(array(
+            'show_editors'     => 0,
+            'editors_label'    => "Editor's Picks",
+            'editors_ids'      => '',
             'show_pulse'       => 1,
             'pulse_label'      => 'Featured Pulse',
             'pulse_ids'        => '',
@@ -686,6 +719,20 @@ class OKArcana_Discovery
         ob_start();
         ?>
         <div class="<?php echo esc_attr($outer_class); ?>">
+
+            <?php // Editor's Picks — hand-picked, cross-type, leads when enabled. ?>
+            <?php if (!empty($atts['show_editors']) && $atts['editors_ids']) : ?>
+            <div class="ok-discover-section">
+                <?php
+                echo self::render_curated_section(array(
+                    'title'    => $atts['editors_label'],
+                    'label'    => "Editor's Pick",
+                    'post_ids' => $atts['editors_ids'],
+                    'layout'   => 'cards',
+                ));
+                ?>
+            </div>
+            <?php endif; ?>
 
             <?php // Featured Pulse — editorial, leads the destination. ?>
             <?php if (!empty($atts['show_pulse']) && class_exists('OKArcana_Pulse')) : ?>
