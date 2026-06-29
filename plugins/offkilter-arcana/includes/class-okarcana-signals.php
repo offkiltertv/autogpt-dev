@@ -23,6 +23,7 @@ class OKArcana_Signals
         add_action(self::BACKFILL_CRON_HOOK, array(__CLASS__, 'run_backfill_batch'));
         add_shortcode('oktv_signals_latest', array(__CLASS__, 'render_signals_shortcode'));
         add_shortcode('oktv_arcana_signals_latest', array(__CLASS__, 'render_arcana_signals_shortcode'));
+        add_shortcode('oktv_creator_spotlight', array(__CLASS__, 'render_creator_spotlight_shortcode'));
     }
 
     public static function schedule_backfill_event()
@@ -108,12 +109,13 @@ class OKArcana_Signals
     public static function render_signals_shortcode($atts = array())
     {
         $atts = shortcode_atts(array(
-            'title' => '⚡ Signals',
-            'limit' => 8,
-            'categories' => '',
-            'show_creator' => 1,
+            'title'         => '⚡ Signals',
+            'limit'         => 8,
+            'categories'    => '',
+            'show_creator'  => 1,
             'show_duration' => 1,
-            'show_date' => 1,
+            'show_date'     => 1,
+            'layout'        => 'list',
             'wrapper_class' => 'oktv-signals-rail',
         ), $atts, 'oktv_signals_latest');
 
@@ -147,13 +149,31 @@ class OKArcana_Signals
         }
 
         $q = new WP_Query($query_args);
+        $layout = in_array((string) $atts['layout'], array('list', 'cards'), true) ? (string) $atts['layout'] : 'list';
 
         ob_start();
+
+        if ($layout === 'cards') :
+            self::render_signals_cards($q, $atts);
+        else :
+            self::render_signals_list($q, $atts);
+        endif;
+
+        wp_reset_postdata();
+
+        return (string) ob_get_clean();
+    }
+
+    private static function render_signals_list(WP_Query $q, array $atts)
+    {
         ?>
-        <section class="<?php echo esc_attr((string) $atts['wrapper_class']); ?>">
+        <section class="<?php echo esc_attr((string) $atts['wrapper_class']); ?>" aria-label="<?php echo esc_attr((string) $atts['title']); ?>">
             <h3><?php echo esc_html((string) $atts['title']); ?></h3>
             <?php if (!$q->have_posts()) : ?>
-                <p><?php esc_html_e('No signal clips found yet.', 'offkilter-arcana'); ?></p>
+                <div class="oktv-signals-empty">
+                    <span class="oktv-signals-empty__icon" aria-hidden="true">⚡</span>
+                    <span class="oktv-signals-empty__label"><?php esc_html_e('No signal clips found yet.', 'offkilter-arcana'); ?></span>
+                </div>
             <?php else : ?>
                 <ul class="oktv-signals-list">
                     <?php while ($q->have_posts()) : $q->the_post(); ?>
@@ -169,11 +189,11 @@ class OKArcana_Signals
                                 $duration = self::format_duration((int) get_post_meta(get_the_ID(), self::META_DURATION_SECONDS, true));
                                 if ($duration !== '') :
                                 ?>
-                                    <span class="oktv-signals-meta"><?php echo esc_html($duration); ?></span>
+                                    <span class="oktv-signals-meta is-duration"><?php echo esc_html($duration); ?></span>
                                 <?php endif; ?>
                             <?php endif; ?>
                             <?php if (!empty($atts['show_date'])) : ?>
-                                <span class="oktv-signals-meta"><?php echo esc_html(get_the_date('Y-m-d')); ?></span>
+                                <span class="oktv-signals-meta"><?php echo esc_html(get_the_date('M j')); ?></span>
                             <?php endif; ?>
                         </li>
                     <?php endwhile; ?>
@@ -181,21 +201,142 @@ class OKArcana_Signals
             <?php endif; ?>
         </section>
         <?php
-        wp_reset_postdata();
+    }
 
+    private static function render_signals_cards(WP_Query $q, array $atts)
+    {
+        ?>
+        <section class="<?php echo esc_attr((string) $atts['wrapper_class']); ?>" aria-label="<?php echo esc_attr((string) $atts['title']); ?>">
+            <h3><?php echo esc_html((string) $atts['title']); ?></h3>
+            <?php if (!$q->have_posts()) : ?>
+                <div class="oktv-signals-empty">
+                    <span class="oktv-signals-empty__icon" aria-hidden="true">⚡</span>
+                    <span class="oktv-signals-empty__label"><?php esc_html_e('No signal clips found yet.', 'offkilter-arcana'); ?></span>
+                </div>
+            <?php else : ?>
+                <div class="oktv-signals-cards">
+                    <?php while ($q->have_posts()) : $q->the_post();
+                        $thumb_url = get_the_post_thumbnail_url(get_the_ID(), 'medium');
+                        $duration  = self::format_duration((int) get_post_meta(get_the_ID(), self::META_DURATION_SECONDS, true));
+                        $creator   = get_the_author_meta('display_name', (int) get_post_field('post_author', get_the_ID()));
+                    ?>
+                        <article class="oktv-signals-card">
+                            <a href="<?php echo esc_url(get_permalink()); ?>" tabindex="-1" aria-hidden="true">
+                                <div class="oktv-signals-card__thumb<?php echo $thumb_url ? '' : ' oktv-signals-card__thumb--empty'; ?>">
+                                    <?php if ($thumb_url) : ?>
+                                        <img src="<?php echo esc_url($thumb_url); ?>"
+                                             alt="<?php echo esc_attr(get_the_title()); ?>"
+                                             loading="lazy"
+                                             width="320" height="180">
+                                    <?php endif; ?>
+                                    <?php if ($duration !== '') : ?>
+                                        <span class="oktv-signals-card__duration"><?php echo esc_html($duration); ?></span>
+                                    <?php endif; ?>
+                                </div>
+                            </a>
+                            <div class="oktv-signals-card__body">
+                                <p class="oktv-signals-card__title">
+                                    <a href="<?php echo esc_url(get_permalink()); ?>"><?php echo esc_html(get_the_title()); ?></a>
+                                </p>
+                                <div class="oktv-signals-card__footer">
+                                    <?php if (!empty($atts['show_creator']) && $creator !== '') : ?>
+                                        <span class="oktv-signals-card__creator"><?php echo esc_html($creator); ?></span>
+                                    <?php endif; ?>
+                                    <?php if (!empty($atts['show_date'])) : ?>
+                                        <span class="oktv-signals-card__date"><?php echo esc_html(get_the_date('M j')); ?></span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </article>
+                    <?php endwhile; ?>
+                </div>
+            <?php endif; ?>
+        </section>
+        <?php
+    }
+
+    public static function render_creator_spotlight_shortcode($atts = array())
+    {
+        $atts = shortcode_atts(array(
+            'user_id'       => 0,
+            'show_stats'    => 1,
+            'show_latest'   => 3,
+            'wrapper_class' => 'ok-creator-spotlight',
+        ), (array) $atts, 'oktv_creator_spotlight');
+
+        $user_id = (int) $atts['user_id'];
+        if ($user_id <= 0) {
+            return '';
+        }
+
+        $user = get_userdata($user_id);
+        if (!$user) {
+            return '';
+        }
+
+        $limit = max(1, min(10, (int) $atts['show_latest']));
+
+        $latest_posts = array();
+        if ($limit > 0) {
+            $latest_posts = get_posts(array(
+                'post_type'   => 'vidmov_video',
+                'post_status' => 'publish',
+                'author'      => $user_id,
+                'numberposts' => $limit,
+                'orderby'     => 'date',
+                'order'       => 'DESC',
+                'fields'      => 'ids',
+                'suppress_filters' => false,
+            ));
+        }
+
+        $video_count  = count_user_posts($user_id, 'vidmov_video', true);
+        $display_name = $user->display_name;
+        $handle       = $user->user_login;
+
+        ob_start();
+        ?>
+        <div class="<?php echo esc_attr((string) $atts['wrapper_class']); ?>">
+            <div class="ok-creator-spotlight__avatar">
+                <?php echo get_avatar($user_id, 72, '', esc_attr($display_name)); ?>
+            </div>
+            <div class="ok-creator-spotlight__body">
+                <p class="ok-creator-spotlight__name"><?php echo esc_html($display_name); ?></p>
+                <p class="ok-creator-spotlight__handle">@<?php echo esc_html($handle); ?></p>
+                <?php if (!empty($atts['show_stats'])) : ?>
+                    <div class="ok-creator-spotlight__stats">
+                        <span><strong><?php echo (int) $video_count; ?></strong> videos</span>
+                    </div>
+                <?php endif; ?>
+                <?php if (!empty($latest_posts)) : ?>
+                    <div class="ok-creator-spotlight__latest">
+                        <p class="ok-creator-spotlight__latest-title"><?php esc_html_e('Latest', 'offkilter-arcana'); ?></p>
+                        <ul class="ok-creator-spotlight__latest-list">
+                            <?php foreach ($latest_posts as $post_id) : ?>
+                                <li class="ok-creator-spotlight__latest-item">
+                                    <a href="<?php echo esc_url(get_permalink($post_id)); ?>"><?php echo esc_html(get_the_title($post_id)); ?></a>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
         return (string) ob_get_clean();
     }
 
     public static function render_arcana_signals_shortcode($atts = array())
     {
         $atts = shortcode_atts(array(
-            'title' => '🔮 Latest Signals',
-            'limit' => 8,
-            'categories' => 'Arcana,Premonitions,Outcomes',
-            'show_creator' => 1,
+            'title'         => '🔮 Latest Signals',
+            'limit'         => 8,
+            'categories'    => 'Arcana,Premonitions,Outcomes',
+            'show_creator'  => 1,
             'show_duration' => 1,
-            'show_date' => 1,
+            'show_date'     => 1,
             'wrapper_class' => 'oktv-arcana-signals-rail',
+            'empty_icon'    => '🔮',
         ), (array) $atts, 'oktv_arcana_signals_latest');
 
         return self::render_signals_shortcode($atts);

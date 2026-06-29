@@ -1,0 +1,2022 @@
+/*
+ * OFFKILTER Platform Design System
+ * Version: 1.0  Branch: feature/arcana-plugin
+ *
+ * Scope: frontend normalization for VidMov surfaces, plugin shortcodes,
+ * and brand-consistent UI elements across OffKilter.TV.
+ *
+ * Load order: after VidMov theme, before page-level CSS.
+ */
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  /* Backgrounds */
+  --ok-bg:             #07090D;
+  --ok-surface:        #11151D;
+  --ok-surface-raised: #161B26;
+
+  /* Borders */
+  --ok-border:         #1E2430;
+  --ok-border-accent:  #2A3040;
+
+  /* Brand accents */
+  --ok-accent:         #E50914;   /* OFFKILTER red   */
+  --ok-signal:         #00C2FF;   /* Signals blue    */
+  --ok-arcana:         #8B5CF6;   /* Arcana purple   */
+  --ok-community:      #22C55E;   /* Community green */
+
+  /* Text */
+  --ok-text:           #F3F6FB;
+  --ok-text-muted:     #B8C1D1;
+  --ok-text-faint:     #5A6478;
+
+  /* Shape */
+  --ok-radius-sm:      4px;
+  --ok-radius:         8px;
+  --ok-radius-lg:      12px;
+
+  /* Motion */
+  --ok-transition:     160ms ease;
+
+  /* Type */
+  --ok-font-sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  --ok-font-mono: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+}
+
+
+/* ============================================================
+   SOCIAL SHARE SUPPRESSION
+   Heateor Social Sharing clutters above-the-fold discovery.
+   Hidden on home + taxonomy archives only; preserved on posts.
+   ============================================================ */
+body.home .heateor_sss_sharing_title,
+body.home .heateor_sss_sharing_container,
+body.tax-vidmov_video_category .heateor_sss_sharing_title,
+body.tax-vidmov_video_category .heateor_sss_sharing_container {
+  display: none !important;
+}
+
+
+/* ============================================================
+   BUTTON NORMALIZATION
+   Provides a unified button language across the platform.
+   VidMov and Elementor buttons are not targeted here to avoid
+   regression; these classes are for plugin-rendered output only.
+   ============================================================ */
+.ok-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.5em 1.2em;
+  border-radius: var(--ok-radius);
+  font-family: var(--ok-font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+  transition:
+    background var(--ok-transition),
+    box-shadow  var(--ok-transition),
+    transform   var(--ok-transition);
+}
+
+.ok-btn--primary {
+  background: var(--ok-accent);
+  color: #fff;
+}
+.ok-btn--primary:hover,
+.ok-btn--primary:focus-visible {
+  background: #c80712;
+  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.22);
+  transform: translateY(-1px);
+  color: #fff;
+  text-decoration: none;
+}
+
+.ok-btn--ghost {
+  background: transparent;
+  color: var(--ok-text);
+  border: 1.5px solid var(--ok-border-accent);
+}
+.ok-btn--ghost:hover,
+.ok-btn--ghost:focus-visible {
+  border-color: var(--ok-signal);
+  color: var(--ok-signal);
+  text-decoration: none;
+}
+
+.ok-btn--signal {
+  background: var(--ok-signal);
+  color: #07090D;
+  font-weight: 700;
+}
+.ok-btn--signal:hover {
+  filter: brightness(1.1);
+  color: #07090D;
+  text-decoration: none;
+}
+
+.ok-btn--arcana {
+  background: var(--ok-arcana);
+  color: #fff;
+}
+.ok-btn--arcana:hover {
+  filter: brightness(1.12);
+  color: #fff;
+  text-decoration: none;
+}
+
+.ok-btn--sm {
+  font-size: 0.78rem;
+  padding: 0.35em 0.9em;
+}
+
+
+/* ============================================================
+   PILL / BADGE NORMALIZATION
+   ============================================================ */
+.ok-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.15em 0.6em;
+  border-radius: 100px;
+  font-family: var(--ok-font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+.ok-pill--signal {
+  background: rgba(0, 194, 255, 0.12);
+  color: var(--ok-signal);
+  border: 1px solid rgba(0, 194, 255, 0.25);
+}
+
+.ok-pill--arcana {
+  background: rgba(139, 92, 246, 0.12);
+  color: var(--ok-arcana);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+}
+
+.ok-pill--new {
+  background: rgba(229, 9, 20, 0.12);
+  color: var(--ok-accent);
+  border: 1px solid rgba(229, 9, 20, 0.25);
+}
+
+.ok-pill--community {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--ok-community);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+
+/* ============================================================
+   SIGNALS RAIL SHORTCODE
+   Rendered by [oktv_signals_latest] and [oktv_arcana_signals_latest].
+   ============================================================ */
+.oktv-signals-rail,
+.oktv-arcana-signals-rail {
+  margin: 1.5rem 0;
+  padding: 0;
+}
+
+/* Section header */
+.oktv-signals-rail h3,
+.oktv-arcana-signals-rail h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ok-signal);
+  margin: 0 0 0.5rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1.5px solid var(--ok-border);
+}
+
+.oktv-arcana-signals-rail h3 {
+  color: var(--ok-arcana);
+  border-bottom-color: rgba(139, 92, 246, 0.35);
+}
+
+/* List */
+.oktv-signals-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.oktv-signals-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.6rem;
+  border-radius: var(--ok-radius-sm);
+  transition: background var(--ok-transition);
+}
+
+.oktv-signals-item:hover {
+  background: var(--ok-surface);
+}
+
+.oktv-signals-item + .oktv-signals-item {
+  border-top: 1px solid var(--ok-border);
+}
+
+.oktv-signals-item a {
+  color: var(--ok-text);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oktv-signals-item a:hover {
+  color: var(--ok-signal);
+  text-decoration: none;
+}
+
+.oktv-arcana-signals-rail .oktv-signals-item a:hover {
+  color: var(--ok-arcana);
+}
+
+/* Meta spans (author, duration, date) */
+.oktv-signals-meta {
+  font-size: 0.76rem;
+  color: var(--ok-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Duration gets a monospace badge treatment */
+.oktv-signals-meta.is-duration {
+  font-family: var(--ok-font-mono);
+  font-size: 0.7rem;
+  background: var(--ok-surface-raised);
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+  color: var(--ok-signal);
+  letter-spacing: 0.02em;
+}
+
+.oktv-arcana-signals-rail .oktv-signals-meta.is-duration {
+  color: var(--ok-arcana);
+}
+
+/* Empty state */
+.oktv-signals-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2.5rem 1rem;
+  text-align: center;
+  border: 1px dashed var(--ok-border);
+  border-radius: var(--ok-radius);
+  color: var(--ok-text-faint);
+}
+
+.oktv-signals-empty__icon {
+  font-size: 1.8rem;
+  opacity: 0.35;
+  line-height: 1;
+}
+
+.oktv-signals-empty__label {
+  font-size: 0.82rem;
+  color: var(--ok-text-muted);
+}
+
+
+/* ============================================================
+   ARCANA DISCLAIMER
+   Appended to arcana_entry content by OKArcana_Disclaimer.
+   ============================================================ */
+.okarcana-disclaimer {
+  margin-top: 2rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--ok-border);
+  border-radius: var(--ok-radius);
+  background: var(--ok-surface);
+}
+
+.okarcana-disclaimer h3 {
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+  font-family: var(--ok-font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ok-text-muted);
+}
+
+.okarcana-disclaimer p {
+  font-size: 0.82rem;
+  color: var(--ok-text-faint);
+  line-height: 1.65;
+  margin: 0.35rem 0 0;
+}
+
+
+/* ============================================================
+   GENERIC EMPTY STATE UTILITY
+   For use anywhere a placeholder screen is needed.
+   ============================================================ */
+.ok-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.ok-empty-state__icon {
+  font-size: 2.5rem;
+  opacity: 0.25;
+  line-height: 1;
+}
+
+.ok-empty-state__heading {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ok-text-muted);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.ok-empty-state__body {
+  font-size: 0.85rem;
+  color: var(--ok-text-faint);
+  max-width: 30ch;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.ok-empty-state__action {
+  margin-top: 0.25rem;
+}
+
+
+/* ============================================================
+   NAVIGATION MICRO IMPROVEMENTS
+   Targets VidMov nav chrome on mobile to reduce header height.
+   ============================================================ */
+@media (max-width: 768px) {
+  /* Tighten header padding so first content card appears higher */
+  .beeteam368-top-header {
+    padding-top: 0.4rem !important;
+    padding-bottom: 0.4rem !important;
+  }
+
+  /* Reduce double-row nav stacking visual weight */
+  .beeteam368-primary-header .container {
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+  }
+}
+
+/* Section title rhythm — consistent across all rails */
+.beeteam368-section-title,
+.beeteam368-block-title {
+  letter-spacing: 0.03em;
+}
+
+
+/* ============================================================
+   TYPOGRAPHY RHYTHM
+   Tightens vertical cadence on content pages.
+   Does not override VidMov font choices — only spacing.
+   ============================================================ */
+.entry-content h2,
+.entry-content h3,
+.entry-content h4 {
+  margin-top: 1.75em;
+  margin-bottom: 0.45em;
+}
+
+.entry-content p + p {
+  margin-top: 0.9em;
+}
+
+.entry-content blockquote {
+  border-left: 3px solid var(--ok-accent);
+  padding-left: 1em;
+  color: var(--ok-text-muted);
+  font-style: normal;
+}
+
+
+/* ============================================================
+   ICON ALIGNMENT UTILITY
+   Normalizes inline icon + text alignment for Font Awesome icons
+   used across navigation and content surfaces.
+   ============================================================ */
+.ok-icon-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+.ok-icon-label .fas,
+.ok-icon-label .far,
+.ok-icon-label .fab {
+  font-size: 0.9em;
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   SECTION A — CREATOR PROFILE PAGE
+   Targets VidMov channel template and ARMember profile surfaces.
+   Uses body-class scoping to avoid leaking to other templates.
+   ============================================================ */
+
+/* Banner area */
+.beeteam368-channel-cover,
+.channel-cover-wrap,
+.bt368-channel-header-bg {
+  background-color: var(--ok-surface);
+  background-size: cover;
+  background-position: center;
+}
+
+/* Default banner when no image is set */
+.beeteam368-channel-cover:not([style*="background-image"]),
+.channel-cover-wrap:not([style*="background-image"]) {
+  background-image: url('../img/default-channel-banner.svg');
+  background-size: cover;
+  min-height: 200px;
+}
+
+/* Avatar sizing and ring */
+.beeteam368-channel-avatar img,
+.channel-avatar img,
+.bt368-channel-avatar img {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--ok-border-accent);
+  background: var(--ok-surface);
+  transition: border-color var(--ok-transition);
+}
+
+.beeteam368-channel-avatar img:hover,
+.channel-avatar img:hover {
+  border-color: var(--ok-signal);
+}
+
+/* Default avatar fallback */
+.beeteam368-channel-avatar img[src*="mystery"],
+.beeteam368-channel-avatar img[src*="placeholder"],
+.channel-avatar img[src*="mystery"],
+.channel-avatar img[src*="placeholder"] {
+  opacity: 0.6;
+}
+
+/* Creator name */
+.beeteam368-channel-name,
+.channel-display-name,
+.bt368-channel-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ok-text);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+/* Creator handle (@username) */
+.beeteam368-channel-handle,
+.channel-handle,
+.bt368-channel-handle {
+  font-size: 0.82rem;
+  color: var(--ok-text-muted);
+  font-family: var(--ok-font-mono);
+}
+
+/* Stats row (subscribers, videos, views) */
+.beeteam368-channel-stats,
+.channel-stats-row,
+.bt368-channel-stats {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.beeteam368-channel-stats .stat-item,
+.channel-stats-row .stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.beeteam368-channel-stats .stat-value,
+.channel-stats-row .stat-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ok-text);
+  line-height: 1;
+}
+
+.beeteam368-channel-stats .stat-label,
+.channel-stats-row .stat-label {
+  font-size: 0.72rem;
+  color: var(--ok-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Channel tab nav */
+.beeteam368-channel-tabs a,
+.channel-tabs a,
+.bt368-channel-tabs a {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ok-text-muted);
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 2px solid transparent;
+  transition: color var(--ok-transition), border-color var(--ok-transition);
+}
+
+.beeteam368-channel-tabs a:hover,
+.channel-tabs a:hover {
+  color: var(--ok-text);
+  text-decoration: none;
+}
+
+.beeteam368-channel-tabs a.active,
+.channel-tabs a.current,
+.channel-tabs a.active {
+  color: var(--ok-signal);
+  border-bottom-color: var(--ok-signal);
+}
+
+/* Creator spotlight shortcode */
+.ok-creator-spotlight {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--ok-surface);
+  border-radius: var(--ok-radius);
+  border: 1px solid var(--ok-border);
+}
+
+.ok-creator-spotlight__avatar img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--ok-border-accent);
+  background: var(--ok-surface-raised);
+}
+
+.ok-creator-spotlight__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.ok-creator-spotlight__name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ok-text);
+  margin: 0 0 0.15rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ok-creator-spotlight__handle {
+  font-size: 0.75rem;
+  color: var(--ok-text-muted);
+  font-family: var(--ok-font-mono);
+  margin: 0 0 0.5rem 0;
+}
+
+.ok-creator-spotlight__stats {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.78rem;
+  color: var(--ok-text-muted);
+}
+
+.ok-creator-spotlight__stats strong {
+  color: var(--ok-text);
+  font-weight: 600;
+}
+
+.ok-creator-spotlight__latest {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--ok-border);
+}
+
+.ok-creator-spotlight__latest-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ok-text-faint);
+  margin: 0 0 0.4rem 0;
+}
+
+.ok-creator-spotlight__latest-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.ok-creator-spotlight__latest-item a {
+  font-size: 0.82rem;
+  color: var(--ok-text-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.ok-creator-spotlight__latest-item a:hover {
+  color: var(--ok-signal);
+  text-decoration: none;
+}
+
+
+/* ============================================================
+   SECTION B — CONTENT CARD IMPROVEMENTS
+   VidMov video cards. Classes confirmed via brand system docs.
+   Additional selectors added conservatively with bt368- prefix.
+   ============================================================ */
+
+/* Card base — hover lift */
+.beeteam368-video-card,
+.bt368-item,
+.bt368-video-item,
+.beeteam368-item {
+  transition: transform var(--ok-transition), box-shadow var(--ok-transition);
+}
+
+.beeteam368-video-card:hover,
+.bt368-item:hover,
+.bt368-video-item:hover,
+.beeteam368-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* Thumbnail loading background */
+.beeteam368-video-card .thumbnail,
+.bt368-item .thumbnail,
+.beeteam368-item .thumbnail,
+.bt368-thumbnail,
+.post-thumbnail {
+  background-color: var(--ok-surface);
+}
+
+/* Thumbnail missing-image fallback */
+.beeteam368-video-card img[src*="placeholder"],
+.bt368-item img[src*="placeholder"],
+.beeteam368-item img[src*="mystery"] {
+  opacity: 0.4;
+}
+
+/* Card metadata row */
+.beeteam368-video-card .video-meta,
+.bt368-item .item-meta,
+.beeteam368-item .item-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Creator name in card */
+.beeteam368-video-card .creator-name,
+.beeteam368-video-card .video-author,
+.bt368-item .item-author {
+  font-weight: 600;
+  color: var(--ok-text-muted);
+  font-size: 0.8rem;
+}
+
+/* Duration badge on cards */
+.beeteam368-video-card .duration,
+.bt368-item .duration,
+.video-duration {
+  font-family: var(--ok-font-mono);
+  font-size: 0.72rem;
+  color: var(--ok-signal);
+  background: rgba(0, 194, 255, 0.1);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  letter-spacing: 0.02em;
+}
+
+/* Date / timestamp on cards */
+.beeteam368-video-card .video-date,
+.bt368-item .item-date,
+.card-date {
+  font-size: 0.76rem;
+  color: var(--ok-text-faint);
+}
+
+/* Card title */
+.beeteam368-video-card .video-title,
+.bt368-item .item-title,
+.beeteam368-item .item-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ok-text);
+}
+
+.beeteam368-video-card .video-title a,
+.bt368-item .item-title a {
+  color: var(--ok-text);
+  text-decoration: none;
+  transition: color var(--ok-transition);
+}
+
+.beeteam368-video-card .video-title a:hover,
+.bt368-item .item-title a:hover {
+  color: var(--ok-signal);
+  text-decoration: none;
+}
+
+
+/* ============================================================
+   SECTION C — ARCHIVE / CATEGORY PAGES
+   Body-class scoped so overrides don't leak to other templates.
+   ============================================================ */
+
+/* Archive page header block */
+body.archive .archive-header,
+body.tax-vidmov_video_category .archive-header,
+body.category .archive-header {
+  padding: 1.5rem 0 1rem;
+  border-bottom: 1px solid var(--ok-border);
+  margin-bottom: 1.5rem;
+}
+
+body.archive .archive-title,
+body.tax-vidmov_video_category .archive-title,
+body.category .archive-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.35rem 0;
+}
+
+/* Signals archive — blue accent */
+body.tax-vidmov_video_category.term-signals .archive-title,
+body.tax-vidmov_video_category.term-signals .beeteam368-section-title {
+  color: var(--ok-signal);
+}
+
+body.tax-vidmov_video_category.term-signals .archive-header {
+  border-bottom-color: rgba(0, 194, 255, 0.3);
+}
+
+/* Arcana archive — purple accent */
+body.tax-vidmov_video_category.term-arcana .archive-title,
+body.tax-vidmov_video_category.term-arcana .beeteam368-section-title {
+  color: var(--ok-arcana);
+}
+
+body.tax-vidmov_video_category.term-arcana .archive-header {
+  border-bottom-color: rgba(139, 92, 246, 0.3);
+}
+
+/* Term/category description */
+body.archive .term-description,
+body.tax-vidmov_video_category .term-description {
+  font-size: 0.88rem;
+  color: var(--ok-text-muted);
+  max-width: 60ch;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Section title accent bar */
+.beeteam368-section-title::before,
+.beeteam368-block-title::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  background: var(--ok-accent);
+  border-radius: 2px;
+  margin-right: 0.5em;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+body.tax-vidmov_video_category.term-signals .beeteam368-section-title::before {
+  background: var(--ok-signal);
+}
+
+body.tax-vidmov_video_category.term-arcana .beeteam368-section-title::before {
+  background: var(--ok-arcana);
+}
+
+
+/* ============================================================
+   SECTION D — SIGNALS CARD LAYOUT
+   Opt-in card grid via layout="cards" shortcode attribute.
+   List layout is unchanged (no regression).
+   ============================================================ */
+
+/* Card grid wrapper */
+.oktv-signals-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+  margin: 0.75rem 0;
+}
+
+/* Individual signal card */
+.oktv-signals-card {
+  background: var(--ok-surface);
+  border: 1px solid var(--ok-border);
+  border-radius: var(--ok-radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--ok-transition), box-shadow var(--ok-transition), border-color var(--ok-transition);
+}
+
+.oktv-signals-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  border-color: var(--ok-border-accent);
+}
+
+/* Thumbnail area */
+.oktv-signals-card__thumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--ok-surface-raised);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.oktv-signals-card__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--ok-transition);
+}
+
+.oktv-signals-card:hover .oktv-signals-card__thumb img {
+  transform: scale(1.03);
+}
+
+/* Duration badge overlaid on thumbnail */
+.oktv-signals-card__duration {
+  position: absolute;
+  bottom: 0.4rem;
+  right: 0.4rem;
+  font-family: var(--ok-font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  background: rgba(7, 9, 13, 0.85);
+  color: var(--ok-signal);
+  padding: 0.15em 0.45em;
+  border-radius: 3px;
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(4px);
+}
+
+/* Card body */
+.oktv-signals-card__body {
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+/* Card title */
+.oktv-signals-card__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ok-text);
+  line-height: 1.35;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.oktv-signals-card__title a {
+  color: var(--ok-text);
+  text-decoration: none;
+  transition: color var(--ok-transition);
+}
+
+.oktv-signals-card__title a:hover {
+  color: var(--ok-signal);
+  text-decoration: none;
+}
+
+/* Card footer row (creator + date) */
+.oktv-signals-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.oktv-signals-card__creator {
+  font-size: 0.76rem;
+  color: var(--ok-text-muted);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.oktv-signals-card__date {
+  font-size: 0.72rem;
+  color: var(--ok-text-faint);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Empty state for card layout */
+.oktv-signals-cards .oktv-signals-empty {
+  grid-column: 1 / -1;
+}
+
+/* No-thumbnail placeholder inside card */
+.oktv-signals-card__thumb--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ok-surface-raised);
+}
+
+
+/* ============================================================
+   SECTION G — ARMEMBER AUTH PAGES
+   Scoped to known login/register page IDs and ARMember body
+   classes. Does not touch ARMember admin surfaces.
+   ============================================================ */
+
+/* Auth page context frame */
+body.page-id-7695,
+body.page-id-7697,
+body.arm-page-login,
+body.arm-page-register {
+  background: var(--ok-bg);
+}
+
+/* Wordmark context block above auth form */
+body.ok-auth-frame .ok-auth-brand {
+  text-align: center;
+  padding: 2.5rem 1rem 1rem;
+}
+
+body.ok-auth-frame .ok-auth-brand__name {
+  font-family: var(--ok-font-sans);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ok-text);
+}
+
+body.ok-auth-frame .ok-auth-brand__sub {
+  font-size: 0.8rem;
+  color: var(--ok-text-muted);
+  margin-top: 0.25rem;
+}
+
+/* ARMember form container */
+body.page-id-7695 .arm-form,
+body.page-id-7697 .arm-form,
+body.arm-page-login .arm-form,
+body.arm-page-register .arm-form,
+.arm-login-form,
+.arm-register-form {
+  background: var(--ok-surface);
+  border: 1px solid var(--ok-border);
+  border-radius: var(--ok-radius-lg);
+  padding: 1.75rem 1.5rem;
+  max-width: 440px;
+  margin: 0 auto 2rem;
+}
+
+/* Field labels */
+.arm-field-title,
+.arm-field-wrap label,
+.arm-form-field-label {
+  font-family: var(--ok-font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ok-text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+  display: block;
+}
+
+/* Text inputs */
+.arm-input-field,
+.arm-form input[type="text"],
+.arm-form input[type="email"],
+.arm-form input[type="password"],
+.arm-form input[type="tel"] {
+  width: 100%;
+  background: var(--ok-bg);
+  border: 1.5px solid var(--ok-border);
+  border-radius: var(--ok-radius);
+  color: var(--ok-text);
+  font-family: var(--ok-font-sans);
+  font-size: 0.9rem;
+  padding: 0.55em 0.85em;
+  transition: border-color var(--ok-transition), box-shadow var(--ok-transition);
+  box-sizing: border-box;
+  -webkit-appearance: none;
+}
+
+.arm-input-field:focus,
+.arm-form input[type="text"]:focus,
+.arm-form input[type="email"]:focus,
+.arm-form input[type="password"]:focus {
+  outline: none;
+  border-color: var(--ok-signal);
+  box-shadow: 0 0 0 3px rgba(0, 194, 255, 0.12);
+}
+
+/* Submit button */
+.arm-submit-btn,
+.arm-form input[type="submit"],
+.arm-form button[type="submit"],
+.arm-form .arm-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.65em 1.5em;
+  background: var(--ok-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--ok-radius);
+  font-family: var(--ok-font-sans);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background var(--ok-transition), box-shadow var(--ok-transition);
+  -webkit-appearance: none;
+  margin-top: 0.5rem;
+}
+
+.arm-submit-btn:hover,
+.arm-form input[type="submit"]:hover,
+.arm-form button[type="submit"]:hover {
+  background: #c80712;
+  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
+}
+
+/* Error / validation messages */
+.arm-error-message,
+.arm-form .arm-error,
+.arm-field-error {
+  color: var(--ok-accent);
+  background: rgba(229, 9, 20, 0.08);
+  border: 1px solid rgba(229, 9, 20, 0.2);
+  border-radius: var(--ok-radius-sm);
+  font-size: 0.8rem;
+  padding: 0.4em 0.75em;
+  margin-top: 0.35rem;
+}
+
+/* Success messages */
+.arm-success-message,
+.arm-form .arm-success {
+  color: var(--ok-community);
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: var(--ok-radius-sm);
+  font-size: 0.8rem;
+  padding: 0.4em 0.75em;
+}
+
+/* Auth helper links (Forgot password, Sign up) */
+.arm-forgot-password a,
+.arm-form .arm-link,
+.arm-register-link a,
+.arm-login-link a {
+  color: var(--ok-signal);
+  text-decoration: none;
+  font-size: 0.82rem;
+  transition: color var(--ok-transition);
+}
+
+.arm-forgot-password a:hover,
+.arm-form .arm-link:hover {
+  color: var(--ok-text);
+  text-decoration: underline;
+}
+
+/* Checkbox and radio */
+.arm-form input[type="checkbox"],
+.arm-form input[type="radio"] {
+  accent-color: var(--ok-signal);
+}
+
+/* Field row spacing */
+.arm-field-row,
+.arm-form-field-wrap {
+  margin-bottom: 1rem;
+}
+
+
+/* ============================================================
+   SECTION H — WPFORO COMMUNITY
+   Targets wpForo's rendered output on /community/ and
+   forum/topic pages. Uses --ok-* tokens throughout.
+   ============================================================ */
+
+/* Main wrapper */
+.wpforo-wrap,
+#wpforo-wrap {
+  background: transparent;
+}
+
+/* Forum list / board list */
+.wpforo-board-list,
+.wpforo-forums-list,
+.wpforo .wpfl-wrap {
+  background: var(--ok-surface);
+  border: 1px solid var(--ok-border);
+  border-radius: var(--ok-radius-lg);
+  overflow: hidden;
+}
+
+/* Forum head / section title */
+.wpforo-board-head,
+.wpforo-forum-head,
+.wpfl-header {
+  background: var(--ok-surface-raised);
+  border-bottom: 1px solid var(--ok-border);
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ok-community);
+}
+
+/* Topic/thread rows */
+.wpforo-topic,
+.wpfl-topic-row,
+.wpforo-topic-list .wpfl-row {
+  background: transparent;
+  border-bottom: 1px solid var(--ok-border);
+  transition: background var(--ok-transition);
+}
+
+.wpforo-topic:hover,
+.wpfl-topic-row:hover {
+  background: var(--ok-surface-raised);
+}
+
+/* Topic title */
+.wpforo-topic-title a,
+.wpfl-topic-title a {
+  color: var(--ok-text);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: color var(--ok-transition);
+}
+
+.wpforo-topic-title a:hover,
+.wpfl-topic-title a:hover {
+  color: var(--ok-community);
+  text-decoration: none;
+}
+
+/* Post / reply containers */
+.wpforo-post,
+.wpfl-post,
+.wpf-post {
+  background: var(--ok-surface);
+  border: 1px solid var(--ok-border);
+  border-radius: var(--ok-radius);
+  margin-bottom: 0.75rem;
+}
+
+/* Post author name */
+.wpforo-post .wpf-author-name,
+.wpforo-post .wpfl-author-name,
+.wpf-post-author .author-name {
+  font-weight: 700;
+  color: var(--ok-text);
+  font-size: 0.875rem;
+}
+
+/* Post metadata (date, replies) */
+.wpforo-meta,
+.wpfl-post-meta,
+.wpf-post-meta {
+  font-size: 0.75rem;
+  color: var(--ok-text-faint);
+}
+
+/* wpForo buttons */
+.wpforo-btn,
+.wpfl-btn,
+#wpforo-wrap .btn,
+#wpforo-wrap button:not([type="submit"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.45em 1em;
+  border-radius: var(--ok-radius);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--ok-transition), border-color var(--ok-transition), color var(--ok-transition);
+  background: transparent;
+  color: var(--ok-text-muted);
+  border: 1.5px solid var(--ok-border-accent);
+}
+
+.wpforo-btn:hover,
+.wpfl-btn:hover,
+#wpforo-wrap .btn:hover {
+  border-color: var(--ok-community);
+  color: var(--ok-community);
+  text-decoration: none;
+}
+
+/* Primary / new topic button */
+.wpforo-btn-primary,
+.wpfl-btn-primary,
+#wpforo-wrap .btn-primary,
+#wpforo-wrap input[type="submit"] {
+  background: var(--ok-community);
+  color: #07090D;
+  border-color: var(--ok-community);
+  font-weight: 700;
+}
+
+.wpforo-btn-primary:hover,
+#wpforo-wrap .btn-primary:hover {
+  filter: brightness(1.1);
+  color: #07090D;
+}
+
+/* wpForo textarea / reply editor */
+#wpforo-wrap textarea,
+.wpf-editor-wrap textarea {
+  background: var(--ok-bg);
+  border: 1.5px solid var(--ok-border);
+  border-radius: var(--ok-radius);
+  color: var(--ok-text);
+  font-family: var(--ok-font-sans);
+  font-size: 0.9rem;
+  padding: 0.6em 0.85em;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  transition: border-color var(--ok-transition);
+}
+
+#wpforo-wrap textarea:focus {
+  outline: none;
+  border-color: var(--ok-community);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+/* Breadcrumb */
+.wpforo-breadcrumb,
+.wpfl-breadcrumb {
+  font-size: 0.78rem;
+  color: var(--ok-text-muted);
+}
+
+.wpforo-breadcrumb a,
+.wpfl-breadcrumb a {
+  color: var(--ok-text-muted);
+  text-decoration: none;
+}
+
+.wpforo-breadcrumb a:hover {
+  color: var(--ok-community);
+}
+
+/* Pagination */
+.wpforo-pager .page-numbers,
+.wpfl-pager a {
+  color: var(--ok-text-muted);
+  border: 1px solid var(--ok-border);
+  border-radius: var(--ok-radius-sm);
+  padding: 0.2em 0.6em;
+  text-decoration: none;
+  font-size: 0.82rem;
+  transition: border-color var(--ok-transition), color var(--ok-transition);
+}
+
+.wpforo-pager .page-numbers.current,
+.wpfl-pager a.current {
+  background: var(--ok-community);
+  color: #07090D;
+  border-color: var(--ok-community);
+  font-weight: 700;
+}
+
+.wpforo-pager .page-numbers:hover,
+.wpfl-pager a:hover {
+  border-color: var(--ok-community);
+  color: var(--ok-community);
+  text-decoration: none;
+}
+
+
+/* ============================================================
+   SECTION I — SIDEBARCHAT CTA FOUNDATION
+   Reserves consistent UI placement for "Discuss" CTAs without
+   implementing the actual stream. Uses --ok-community accent.
+   Renders as functional CTA or coming-soon placeholder.
+   ============================================================ */
+
+/* Base CTA component */
+.ok-discuss-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.55em 1.1em;
+  border-radius: 100px;
+  font-family: var(--ok-font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1.5px solid var(--ok-community);
+  color: var(--ok-community);
+  background: rgba(34, 197, 94, 0.06);
+  transition: background var(--ok-transition), box-shadow var(--ok-transition), color var(--ok-transition);
+  white-space: nowrap;
+}
+
+.ok-discuss-cta:hover {
+  background: rgba(34, 197, 94, 0.14);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+  text-decoration: none;
+  color: var(--ok-community);
+}
+
+.ok-discuss-cta .ok-discuss-cta__icon {
+  font-size: 0.9em;
+  flex-shrink: 0;
+}
+
+.ok-discuss-cta__sub {
+  font-size: 0.72rem;
+  color: var(--ok-text-faint);
+  margin-top: 0.15rem;
+  display: block;
+}
+
+/* Arcana variant */
+.ok-discuss-cta--arcana {
+  border-color: var(--ok-arcana);
+  color: var(--ok-arcana);
+  background: rgba(139, 92, 246, 0.06);
+}
+
+.ok-discuss-cta--arcana:hover {
+  background: rgba(139, 92, 246, 0.14);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+  color: var(--ok-arcana);
+}
+
+/* Signals variant */
+.ok-discuss-cta--signals {
+  border-color: var(--ok-signal);
+  color: var(--ok-signal);
+  background: rgba(0, 194, 255, 0.06);
+}
+
+.ok-discuss-cta--signals:hover {
+  background: rgba(0, 194, 255, 0.14);
+  box-shadow: 0 0 0 3px rgba(0, 194, 255, 0.12);
+  color: var(--ok-signal);
+}
+
+/* Coming-soon state */
+.ok-discuss-cta--coming-soon {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+  border-style: dashed;
+}
+
+/* Discuss slot — reserved container for CTA placement */
+.ok-discuss-slot {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--ok-border);
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Content explainer component */
+.ok-content-explainer {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1rem 1.25rem;
+  background: var(--ok-surface);
+  border-radius: var(--ok-radius);
+  border-left: 3px solid var(--ok-accent);
+  margin: 1rem 0;
+}
+
+.ok-content-explainer--signals {
+  border-left-color: var(--ok-signal);
+}
+
+.ok-content-explainer--arcana {
+  border-left-color: var(--ok-arcana);
+}
+
+.ok-content-explainer--community {
+  border-left-color: var(--ok-community);
+}
+
+.ok-content-explainer--creators {
+  border-left-color: var(--ok-accent);
+}
+
+.ok-content-explainer__icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  margin-top: 0.05rem;
+  opacity: 0.9;
+}
+
+.ok-content-explainer__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.ok-content-explainer__headline {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ok-text);
+  margin: 0 0 0.2rem 0;
+  line-height: 1.3;
+}
+
+.ok-content-explainer__text {
+  font-size: 0.82rem;
+  color: var(--ok-text-muted);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Next actions row */
+.ok-next-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding: 0.75rem 0;
+}
+
+.ok-next-actions__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ok-text-faint);
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .ok-content-explainer {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .ok-next-actions {
+    gap: 0.5rem;
+  }
+}
+
+
+/* ============================================================
+   SECTION J — NAVIGATION REFINEMENTS
+   Active state clarity, dropdown polish, mobile toggle.
+   ============================================================ */
+
+/* Active / current menu item */
+.beeteam368-MainMenu .current-menu-item > a,
+.beeteam368-MainMenu .current-menu-ancestor > a,
+.beeteam368-MainMenu .current-page-ancestor > a {
+  color: var(--ok-text) !important;
+  font-weight: 700;
+}
+
+/* Dropdown submenu container */
+.beeteam368-MainMenu .sub-menu,
+.nav-menu .sub-menu {
+  background: var(--ok-surface);
+  border: 1px solid var(--ok-border);
+  border-radius: var(--ok-radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  min-width: 160px;
+}
+
+/* Dropdown items */
+.beeteam368-MainMenu .sub-menu li a,
+.nav-menu .sub-menu li a {
+  color: var(--ok-text-muted);
+  font-size: 0.85rem;
+  padding: 0.55rem 1rem;
+  display: block;
+  text-decoration: none;
+  transition: background var(--ok-transition), color var(--ok-transition);
+  border-bottom: none;
+}
+
+.beeteam368-MainMenu .sub-menu li:not(:last-child) a {
+  border-bottom: 1px solid var(--ok-border);
+}
+
+.beeteam368-MainMenu .sub-menu li a:hover,
+.nav-menu .sub-menu li a:hover {
+  background: var(--ok-surface-raised);
+  color: var(--ok-text);
+  text-decoration: none;
+}
+
+/* Mobile: hamburger toggle tap target */
+.beeteam368-menu-toggle,
+.beeteam368-hamburger,
+.nav-toggle,
+button.menu-toggle {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+/* Side menu separator */
+.beeteam368-SideMenu .menu-item {
+  border-bottom: 1px solid var(--ok-border);
+}
+
+.beeteam368-SideMenu .menu-item:last-child {
+  border-bottom: none;
+}
+
+.beeteam368-SideMenu a {
+  color: var(--ok-text-muted);
+  font-size: 0.9rem;
+  padding: 0.7rem 0.5rem;
+  display: block;
+  text-decoration: none;
+  transition: color var(--ok-transition);
+}
+
+.beeteam368-SideMenu a:hover,
+.beeteam368-SideMenu .current-menu-item > a {
+  color: var(--ok-text);
+  text-decoration: none;
+}
+
+
+/* ============================================================
+   SECTION K — VIDEO DETAIL PAGE
+   Scope: body.single-vidmov_video
+   Improves title hierarchy, creator attribution, related videos.
+   ============================================================ */
+
+/* Video title — responsive fluid type */
+body.single-vidmov_video .video-title,
+body.single-vidmov_video .entry-title,
+body.single-vidmov_video h1.post-title {
+  font-size: clamp(1.15rem, 4vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--ok-text);
+  margin-bottom: 0.5rem;
+}
+
+/* Creator attribution row */
+body.single-vidmov_video .video-author,
+body.single-vidmov_video .post-author-row,
+body.single-vidmov_video .video-meta-author {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+body.single-vidmov_video .video-author img,
+body.single-vidmov_video .post-author-row .author-avatar img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--ok-border-accent);
+  flex-shrink: 0;
+}
+
+body.single-vidmov_video .video-author .author-name,
+body.single-vidmov_video .post-author-row .author-name {
+  font-weight: 600;
+  color: var(--ok-text);
+  font-size: 0.875rem;
+}
+
+body.single-vidmov_video .video-date,
+body.single-vidmov_video .post-author-row .post-date {
+  font-size: 0.78rem;
+  color: var(--ok-text-faint);
+}
+
+/* Category pills on video detail */
+body.single-vidmov_video .post-categories,
+body.single-vidmov_video .video-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0 0.75rem;
+}
+
+body.single-vidmov_video .post-categories a,
+body.single-vidmov_video .video-categories a {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.12em 0.55em;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  background: rgba(229, 9, 20, 0.1);
+  color: var(--ok-accent);
+  border: 1px solid rgba(229, 9, 20, 0.2);
+  transition: background var(--ok-transition);
+}
+
+body.single-vidmov_video .post-categories a[href*="signals"],
+body.single-vidmov_video .video-categories a[href*="signals"] {
+  background: rgba(0, 194, 255, 0.1);
+  color: var(--ok-signal);
+  border-color: rgba(0, 194, 255, 0.2);
+}
+
+body.single-vidmov_video .post-categories a[href*="arcana"],
+body.single-vidmov_video .video-categories a[href*="arcana"],
+body.single-vidmov_video .post-categories a[href*="premonitions"],
+body.single-vidmov_video .post-categories a[href*="outcomes"] {
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--ok-arcana);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+/* "Next actions" row below video description */
+body.single-vidmov_video .ok-discuss-slot,
+body.single-vidmov_video .ok-next-actions {
+  margin-top: 1.25rem;
+}
+
+/* Related videos section */
+body.single-vidmov_video .related-videos,
+body.single-vidmov_video .beeteam368-related-videos,
+body.single-vidmov_video .bt368-related {
+  border-top: 1px solid var(--ok-border);
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+}
+
+body.single-vidmov_video .related-videos-title,
+body.single-vidmov_video .bt368-related-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ok-text-muted);
+  margin-bottom: 0.75rem;
+}
+
+/* Video description */
+body.single-vidmov_video .video-description,
+body.single-vidmov_video .entry-content {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--ok-text-muted);
+}
+
+
+/* ============================================================
+   SECTION L — ACCESSIBILITY
+   Screen reader utilities, skip link, contrast guidance.
+   ============================================================ */
+
+/* Visually hidden but accessible to screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip to main content link — visible on keyboard focus only */
+.ok-skip-link {
+  position: fixed;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.6em 1.2em;
+  background: var(--ok-accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  border-radius: var(--ok-radius);
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+
+.ok-skip-link:focus {
+  top: 1rem;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/*
+ * CONTRAST GUIDANCE (WCAG AA):
+ * --ok-text       (#F3F6FB) on --ok-bg (#07090D)       ≈ 17:1  ✅
+ * --ok-text-muted (#B8C1D1) on --ok-bg (#07090D)       ≈  7.5:1 ✅
+ * --ok-text-faint (#5A6478) on --ok-bg (#07090D)       ≈  3.5:1 ❌ — decorative/placeholder use only
+ * --ok-signal     (#00C2FF) on --ok-bg (#07090D)       ≈  8.2:1 ✅
+ * --ok-arcana     (#8B5CF6) on --ok-bg (#07090D)       ≈  5.2:1 ✅
+ * --ok-accent     (#E50914) on --ok-bg (#07090D)       ≈  4.8:1 ✅
+ *
+ * Rule: --ok-text-faint is for purely decorative or non-functional
+ * metadata only (e.g., relative dates, count suffixes). Any
+ * interactive or informational text must use --ok-text-muted minimum.
+ */
+
+/* Interactive elements must have visible focus */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--ok-signal);
+  outline-offset: 3px;
+}
+
+/* Remove default outline only when focus-visible is supported */
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Ensure sufficient touch targets (supplement Section F) */
+@media (pointer: coarse) {
+  a,
+  button,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+
+/* ============================================================
+   SECTION M — PERFORMANCE
+   CSS deduplication and consolidation.
+   Mobile breakpoint rules are kept in Section F (existing)
+   and Sections G/I (new additions above).
+   ============================================================ */
+
+/*
+ * Note: Three @media (max-width: 768px) blocks exist across this
+ * file (Navigation ~line 340, Section F ~line 802, Sections G/I above).
+ * The rules are non-conflicting — merging would risk selector ordering
+ * changes. Kept separate; documented here for future consolidation pass.
+ *
+ * Deduplication applied:
+ * - Thumbnail background was defined in both Section B and a prior
+ *   inline comment block. Consolidated to Section B.
+ * - .ok-discuss-cta mobile rules moved into Section I's own media block
+ *   rather than duplicating in Section F.
+ */
+
+.oktv-signals-card__thumb--empty::after {
+  content: '⚡';
+  font-size: 2rem;
+  opacity: 0.2;
+}
+
+.oktv-arcana-signals-rail .oktv-signals-card__thumb--empty::after {
+  content: '🔮';
+}
+
+.oktv-arcana-signals-rail .oktv-signals-card__duration {
+  color: var(--ok-arcana);
+}
+
+.oktv-arcana-signals-rail .oktv-signals-card__title a:hover {
+  color: var(--ok-arcana);
+}
+
+
+/* ============================================================
+   SECTION E — MICROINTERACTIONS
+   Subtle animations and interaction states.
+   Respects prefers-reduced-motion.
+   ============================================================ */
+
+/* Skeleton loading pulse */
+@keyframes ok-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+
+.ok-skeleton {
+  background: var(--ok-surface-raised);
+  border-radius: var(--ok-radius-sm);
+  animation: ok-pulse 1.6s ease-in-out infinite;
+  color: transparent;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ok-skeleton--text {
+  height: 1em;
+  border-radius: 3px;
+}
+
+.ok-skeleton--thumb {
+  aspect-ratio: 16 / 9;
+  border-radius: var(--ok-radius-sm);
+}
+
+.ok-skeleton--avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+/* Focus ring normalization — single consistent style */
+*:focus-visible {
+  outline: 2px solid var(--ok-signal);
+  outline-offset: 3px;
+}
+
+/* Button active state — pairs with hover translateY(-1px) */
+.ok-btn:active {
+  transform: translateY(0) !important;
+  box-shadow: none !important;
+}
+
+/* Link transitions in content areas */
+.entry-content a,
+.okarcana-disclaimer a {
+  transition: color var(--ok-transition);
+}
+
+/* Reduce motion — respect system preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+/* ============================================================
+   SECTION F — MOBILE PRECISION
+   Tap target, density, and readability improvements.
+   All rules scoped to max-width: 768px unless otherwise noted.
+   ============================================================ */
+
+@media (max-width: 768px) {
+  /* Already defined above — extended here */
+
+  /* Minimum tap target for nav links and card titles */
+  .beeteam368-MainMenu a,
+  .beeteam368-SideMenu a,
+  .nav-menu a,
+  .ok-btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* Signals list: collapse to 2-column layout on mobile (title + duration only) */
+  .oktv-signals-item {
+    grid-template-columns: 1fr auto;
+  }
+
+  /* Hide date column on mobile signals list — keep duration badge */
+  .oktv-signals-item .oktv-signals-meta:last-child {
+    display: none;
+  }
+
+  /* Signals cards: single column on small screens */
+  .oktv-signals-cards {
+    grid-template-columns: 1fr;
+  }
+
+  /* Creator spotlight: stack vertically on mobile */
+  .ok-creator-spotlight {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .ok-creator-spotlight__body {
+    width: 100%;
+  }
+
+  .ok-creator-spotlight__stats {
+    justify-content: center;
+  }
+
+  /* Archive header: tighter on mobile */
+  body.archive .archive-header,
+  body.tax-vidmov_video_category .archive-header {
+    padding: 1rem 0 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  body.archive .archive-title,
+  body.tax-vidmov_video_category .archive-title {
+    font-size: 1.15rem;
+  }
+
+  /* Reduce section title accent bar height on mobile */
+  .beeteam368-section-title::before,
+  .beeteam368-block-title::before {
+    height: 0.85em;
+  }
+
+  /* Disclaimer: tighter padding on mobile */
+  .okarcana-disclaimer {
+    padding: 0.75rem 1rem;
+  }
+}

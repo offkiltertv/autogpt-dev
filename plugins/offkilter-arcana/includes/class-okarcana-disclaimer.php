@@ -26,8 +26,8 @@ class OKArcana_Disclaimer
             return $content;
         }
 
-        $html = '<section class="okarcana-disclaimer" style="margin-top:2rem;padding:1rem;border:1px solid #444;border-radius:8px;">';
-        $html .= '<h3 style="margin-top:0;">FOR ENTERTAINMENT PURPOSES ONLY</h3>';
+        $html = '<section class="okarcana-disclaimer">';
+        $html .= '<h3>FOR ENTERTAINMENT PURPOSES ONLY</h3>';
         foreach (explode("\n", $text) as $line) {
             $line = trim($line);
             if ($line === '' || stripos($line, 'for entertainment purposes only') === 0) {
