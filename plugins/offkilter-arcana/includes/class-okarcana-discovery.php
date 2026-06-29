@@ -24,6 +24,12 @@ class OKArcana_Discovery
     private static function pillar_config()
     {
         return array(
+            'pulse'     => array(
+                'icon'  => 'fas fa-wave-square',
+                'name'  => 'Pulse',
+                'desc'  => 'Fast observations. Quick reactions.',
+                'href'  => '/pulse/',
+            ),
             'signals'   => array(
                 'icon'  => 'fas fa-bolt',
                 'name'  => 'Signals',
@@ -287,6 +293,9 @@ class OKArcana_Discovery
             'featured_ids'     => '',
             'show_signals'     => 1,
             'signals_limit'    => 6,
+            'show_pulse'       => 0,
+            'pulse_limit'      => 6,
+            'pulse_label'      => 'Pulse',
             'show_videos'      => 0,
             'videos_limit'     => 6,
             'videos_label'     => 'Videos',
@@ -330,7 +339,12 @@ class OKArcana_Discovery
                     <?php echo get_avatar($user_id, 80, '', esc_attr($display_name)); ?>
                 </div>
                 <div class="ok-creator-page__identity">
-                    <p class="ok-creator-page__name"><?php echo esc_html($display_name); ?></p>
+                    <p class="ok-creator-page__name">
+                        <?php echo esc_html($display_name); ?>
+                        <?php if (get_user_meta($user_id, '_ok_creator_verified', true)) : ?>
+                            <span class="ok-verified-badge" title="<?php esc_attr_e('Verified creator', 'offkilter-arcana'); ?>" aria-label="<?php esc_attr_e('Verified creator', 'offkilter-arcana'); ?>"><i class="fas fa-circle-check" aria-hidden="true"></i></span>
+                        <?php endif; ?>
+                    </p>
                     <p class="ok-creator-page__handle">@<?php echo esc_html($handle); ?></p>
                     <p class="ok-creator-page__stat">
                         <strong><?php echo (int) $clip_count; ?></strong> <?php esc_html_e('clips', 'offkilter-arcana'); ?>
@@ -434,6 +448,23 @@ class OKArcana_Discovery
                             </article>
                         <?php endwhile; wp_reset_postdata(); ?>
                     </div>
+                </div>
+            <?php endif; endif; ?>
+
+            <?php
+            // Pulse (short-form clips published via the Pulse Clipper)
+            if (!empty($atts['show_pulse']) && class_exists('OKArcana_Pulse')) :
+                $pulse_html = OKArcana_Pulse::render_pulse_feed_shortcode(array(
+                    'creator_id' => $user_id,
+                    'limit'      => max(1, min(12, (int) $atts['pulse_limit'])),
+                    'layout'     => 'cards',
+                ));
+                // Only render the section if the feed produced cards (not the empty state).
+                if (strpos($pulse_html, 'oktv-signals-card') !== false) :
+            ?>
+                <div class="ok-creator-page__section">
+                    <p class="ok-creator-page__section-title"><?php echo esc_html($atts['pulse_label']); ?></p>
+                    <?php echo $pulse_html; ?>
                 </div>
             <?php endif; endif; ?>
 
@@ -579,6 +610,10 @@ class OKArcana_Discovery
     public static function render_discover_page($atts)
     {
         $atts = shortcode_atts(array(
+            'show_pulse'       => 1,
+            'pulse_label'      => 'Featured Pulse',
+            'pulse_ids'        => '',
+            'pulse_limit'      => 4,
             'signals_label'    => 'Featured Signals',
             'signals_ids'      => '',
             'signals_limit'    => 4,
@@ -602,6 +637,20 @@ class OKArcana_Discovery
         ob_start();
         ?>
         <div class="<?php echo esc_attr($outer_class); ?>">
+
+            <?php // Featured Pulse — editorial, leads the destination. ?>
+            <?php if (!empty($atts['show_pulse']) && class_exists('OKArcana_Pulse')) : ?>
+            <div class="ok-discover-section">
+                <?php
+                echo OKArcana_Pulse::render_pulse_feed_shortcode(array(
+                    'title'    => $atts['pulse_label'],
+                    'post_ids' => $atts['pulse_ids'],
+                    'limit'    => (int) $atts['pulse_limit'],
+                    'layout'   => 'cards',
+                ));
+                ?>
+            </div>
+            <?php endif; ?>
 
             <!-- Featured Signals section -->
             <div class="ok-discover-section">

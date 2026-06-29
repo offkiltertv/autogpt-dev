@@ -37,6 +37,13 @@ class OKArcana_Destinations
         $pillar = sanitize_key($atts['pillar']);
 
         $defaults = array(
+            'pulse'     => array(
+                'icon'      => 'fas fa-wave-square',
+                'headline'  => 'OFFKILTER Pulse.',
+                'sub'       => 'Fast observations. Breaking developments. Quick reactions.',
+                'cta_label' => 'Open Pulse',
+                'cta_href'  => '/pulse/',
+            ),
             'signals'   => array(
                 'icon'      => 'fas fa-bolt',
                 'headline'  => 'Every signal deserves attention.',
@@ -119,6 +126,7 @@ class OKArcana_Destinations
         $active = sanitize_key($atts['active']);
 
         $pillars = array(
+            'pulse'     => array('label' => 'Pulse',     'href' => '/pulse/',                  'icon' => 'fas fa-wave-square'),
             'signals'   => array('label' => 'Signals',   'href' => '/video-category/signals/', 'icon' => 'fas fa-bolt'),
             'arcana'    => array('label' => 'Arcana',    'href' => '/video-category/arcana/',  'icon' => 'fas fa-gem'),
             'creators'  => array('label' => 'Creators',  'href' => '/member-list/',            'icon' => 'fas fa-user-group'),

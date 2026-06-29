@@ -3715,3 +3715,133 @@ body.single-vidmov_video table.compat-attachment-fields {
     padding: 1.25rem;
   }
 }
+
+
+/* ============================================================
+   SECTION Y — PULSE DESTINATION
+   OFFKILTER as the destination for Pulse content. Feed reuses
+   the signals-card grid; this section adds the destination hero,
+   the live "Pulse" badge, processing state, and pillar accent.
+   Powers [oktv_pulse_feed] and [oktv_pulse_destination].
+   ============================================================ */
+
+.ok-pulse-destination {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.ok-pulse-destination__hero {
+  text-align: center;
+  padding: 2rem 1rem 0.5rem;
+}
+
+.ok-pulse-destination__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(0, 194, 255, 0.12);
+  color: var(--ok-signal);
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.ok-pulse-destination__headline {
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ok-text);
+  margin: 0 0 0.4rem;
+  line-height: 1.15;
+}
+
+.ok-pulse-destination__sub {
+  font-size: 0.95rem;
+  color: var(--ok-text-muted);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.ok-pulse-feed {
+  margin: 1rem 0;
+}
+
+/* Live "Pulse" badge on the card thumb */
+.ok-pulse-card {
+  position: relative;
+}
+
+.ok-pulse-badge {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 2;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.18em 0.55em;
+  border-radius: 100px;
+  background: var(--ok-signal);
+  color: var(--ok-bg);
+}
+
+.ok-pulse-status {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  z-index: 2;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 0.18em 0.55em;
+  border-radius: var(--ok-radius-sm);
+  background: rgba(7, 9, 13, 0.8);
+  color: var(--ok-text-muted);
+}
+
+.ok-pulse-status--processing {
+  color: var(--ok-text);
+}
+
+.ok-pulse-destination__discuss {
+  display: flex;
+  justify-content: center;
+}
+
+/* Pulse pillar accent (reuses the signal-blue token to keep the palette tight) */
+.ok-platform-intro__card--pulse .ok-platform-intro__card-icon { color: var(--ok-signal); }
+.ok-pillar-chip--pulse:hover { border-color: var(--ok-signal); }
+.ok-pillar-chip--pulse.ok-pillar-chip--active { background: var(--ok-signal); border-color: var(--ok-signal); color: var(--ok-bg); }
+.ok-destination-hero--pulse { border-top-color: var(--ok-signal); }
+
+
+/* ============================================================
+   SECTION Z — RESERVATIONS & POLISH
+   Verified-creator badge (reserved — no flow yet), reserved
+   SidebarChat slot styling on Pulse, final polish.
+   ============================================================ */
+
+/* Verified creator badge — renders only when _ok_creator_verified is set */
+.ok-verified-badge {
+  display: inline-flex;
+  align-items: center;
+  color: var(--ok-signal);
+  font-size: 0.8em;
+  margin-left: 0.3em;
+  vertical-align: baseline;
+}
+
+.ok-featured-creator__name .ok-verified-badge,
+.ok-creator-page__name .ok-verified-badge {
+  font-size: 0.7em;
+}
+
+/* Reserved discuss slot inside a pulse card stays quiet until SidebarChat ships */
+.ok-pulse-card .ok-discuss-cta--coming-soon {
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+}
