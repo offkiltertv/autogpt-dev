@@ -4016,3 +4016,109 @@ body.single-vidmov_video table.compat-attachment-fields {
 .ok-pulse-archive-main .archive-title {
   display: none !important;
 }
+
+
+/* ============================================================
+   SECTION AB — DESIGN LANGUAGE CONSOLIDATION (v2.5)
+   One authoritative interaction layer so every card, button, and
+   feed shares the same hover, focus, motion, and loading language.
+   Appended last so these props win over earlier per-component rules.
+   ============================================================ */
+
+/* Unified card interaction — every card lifts the same way on hover/focus */
+.oktv-signals-card,
+.ok-pulse-card,
+.ok-platform-intro__card,
+.ok-featured-creator,
+.ok-recommended-next__item,
+.ok-creator-page__featured-item {
+  transition: transform var(--ok-transition), border-color var(--ok-transition), background var(--ok-transition);
+  will-change: transform;
+}
+
+.oktv-signals-card:hover,
+.oktv-signals-card:focus-within,
+.ok-pulse-card:hover,
+.ok-pulse-card:focus-within,
+.ok-platform-intro__card:hover,
+.ok-platform-intro__card:focus-within,
+.ok-featured-creator:hover,
+.ok-recommended-next__item:hover,
+.ok-recommended-next__item:focus-within,
+.ok-creator-page__featured-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--ok-border-accent);
+}
+
+/* Pulse keeps its own accent edge on hover */
+.ok-pulse-card:hover,
+.ok-pulse-card:focus-within {
+  border-color: var(--ok-pulse);
+}
+
+/* Unified loading language — skeleton feed while content resolves.
+   Markup: <div class="ok-feed-loading"><span class="ok-skeleton-card"></span>…</div> */
+.ok-feed-loading {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.ok-skeleton-card {
+  display: block;
+  border-radius: var(--ok-radius);
+  border: 1px solid var(--ok-border);
+  background: var(--ok-surface-raised);
+  aspect-ratio: 16 / 10;
+  position: relative;
+  overflow: hidden;
+}
+
+.ok-skeleton-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  animation: ok-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes ok-shimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* Honor reduced-motion across the consolidated layer */
+@media (prefers-reduced-motion: reduce) {
+  .oktv-signals-card,
+  .ok-pulse-card,
+  .ok-platform-intro__card,
+  .ok-featured-creator,
+  .ok-recommended-next__item,
+  .ok-creator-page__featured-item {
+    transition: border-color var(--ok-transition);
+    will-change: auto;
+  }
+  .oktv-signals-card:hover,
+  .ok-pulse-card:hover,
+  .ok-platform-intro__card:hover,
+  .ok-featured-creator:hover,
+  .ok-recommended-next__item:hover,
+  .ok-creator-page__featured-item:hover {
+    transform: none;
+  }
+  .ok-skeleton-card::after { animation: none; }
+}
+
+/* Consistent empty-state voice across every feed */
+.ok-empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--ok-text-muted);
+}
+
+/* Section titles read identically everywhere */
+.ok-curated-section__title,
+.ok-creator-page__section-title,
+.ok-recommended-next__label {
+  font-feature-settings: "tnum";
+}
