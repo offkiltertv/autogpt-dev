@@ -109,7 +109,7 @@ class OKArcana_Signals
     public static function render_signals_shortcode($atts = array())
     {
         $atts = shortcode_atts(array(
-            'title'         => '⚡ Signals',
+            'title'         => 'Signals',
             'limit'         => 8,
             'categories'    => '',
             'show_creator'  => 1,
@@ -172,7 +172,7 @@ class OKArcana_Signals
             <?php if (!$q->have_posts()) : ?>
                 <div class="oktv-signals-empty">
                     <span class="oktv-signals-empty__icon" aria-hidden="true">⚡</span>
-                    <span class="oktv-signals-empty__label"><?php esc_html_e('No signal clips found yet.', 'offkilter-arcana'); ?></span>
+                    <span class="oktv-signals-empty__label"><?php esc_html_e('No Signals found yet.', 'offkilter-arcana'); ?></span>
                 </div>
             <?php else : ?>
                 <ul class="oktv-signals-list">
@@ -211,7 +211,7 @@ class OKArcana_Signals
             <?php if (!$q->have_posts()) : ?>
                 <div class="oktv-signals-empty">
                     <span class="oktv-signals-empty__icon" aria-hidden="true">⚡</span>
-                    <span class="oktv-signals-empty__label"><?php esc_html_e('No signal clips found yet.', 'offkilter-arcana'); ?></span>
+                    <span class="oktv-signals-empty__label"><?php esc_html_e('No Signals found yet.', 'offkilter-arcana'); ?></span>
                 </div>
             <?php else : ?>
                 <div class="oktv-signals-cards">
@@ -258,10 +258,11 @@ class OKArcana_Signals
     public static function render_creator_spotlight_shortcode($atts = array())
     {
         $atts = shortcode_atts(array(
-            'user_id'       => 0,
-            'show_stats'    => 1,
-            'show_latest'   => 3,
-            'wrapper_class' => 'ok-creator-spotlight',
+            'user_id'          => 0,
+            'show_stats'       => 1,
+            'show_latest'      => 3,
+            'show_discuss_cta' => 0,
+            'wrapper_class'    => 'ok-creator-spotlight',
         ), (array) $atts, 'oktv_creator_spotlight');
 
         $user_id = (int) $atts['user_id'];
@@ -305,7 +306,7 @@ class OKArcana_Signals
                 <p class="ok-creator-spotlight__handle">@<?php echo esc_html($handle); ?></p>
                 <?php if (!empty($atts['show_stats'])) : ?>
                     <div class="ok-creator-spotlight__stats">
-                        <span><strong><?php echo (int) $video_count; ?></strong> videos</span>
+                        <span><strong><?php echo (int) $video_count; ?></strong> clips</span>
                     </div>
                 <?php endif; ?>
                 <?php if (!empty($latest_posts)) : ?>
@@ -320,6 +321,11 @@ class OKArcana_Signals
                         </ul>
                     </div>
                 <?php endif; ?>
+                <?php if (!empty($atts['show_discuss_cta'])) : ?>
+                    <div class="ok-discuss-slot ok-creator-spotlight__discuss">
+                        <?php echo OKArcana_Editorial::render_discuss_cta(array('context' => 'creator', 'coming_soon' => '1')); ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
         <?php
@@ -329,7 +335,7 @@ class OKArcana_Signals
     public static function render_arcana_signals_shortcode($atts = array())
     {
         $atts = shortcode_atts(array(
-            'title'         => '🔮 Latest Signals',
+            'title'         => 'Latest Signals',
             'limit'         => 8,
             'categories'    => 'Arcana,Premonitions,Outcomes',
             'show_creator'  => 1,

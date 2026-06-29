@@ -59,9 +59,9 @@ class OKArcana_Admin
             <table class="widefat striped" style="max-width:760px;margin-bottom:1rem;">
                 <thead>
                     <tr>
-                        <th><?php esc_html_e('Imported Videos', 'offkilter-arcana'); ?></th>
+                        <th><?php esc_html_e('Imported Content', 'offkilter-arcana'); ?></th>
                         <th><?php esc_html_e('Signals (0-90s)', 'offkilter-arcana'); ?></th>
-                        <th><?php esc_html_e('Videos (90+s)', 'offkilter-arcana'); ?></th>
+                        <th><?php esc_html_e('Watch (90+s)', 'offkilter-arcana'); ?></th>
                         <th><?php esc_html_e('Unknown Duration', 'offkilter-arcana'); ?></th>
                     </tr>
                 </thead>
@@ -79,7 +79,7 @@ class OKArcana_Admin
                 <?php wp_nonce_field('okarcana_run_signals_backfill'); ?>
                 <input type="hidden" name="action" value="okarcana_run_signals_backfill" />
                 <button class="button button-secondary" type="submit"><?php esc_html_e('Run Signals Backfill Batch', 'offkilter-arcana'); ?></button>
-                <p class="description"><?php esc_html_e('Classifies imported vidmov_video posts that do not yet have Signals metadata.', 'offkilter-arcana'); ?></p>
+                <p class="description"><?php esc_html_e('Classifies imported content that does not yet have Signals metadata.', 'offkilter-arcana'); ?></p>
             </form>
 
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
@@ -130,7 +130,7 @@ class OKArcana_Admin
                         <td>
                             <label>
                                 <input type="checkbox" name="enable_signals_classification" value="1" <?php checked(!empty($settings['enable_signals_classification'])); ?> />
-                                <?php esc_html_e('Automatically classify imported vidmov_video content as Signal (0-90s) or Video (90+s).', 'offkilter-arcana'); ?>
+                                <?php esc_html_e('Automatically classify imported content as Signal (≤90s) or Watch (>90s).', 'offkilter-arcana'); ?>
                             </label>
                             <p>
                                 <label>
@@ -177,7 +177,7 @@ class OKArcana_Admin
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Post</th>
+                        <th>Content</th>
                         <th>Source</th>
                         <th>YouTube ID</th>
                         <th>State</th>

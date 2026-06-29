@@ -2020,3 +2020,334 @@ button:focus:not(:focus-visible) {
     padding: 0.75rem 1rem;
   }
 }
+
+
+/* ============================================================
+   SECTION N — DESTINATION PAGE TEMPLATES
+   Hero blocks and pillar navigation strip for Signals, Arcana,
+   Creators, Community, and Watch destination pages.
+   Operator: embed [oktv_destination_hero] and [oktv_pillar_strip]
+   via Elementor HTML widget at top of each destination page.
+   ============================================================ */
+
+.ok-destination-hero {
+  position: relative;
+  padding: 3rem 1.5rem 2.5rem;
+  text-align: center;
+  background: var(--ok-surface);
+  border-top: 3px solid var(--ok-accent);
+  border-radius: var(--ok-radius-lg);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+/* Pillar top-border accents */
+.ok-destination-hero--signals   { border-top-color: var(--ok-signal); }
+.ok-destination-hero--arcana    { border-top-color: var(--ok-arcana); }
+.ok-destination-hero--creators  { border-top-color: var(--ok-accent); }
+.ok-destination-hero--community { border-top-color: var(--ok-community); }
+.ok-destination-hero--watch     { border-top-color: var(--ok-accent); }
+
+/* Pillar icon */
+.ok-destination-hero__icon {
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--ok-accent);
+}
+
+.ok-destination-hero--signals   .ok-destination-hero__icon { color: var(--ok-signal); }
+.ok-destination-hero--arcana    .ok-destination-hero__icon { color: var(--ok-arcana); }
+.ok-destination-hero--community .ok-destination-hero__icon { color: var(--ok-community); }
+
+/* Headline */
+.ok-destination-hero__headline {
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  font-weight: 700;
+  color: var(--ok-text);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 0.6rem;
+}
+
+/* Sub-headline */
+.ok-destination-hero__sub {
+  font-size: 1rem;
+  color: var(--ok-text-muted);
+  line-height: 1.6;
+  max-width: 540px;
+  margin: 0 auto 1.5rem;
+}
+
+/* CTA button */
+.ok-destination-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.6em 1.5em;
+  border-radius: 100px;
+  font-family: var(--ok-font-sans);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: filter var(--ok-transition), box-shadow var(--ok-transition);
+  background: var(--ok-accent);
+  color: #fff;
+  border: none;
+}
+
+.ok-destination-hero--signals .ok-destination-hero__cta {
+  background: var(--ok-signal);
+  color: #07090D;
+}
+
+.ok-destination-hero--arcana .ok-destination-hero__cta {
+  background: var(--ok-arcana);
+  color: #fff;
+}
+
+.ok-destination-hero--community .ok-destination-hero__cta {
+  background: var(--ok-community);
+  color: #07090D;
+}
+
+.ok-destination-hero__cta:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Pillar navigation strip */
+.ok-pillar-strip {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding: 0.5rem 0;
+  align-items: center;
+}
+
+.ok-pillar-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.35em 0.9em;
+  border-radius: 100px;
+  font-family: var(--ok-font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1.5px solid var(--ok-border-accent);
+  color: var(--ok-text-muted);
+  background: transparent;
+  transition: border-color var(--ok-transition), color var(--ok-transition), background var(--ok-transition);
+}
+
+.ok-pillar-chip:hover,
+.ok-pillar-chip:focus-visible {
+  text-decoration: none;
+}
+
+.ok-pillar-chip--active {
+  pointer-events: none;
+  font-weight: 700;
+}
+
+.ok-pillar-chip--signals:hover,
+.ok-pillar-chip--signals.ok-pillar-chip--active {
+  border-color: var(--ok-signal);
+  color: var(--ok-signal);
+  background: rgba(0, 194, 255, 0.07);
+}
+
+.ok-pillar-chip--arcana:hover,
+.ok-pillar-chip--arcana.ok-pillar-chip--active {
+  border-color: var(--ok-arcana);
+  color: var(--ok-arcana);
+  background: rgba(139, 92, 246, 0.07);
+}
+
+.ok-pillar-chip--creators:hover,
+.ok-pillar-chip--creators.ok-pillar-chip--active {
+  border-color: var(--ok-accent);
+  color: var(--ok-accent);
+  background: rgba(229, 9, 20, 0.07);
+}
+
+.ok-pillar-chip--community:hover,
+.ok-pillar-chip--community.ok-pillar-chip--active {
+  border-color: var(--ok-community);
+  color: var(--ok-community);
+  background: rgba(34, 197, 94, 0.07);
+}
+
+@media (max-width: 768px) {
+  .ok-destination-hero {
+    padding: 2rem 1rem 1.75rem;
+  }
+
+  .ok-destination-hero__sub {
+    font-size: 0.9rem;
+  }
+
+  .ok-pillar-strip {
+    gap: 0.4rem;
+  }
+
+  .ok-pillar-chip {
+    font-size: 0.72rem;
+    padding: 0.3em 0.75em;
+  }
+}
+
+
+/* ============================================================
+   SECTION O — WATCH EXPERIENCE
+   Reduces VidMov metadata clutter on video detail pages.
+   Adds transcript placeholder and sticky video context sidebar.
+   ============================================================ */
+
+/* REMOVE: generic VidMov tag cloud below player — redundant with category pills */
+body.single-vidmov_video .beeteam368-video-tags-wrapper,
+body.single-vidmov_video .bt368-video-tags,
+body.single-vidmov_video .video-tags-wrap {
+  display: none;
+}
+
+/* REMOVE: social share block on video detail — already suppressed on homepage */
+body.single-vidmov_video .beeteam368-social-share-block,
+body.single-vidmov_video .heateor_sss_sharing_container,
+body.single-vidmov_video .sharedaddy {
+  display: none;
+}
+
+/* Transcript coming-soon placeholder */
+.ok-transcript-slot {
+  background: var(--ok-surface);
+  border: 1px dashed var(--ok-border-accent);
+  border-radius: var(--ok-radius);
+  padding: 1rem 1.25rem;
+  opacity: 0.6;
+  pointer-events: none;
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.ok-transcript-slot__icon {
+  font-size: 0.9rem;
+  color: var(--ok-text-faint);
+  flex-shrink: 0;
+}
+
+.ok-transcript-slot__label {
+  font-size: 0.82rem;
+  color: var(--ok-text-muted);
+  font-style: italic;
+}
+
+/* Video context sidebar — sticky creator panel */
+.ok-video-context {
+  background: var(--ok-surface);
+  border: 1px solid var(--ok-border);
+  border-radius: var(--ok-radius-lg);
+  padding: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .ok-video-context {
+    position: sticky;
+    top: 1.5rem;
+  }
+}
+
+.ok-video-context__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ok-text-faint);
+  margin-bottom: 0.75rem;
+}
+
+
+/* ============================================================
+   SECTION P — LEGACY NEUTRALIZATION
+   Suppresses stock VidMov and WordPress artifacts that have
+   no place in OFFKILTER's platform identity.
+   Each rule is annotated with its REMOVE/HIDE reason.
+   ============================================================ */
+
+/* REMOVE: VidMov download button — not an OFFKILTER feature */
+.beeteam368-download-btn,
+.bt368-download,
+.video-download-btn,
+[class*="beeteam368-download"] {
+  display: none !important;
+}
+
+/* REMOVE: VidMov report-video button — stock moderation UI */
+.beeteam368-report-video,
+.bt368-report,
+.video-report-btn {
+  display: none !important;
+}
+
+/* HIDE: VidMov notification bar — stock engagement bar, not used */
+#beeteam368-notification-bar,
+.beeteam368-notification-bar {
+  display: none !important;
+}
+
+/* NEUTRALIZE: VidMov breadcrumb — faint treatment instead of stock styling */
+.beeteam368-breadcrumb,
+.bt368-breadcrumb {
+  font-size: 0.78rem;
+  color: var(--ok-text-faint);
+}
+
+.beeteam368-breadcrumb a,
+.bt368-breadcrumb a {
+  color: var(--ok-text-faint);
+  text-decoration: none;
+  transition: color var(--ok-transition);
+}
+
+.beeteam368-breadcrumb a:hover,
+.bt368-breadcrumb a:hover {
+  color: var(--ok-text-muted);
+  text-decoration: none;
+}
+
+/* REMOVE: WordPress floated image/gallery chrome on video pages */
+body.single-vidmov_video .wp-caption,
+body.single-vidmov_video .gallery {
+  float: none;
+  max-width: 100%;
+}
+
+body.single-vidmov_video .alignleft,
+body.single-vidmov_video .alignright {
+  float: none;
+  display: block;
+  margin: 0.75rem auto;
+}
+
+/* NEUTRALIZE: VidMov view count icon — remove chrome, keep number */
+.beeteam368-view-count-wrap .beeteam368-count-icon {
+  display: none;
+}
+
+/* REMOVE: WooCommerce residual elements — not part of OFFKILTER */
+.woocommerce-cart-form,
+.woocommerce-checkout,
+.wc-block-cart,
+.wc-block-checkout {
+  display: none !important;
+}
