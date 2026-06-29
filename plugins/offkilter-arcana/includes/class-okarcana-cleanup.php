@@ -49,6 +49,9 @@ class OKArcana_Cleanup
         // Admin-only, opt-in page scan that reports the exact element rendering each
         // authoring label (the precise culprit-finder).
         add_action('template_redirect', array(__CLASS__, 'maybe_start_diag_buffer'));
+        // Render-path lockdown: on anonymous single-video views, buffer the page and
+        // remove the authoring/monetization blocks at the source (not CSS).
+        add_action('template_redirect', array(__CLASS__, 'maybe_start_lockdown_buffer'), 1);
     }
 
     /**
@@ -257,20 +260,94 @@ class OKArcana_Cleanup
             return $content;
         }
 
-        // Remove the smallest enclosing block (tr/li/p/div/label/fieldset) that
-        // contains a label. Non-greedy, single-level — safe within content scope.
+        return self::remove_label_blocks($content, $labels);
+    }
+
+    /**
+     * Remove the smallest enclosing block (tr/li/p/fieldset/label/div) that contains
+     * each label. Non-greedy and same-tag-bounded so it removes the nearest field
+     * row, not a large wrapper. A length cap skips any match that over-captures
+     * (safety valve against nuking a big container).
+     *
+     * @param string   $html
+     * @param string[] $labels
+     * @return string
+     */
+    private static function remove_label_blocks($html, $labels)
+    {
+        $max = (int) apply_filters('okarcana_guard_block_max_chars', 1500);
+
         foreach ($labels as $label) {
             $l = preg_quote($label, '#');
             foreach (array('tr', 'li', 'p', 'fieldset', 'label', 'div') as $tag) {
-                $content = preg_replace(
-                    '#<' . $tag . '\b[^>]*>(?:(?!</?' . $tag . '\b).)*?' . $l . '.*?</' . $tag . '>#is',
-                    '',
-                    $content
-                );
+                $pattern = '#<' . $tag . '\b[^>]*>(?:(?!</?' . $tag . '\b).)*?' . $l . '.*?</' . $tag . '>#is';
+                $html = preg_replace_callback($pattern, function ($m) use ($max) {
+                    // Skip if the captured block is suspiciously large (over-capture guard).
+                    return strlen($m[0]) > $max ? $m[0] : '';
+                }, $html);
             }
         }
 
-        return $content;
+        return $html;
+    }
+
+    /**
+     * Render-path lockdown. On anonymous / non-editor single-video views, buffer the
+     * page and strip the authoring/monetization blocks from the BODY at the source —
+     * regardless of which template/hook VidMov used to render them. This is the
+     * "proper fix, not a CSS hide": the markup is removed before it reaches the
+     * browser. Disable via the `okarcana_guard_buffer_enabled` filter if needed.
+     */
+    public static function maybe_start_lockdown_buffer()
+    {
+        if (is_admin() || !is_singular('vidmov_video')) {
+            return;
+        }
+        if (!self::is_public_view(get_queried_object_id())) {
+            return;
+        }
+        if (!apply_filters('okarcana_guard_buffer_enabled', true)) {
+            return;
+        }
+        ob_start(array(__CLASS__, 'lockdown_buffer'));
+    }
+
+    /**
+     * Buffer callback: strip authoring-label blocks from the <body> only (never the
+     * head/scripts), so the page chrome and assets are untouched.
+     *
+     * @param string $html
+     * @return string
+     */
+    public static function lockdown_buffer($html)
+    {
+        if (!is_string($html) || $html === '') {
+            return $html;
+        }
+
+        $labels = self::authoring_labels();
+
+        // Quick bail if no labels present anywhere.
+        $present = false;
+        foreach ($labels as $label) {
+            if (stripos($html, $label) !== false) {
+                $present = true;
+                break;
+            }
+        }
+        if (!$present) {
+            return $html;
+        }
+
+        // Operate on the <body> portion only.
+        $pos = stripos($html, '<body');
+        if ($pos === false) {
+            return self::remove_label_blocks($html, $labels);
+        }
+        $head = substr($html, 0, $pos);
+        $body = substr($html, $pos);
+
+        return $head . self::remove_label_blocks($body, $labels);
     }
 
     /**
