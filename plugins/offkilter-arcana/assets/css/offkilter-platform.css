@@ -2351,3 +2351,363 @@ body.single-vidmov_video .alignright {
 .wc-block-checkout {
   display: none !important;
 }
+
+
+/* ============================================================
+   SECTION Q — DISCOVERY UX
+   Platform intro grid and editorial curation section.
+   Powers [oktv_platform_intro] and [oktv_curated_section].
+   ============================================================ */
+
+/* Platform intro — "What is OFFKILTER?" 3-pillar grid */
+.ok-platform-intro {
+  background: var(--ok-surface);
+  border-radius: var(--ok-radius-lg);
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  margin: 1rem 0 1.5rem;
+}
+
+.ok-platform-intro__headline {
+  font-size: clamp(1.2rem, 4vw, 1.7rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ok-text);
+  margin: 0 0 0.4rem;
+  line-height: 1.25;
+}
+
+.ok-platform-intro__sub {
+  font-size: 0.9rem;
+  color: var(--ok-text-muted);
+  margin: 0 auto 1.5rem;
+  max-width: 480px;
+}
+
+.ok-platform-intro__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  text-align: left;
+}
+
+/* Card */
+.ok-platform-intro__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: var(--ok-surface-raised);
+  border: 1px solid var(--ok-border);
+  border-radius: var(--ok-radius);
+  padding: 1rem 1.1rem;
+  text-decoration: none;
+  transition: border-color var(--ok-transition), background var(--ok-transition);
+}
+
+.ok-platform-intro__card:hover {
+  border-color: var(--ok-border-accent);
+  background: #1a2030;
+  text-decoration: none;
+}
+
+.ok-platform-intro__card-icon {
+  font-size: 1.25rem;
+  color: var(--ok-accent);
+  margin-bottom: 0.15rem;
+}
+
+.ok-platform-intro__card--signals .ok-platform-intro__card-icon { color: var(--ok-signal); }
+.ok-platform-intro__card--arcana  .ok-platform-intro__card-icon { color: var(--ok-arcana); }
+.ok-platform-intro__card--community .ok-platform-intro__card-icon { color: var(--ok-community); }
+
+.ok-platform-intro__card-name {
+  font-family: var(--ok-font-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ok-text);
+}
+
+.ok-platform-intro__card-desc {
+  font-size: 0.8rem;
+  color: var(--ok-text-muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .ok-platform-intro {
+    padding: 1.75rem 1rem;
+  }
+
+  .ok-platform-intro__grid {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .ok-platform-intro__card {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .ok-platform-intro__card-icon {
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+}
+
+/* Curated section — editorial wrapper */
+.ok-curated-section {
+  margin: 1.5rem 0;
+}
+
+.ok-curated-section__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+/* Accent bar before header */
+.ok-curated-section__header::before {
+  content: "";
+  display: block;
+  width: 3px;
+  height: 1.1rem;
+  border-radius: 2px;
+  background: var(--ok-accent);
+  flex-shrink: 0;
+}
+
+.ok-curated-section--signals .ok-curated-section__header::before { background: var(--ok-signal); }
+.ok-curated-section--arcana  .ok-curated-section__header::before { background: var(--ok-arcana); }
+.ok-curated-section--community .ok-curated-section__header::before { background: var(--ok-community); }
+
+.ok-curated-section__title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ok-text);
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* Editorial label badge */
+.ok-curated-section__label {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.15em 0.55em;
+  border-radius: 100px;
+  background: rgba(229, 9, 20, 0.1);
+  color: var(--ok-accent);
+  white-space: nowrap;
+}
+
+.ok-curated-section--signals .ok-curated-section__label {
+  background: rgba(0, 194, 255, 0.1);
+  color: var(--ok-signal);
+}
+
+.ok-curated-section--arcana .ok-curated-section__label {
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--ok-arcana);
+}
+
+.ok-curated-section--community .ok-curated-section__label {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--ok-community);
+}
+
+
+/* ============================================================
+   SECTION R — CREATOR PAGE
+   Full creator page layout for [oktv_creator_page] shortcode.
+   Larger than the compact .ok-creator-spotlight; designed for
+   embedding on dedicated creator or channel pages.
+   ============================================================ */
+
+.ok-creator-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Creator header — avatar + identity */
+.ok-creator-page__header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ok-creator-page__avatar img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--ok-border-accent);
+  display: block;
+}
+
+.ok-creator-page__name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ok-text);
+  margin: 0 0 0.15rem;
+  line-height: 1.25;
+}
+
+.ok-creator-page__handle {
+  font-size: 0.82rem;
+  color: var(--ok-text-muted);
+  margin: 0 0 0.25rem;
+}
+
+.ok-creator-page__stat {
+  font-size: 0.82rem;
+  color: var(--ok-text-muted);
+  margin: 0;
+}
+
+.ok-creator-page__stat strong {
+  color: var(--ok-text);
+  font-weight: 700;
+}
+
+/* Section wrapper */
+.ok-creator-page__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Section label */
+.ok-creator-page__section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ok-text-faint);
+  margin: 0;
+}
+
+/* Featured content — horizontal scroll row */
+.ok-creator-page__featured {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ok-border) transparent;
+}
+
+.ok-creator-page__featured-item {
+  flex-shrink: 0;
+  width: 180px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.ok-creator-page__featured-item img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: var(--ok-radius-sm);
+  border: 1px solid var(--ok-border);
+  display: block;
+}
+
+.ok-creator-page__featured-title {
+  font-size: 0.78rem;
+  color: var(--ok-text-muted);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ok-creator-page__featured-item:hover .ok-creator-page__featured-title {
+  color: var(--ok-text);
+  text-decoration: none;
+}
+
+/* Playlist — numbered ordered list */
+.ok-creator-page__playlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ok-creator-page__playlist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--ok-border);
+  font-size: 0.875rem;
+}
+
+.ok-creator-page__playlist-item:last-child {
+  border-bottom: none;
+}
+
+.ok-creator-page__playlist-num {
+  color: var(--ok-text-faint);
+  font-size: 0.72rem;
+  min-width: 1.5rem;
+  flex-shrink: 0;
+  font-feature-settings: "tnum";
+}
+
+.ok-creator-page__playlist-item a {
+  color: var(--ok-text-muted);
+  text-decoration: none;
+  flex: 1;
+  min-width: 0;
+  transition: color var(--ok-transition);
+}
+
+.ok-creator-page__playlist-item a:hover {
+  color: var(--ok-text);
+  text-decoration: none;
+}
+
+/* Related creators row */
+.ok-creator-page__related {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.ok-creator-page__related .ok-creator-spotlight {
+  flex: 1;
+  min-width: 200px;
+  max-width: 280px;
+  background: var(--ok-surface);
+  border: 1px solid var(--ok-border);
+  border-radius: var(--ok-radius);
+  padding: 0.85rem;
+}
+
+@media (max-width: 768px) {
+  .ok-creator-page__header {
+    gap: 0.75rem;
+  }
+
+  .ok-creator-page__avatar img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .ok-creator-page__related {
+    flex-direction: column;
+  }
+
+  .ok-creator-page__related .ok-creator-spotlight {
+    max-width: 100%;
+  }
+}
