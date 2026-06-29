@@ -3944,3 +3944,75 @@ body.single-vidmov_video table.compat-attachment-fields {
   margin-top: 0.5rem;
   font-size: 0.72rem;
 }
+
+
+/* ============================================================
+   SECTION AA — v2.4 CONSISTENCY
+   Pulse archive wrapper, profile-completeness meter, and final
+   artifact normalization so every page reads as OFFKILTER.
+   ============================================================ */
+
+/* Pulse archive (routed plugin template) sits in the site chrome cleanly */
+.ok-pulse-archive-main {
+  background: var(--ok-bg);
+}
+
+.ok-pulse-archive-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+/* Profile completeness meter (owner-only) */
+.ok-profile-meter__bar {
+  height: 6px;
+  border-radius: 100px;
+  background: var(--ok-border);
+  overflow: hidden;
+  margin: 0.25rem 0 0.75rem;
+}
+
+.ok-profile-meter__bar span {
+  display: block;
+  height: 100%;
+  background: var(--ok-pulse);
+  border-radius: 100px;
+  transition: width var(--ok-transition);
+}
+
+.ok-profile-meter__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+
+.ok-profile-meter__list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--ok-text-muted);
+}
+
+.ok-profile-meter__list li.is-done {
+  color: var(--ok-text);
+}
+
+.ok-profile-meter__list li.is-done i {
+  color: var(--ok-community);
+}
+
+.ok-profile-meter__list li.is-todo i {
+  color: var(--ok-text-faint);
+}
+
+/* Final artifact normalization: keep VidMov archive chrome from bleeding into the
+   routed Pulse archive (which provides its own destination layout). */
+.ok-pulse-archive-main .beeteam368-breadcrumb,
+.ok-pulse-archive-main .bt368-breadcrumb,
+.ok-pulse-archive-main .archive-title {
+  display: none !important;
+}

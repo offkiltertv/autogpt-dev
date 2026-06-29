@@ -9,8 +9,44 @@ class OKArcana_Editorial
     {
         add_filter('body_class', array(__CLASS__, 'add_auth_body_class'));
         add_shortcode('oktv_discuss_cta', array(__CLASS__, 'render_discuss_cta'));
+        add_shortcode('oktv_discuss_slot', array(__CLASS__, 'render_discuss_slot'));
         add_shortcode('oktv_content_explainer', array(__CLASS__, 'render_content_explainer'));
         add_shortcode('oktv_next_action', array(__CLASS__, 'render_next_action'));
+    }
+
+    /**
+     * [oktv_discuss_slot]
+     * One consistent integration point reserved for SidebarChat. Establishes the
+     * three named hooks the platform will activate — Discuss, Creator Community, and
+     * Live Discussion — as coming-soon slots today, so placement is uniform across
+     * Pulse, creator pages, and content. No Stream implementation yet: flip
+     * coming_soon to live (or wire the provider) when SidebarChat ships.
+     *
+     * Attributes:
+     *   type   discuss | creator_community | live   (default: discuss)
+     *   href   optional override target
+     */
+    public static function render_discuss_slot($atts)
+    {
+        $atts = shortcode_atts(array(
+            'type' => 'discuss',
+            'href' => '',
+        ), $atts, 'oktv_discuss_slot');
+
+        $map = array(
+            'discuss'           => array('label' => 'Discuss',            'context' => 'default', 'href' => '/community/'),
+            'creator_community' => array('label' => 'Creator Community',  'context' => 'creator', 'href' => '/community/'),
+            'live'              => array('label' => 'Live Discussion',    'context' => 'signals', 'href' => '/community/'),
+        );
+        $type = isset($map[$atts['type']]) ? $atts['type'] : 'discuss';
+        $cfg  = $map[$type];
+
+        return self::render_discuss_cta(array(
+            'context'     => $cfg['context'],
+            'label'       => $cfg['label'],
+            'href'        => $atts['href'] ? $atts['href'] : $cfg['href'],
+            'coming_soon' => '1',
+        ));
     }
 
     /**
