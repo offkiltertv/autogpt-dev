@@ -75,7 +75,7 @@ class OKArcana_Destinations
             'watch'     => array(
                 'icon'      => 'fas fa-play-circle',
                 'headline'  => 'Watch OFFKILTER.',
-                'sub'       => 'Arcana readings, Signals clips, creator content.',
+                'sub'       => 'Signals. Arcana. Pulse. Every creator worth watching.',
                 'cta_label' => 'Start Watching',
                 'cta_href'  => '/',
             ),
