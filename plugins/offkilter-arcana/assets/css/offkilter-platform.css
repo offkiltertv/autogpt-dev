@@ -4460,3 +4460,97 @@ body.single-vidmov_video table.compat-attachment-fields {
     box-shadow: 0 0 0 3px rgba(45, 224, 192, 0.22);
   }
 }
+
+/* ============================================================
+   SECTION AD — v2.7 EMPTY STATE UNIFICATION + CREATOR TRUST
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   AD-1: Unified empty state — icon + label layout.
+   Replaces bare <p> pattern (Pulse, Curated) and the
+   oktv-signals-empty emoji-icon variant (Signals list/cards).
+   Section AB and AC already add border/radius to .ok-empty-state;
+   these rules add the icon/label children.
+   ---------------------------------------------------------- */
+.ok-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+.ok-empty-state__icon {
+  font-size: 1.5rem;
+  color: var(--ok-text-faint);
+  line-height: 1;
+}
+.ok-empty-state__label {
+  font-size: 0.82rem;
+  color: var(--ok-text-muted);
+}
+
+/* ----------------------------------------------------------
+   AD-2: Creator page banner.
+   4:1 aspect on desktop, 3:1 on mobile.
+   Background falls back to default-channel-banner.svg.
+   ---------------------------------------------------------- */
+.ok-creator-page__banner {
+  width: 100%;
+  aspect-ratio: 4 / 1;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--ok-surface-raised);
+  border-radius: var(--ok-radius) var(--ok-radius) 0 0;
+  overflow: hidden;
+}
+@media (max-width: 768px) {
+  .ok-creator-page__banner {
+    aspect-ratio: 3 / 1;
+    border-radius: 0;
+  }
+}
+
+/* ----------------------------------------------------------
+   AD-3: Creator handle — @username below display name.
+   ---------------------------------------------------------- */
+.ok-creator-page__handle {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--ok-text-faint);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  margin-top: 0.15rem;
+}
+
+/* ----------------------------------------------------------
+   AD-4: Custom avatar image sizing.
+   get_avatar() returns <img> with inline attrs; custom
+   avatar uses .ok-creator-page__avatar-img instead.
+   ---------------------------------------------------------- */
+.ok-creator-page__avatar-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ----------------------------------------------------------
+   AD-5: Signals card creator name — link styling.
+   Inherits card footer muted color; reveals on hover.
+   ---------------------------------------------------------- */
+.oktv-signals-card__creator a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--ok-transition);
+}
+.oktv-signals-card__creator a:hover,
+.oktv-signals-card__creator a:focus-visible {
+  color: var(--ok-text);
+  text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oktv-signals-card__creator a {
+    transition: none;
+  }
+}
