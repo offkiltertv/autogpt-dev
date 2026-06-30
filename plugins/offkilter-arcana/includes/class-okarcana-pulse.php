@@ -363,7 +363,10 @@ class OKArcana_Pulse
             <?php endif; ?>
 
             <?php if (!$q->have_posts()) : ?>
-                <div class="ok-empty-state"><p><?php esc_html_e('No Pulse yet.', 'offkilter-arcana'); ?></p></div>
+                <div class="ok-empty-state">
+                    <span class="ok-empty-state__icon" aria-hidden="true"><i class="fas fa-wave-square"></i></span>
+                    <span class="ok-empty-state__label"><?php esc_html_e('No Pulse yet.', 'offkilter-arcana'); ?></span>
+                </div>
             <?php elseif ($layout === 'cards') : ?>
                 <div class="oktv-signals-cards">
                     <?php while ($q->have_posts()) : $q->the_post(); echo self::pulse_card(get_the_ID()); endwhile; ?>

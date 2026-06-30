@@ -259,7 +259,8 @@ class OKArcana_Discovery
 
             <?php if (!$q->have_posts()) : ?>
                 <div class="ok-empty-state">
-                    <p><?php esc_html_e('Nothing here yet.', 'offkilter-arcana'); ?></p>
+                    <span class="ok-empty-state__icon" aria-hidden="true"><i class="fas fa-layer-group"></i></span>
+                    <span class="ok-empty-state__label"><?php esc_html_e('Nothing here yet.', 'offkilter-arcana'); ?></span>
                 </div>
             <?php elseif ($layout === 'cards') : ?>
                 <div class="oktv-signals-cards">

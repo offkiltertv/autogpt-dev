@@ -170,9 +170,9 @@ class OKArcana_Signals
         <section class="<?php echo esc_attr((string) $atts['wrapper_class']); ?>" aria-label="<?php echo esc_attr((string) $atts['title']); ?>">
             <h3><?php echo esc_html((string) $atts['title']); ?></h3>
             <?php if (!$q->have_posts()) : ?>
-                <div class="oktv-signals-empty">
-                    <span class="oktv-signals-empty__icon" aria-hidden="true">⚡</span>
-                    <span class="oktv-signals-empty__label"><?php esc_html_e('No Signals found yet.', 'offkilter-arcana'); ?></span>
+                <div class="ok-empty-state">
+                    <span class="ok-empty-state__icon" aria-hidden="true"><i class="fas fa-bolt"></i></span>
+                    <span class="ok-empty-state__label"><?php esc_html_e('No Signals found yet.', 'offkilter-arcana'); ?></span>
                 </div>
             <?php else : ?>
                 <ul class="oktv-signals-list">
@@ -210,9 +210,9 @@ class OKArcana_Signals
         <section class="<?php echo esc_attr((string) $atts['wrapper_class']); ?>" aria-label="<?php echo esc_attr((string) $atts['title']); ?>">
             <h3><?php echo esc_html((string) $atts['title']); ?></h3>
             <?php if (!$q->have_posts()) : ?>
-                <div class="oktv-signals-empty">
-                    <span class="oktv-signals-empty__icon" aria-hidden="true">⚡</span>
-                    <span class="oktv-signals-empty__label"><?php esc_html_e('No Signals found yet.', 'offkilter-arcana'); ?></span>
+                <div class="ok-empty-state">
+                    <span class="ok-empty-state__icon" aria-hidden="true"><i class="fas fa-bolt"></i></span>
+                    <span class="ok-empty-state__label"><?php esc_html_e('No Signals found yet.', 'offkilter-arcana'); ?></span>
                 </div>
             <?php else : ?>
                 <div class="oktv-signals-cards">
