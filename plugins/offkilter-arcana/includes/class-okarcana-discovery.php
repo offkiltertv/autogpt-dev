@@ -82,7 +82,7 @@ class OKArcana_Discovery
             'signals'   => array(
                 'icon'  => 'fas fa-bolt',
                 'name'  => 'Signals',
-                'desc'  => 'Fast clips. Under 90 seconds.',
+                'desc'  => 'The standout clip worth your attention. Under 90 seconds.',
                 'href'  => '/video-category/signals/',
             ),
             'arcana'    => array(
@@ -100,7 +100,7 @@ class OKArcana_Discovery
             'community' => array(
                 'icon'  => 'fas fa-comments',
                 'name'  => 'Community',
-                'desc'  => 'Join the conversation.',
+                'desc'  => 'Where the conversation lives.',
                 'href'  => '/community/',
             ),
             'watch'     => array(
@@ -756,7 +756,9 @@ class OKArcana_Discovery
             <?php endif; ?>
 
             <?php // Featured Pulse — editorial, leads the destination. ?>
-            <?php if (!empty($atts['show_pulse']) && class_exists('OKArcana_Pulse')) : ?>
+            <?php
+            $pulse_post_count = wp_count_posts('pulse_item');
+            if (!empty($atts['show_pulse']) && class_exists('OKArcana_Pulse') && $pulse_post_count && (int) $pulse_post_count->publish > 0) : ?>
             <div class="ok-discover-section">
                 <?php
                 echo OKArcana_Pulse::render_pulse_feed_shortcode(array(
