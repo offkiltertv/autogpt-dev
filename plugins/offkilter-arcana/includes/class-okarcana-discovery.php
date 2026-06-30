@@ -31,7 +31,7 @@ class OKArcana_Discovery
     public static function render_platform_story($atts)
     {
         $atts = shortcode_atts(array(
-            'lede'          => 'OFFKILTER is a creator discovery network.',
+            'lede'          => 'OFFKILTER surfaces the content worth returning to.',
             'wrapper_class' => '',
         ), $atts, 'oktv_platform_story');
 
@@ -126,9 +126,9 @@ class OKArcana_Discovery
     public static function render_platform_intro($atts)
     {
         $atts = shortcode_atts(array(
-            'headline'      => 'OFFKILTER is a discovery platform.',
-            'sub'           => 'Three things worth understanding.',
-            'pillars'       => 'signals,arcana,creators',
+            'headline'      => 'What makes OFFKILTER worth returning to.',
+            'sub'           => 'Five distinctive pillars. One platform.',
+            'pillars'       => 'pulse,signals,arcana,creators,community',
             'wrapper_class' => '',
         ), $atts, 'oktv_platform_intro');
 
