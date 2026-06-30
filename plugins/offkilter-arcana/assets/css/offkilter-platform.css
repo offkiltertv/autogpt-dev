@@ -4138,3 +4138,325 @@ body.single-vidmov_video table.compat-attachment-fields {
 .ok-recommended-next__label {
   font-feature-settings: "tnum";
 }
+
+/* ============================================================
+   SECTION AC — v2.6 PREMIUM UX + CROSS-DEVICE POLISH
+   Footer multi-column layout, btn/pill pulse variants, empty-state
+   visual bridge, tablet breakpoint (769–1023px), narrow-screen pillar
+   strip scroll, foldable (320px) rules, pillar chip lift,
+   platform-intro pillar-aware focus rings.
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   AC-1: Footer structural classes — new elements added in v2.6.
+   Mobile default: inner stacks as a single column.
+   ---------------------------------------------------------- */
+.ok-footer-brand__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.ok-footer-brand__col-heading {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ok-text-faint);
+  margin: 0 0 0.75rem;
+}
+
+.ok-footer-brand__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-top: 1.25rem;
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--ok-border);
+}
+
+.ok-footer-brand__legal a {
+  color: var(--ok-text-faint);
+  text-decoration: none;
+  transition: color var(--ok-transition);
+}
+.ok-footer-brand__legal a:hover {
+  color: var(--ok-text-muted);
+}
+
+.ok-footer-brand__version {
+  font-family: var(--ok-font-mono);
+  font-size: 0.7rem;
+  color: var(--ok-text-faint);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.ok-footer-brand__social {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  align-items: center;
+}
+
+.ok-footer-brand__social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 0.5em;
+  border-radius: var(--ok-radius-sm);
+  border: 1.5px solid var(--ok-border-accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ok-text-muted);
+  text-decoration: none;
+  transition: border-color var(--ok-transition), color var(--ok-transition);
+}
+.ok-footer-brand__social-link:hover,
+.ok-footer-brand__social-link:focus-visible {
+  border-color: var(--ok-signal);
+  color: var(--ok-signal);
+  text-decoration: none;
+}
+
+/* Mobile: footer bottom stacks and centres */
+@media (max-width: 768px) {
+  .ok-footer-brand__bottom {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.4rem;
+  }
+}
+
+/* ----------------------------------------------------------
+   AC-2: Footer tablet (2-col) and desktop (3-col) grid.
+   Overrides the mobile flex-column at wider breakpoints.
+   ---------------------------------------------------------- */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .ok-footer-brand {
+    text-align: left;
+    padding: 2.5rem 2rem;
+  }
+  .ok-footer-brand__inner {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+  .ok-footer-brand__col--meta {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .ok-footer-brand__nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.45rem;
+    margin: 0;
+    justify-content: flex-start;
+  }
+  .ok-footer-brand__nav a {
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+    font-size: 0.875rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ok-footer-brand {
+    text-align: left;
+    padding: 3.5rem 2.5rem 2rem;
+  }
+  .ok-footer-brand__inner {
+    display: grid;
+    grid-template-columns: 1.75fr 1fr 1fr;
+    gap: 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    align-items: start;
+  }
+  .ok-footer-brand__nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.45rem;
+    margin: 0;
+    justify-content: flex-start;
+  }
+  .ok-footer-brand__nav a {
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+    font-size: 0.875rem;
+  }
+  .ok-footer-brand__bottom {
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ----------------------------------------------------------
+   AC-3: .ok-btn--pulse — teal CTA variant.
+   Dark text (#07090D) on teal passes WCAG AA.
+   Companion to --primary (red), --signal (blue), --arcana (purple).
+   ---------------------------------------------------------- */
+.ok-btn--pulse {
+  background: var(--ok-pulse);
+  color: var(--ok-bg);
+  font-weight: 700;
+}
+.ok-btn--pulse:hover,
+.ok-btn--pulse:focus-visible {
+  filter: brightness(1.1);
+  color: var(--ok-bg);
+  text-decoration: none;
+  box-shadow: 0 0 0 3px rgba(45, 224, 192, 0.22);
+  transform: translateY(-1px);
+}
+
+/* .ok-pill--pulse — inline pill badge for Pulse-accented labels */
+.ok-pill--pulse {
+  background: rgba(45, 224, 192, 0.12);
+  color: var(--ok-pulse);
+  border: 1px solid rgba(45, 224, 192, 0.25);
+}
+
+/* ----------------------------------------------------------
+   AC-4: Empty state visual bridge (CSS-only until v2.7 PHP fix).
+   Adds border + radius treatment to .ok-empty-state so it
+   matches the visual density of .oktv-signals-empty.
+   Full PHP fix (icon + label markup) is tracked in visual debt #1.
+   ---------------------------------------------------------- */
+.ok-empty-state {
+  border: 1px dashed var(--ok-border);
+  border-radius: var(--ok-radius);
+  color: var(--ok-text-faint);
+}
+.ok-empty-state p {
+  font-size: 0.82rem;
+  color: var(--ok-text-muted);
+  margin: 0;
+}
+
+/* ----------------------------------------------------------
+   AC-5: Creators pillar icon — explicit accent color.
+   Was implicitly inheriting --ok-accent (correct), now documented.
+   ---------------------------------------------------------- */
+.ok-platform-intro__card--creators .ok-platform-intro__card-icon {
+  color: var(--ok-accent);
+}
+
+/* ----------------------------------------------------------
+   AC-6: Tablet breakpoint — 769px to 1023px.
+   Previously no rules in this range. Closes five layout gaps:
+   card grids, platform intro grid, destination hero padding,
+   pulse destination hero, and pillar strip alignment.
+   ---------------------------------------------------------- */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .oktv-signals-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .ok-platform-intro__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .ok-destination-hero {
+    padding: 2.25rem 1.5rem 2rem;
+  }
+  .ok-pulse-destination__hero {
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2rem 2rem 0.75rem;
+  }
+  .ok-pillar-strip {
+    justify-content: center;
+  }
+}
+
+/* ----------------------------------------------------------
+   AC-7: Narrow phone / ≤480px — pillar strip horizontal scroll.
+   Prevents 5 chips from wrapping to a second row on small phones.
+   ---------------------------------------------------------- */
+@media (max-width: 480px) {
+  .ok-pillar-strip {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.4rem;
+  }
+  .ok-pillar-strip::-webkit-scrollbar {
+    display: none;
+  }
+  .ok-pillar-chip {
+    flex-shrink: 0;
+  }
+}
+
+/* ----------------------------------------------------------
+   AC-8: Foldable / 320px minimum.
+   Supports Samsung Galaxy Fold inner display (~280px) and
+   similar ultra-narrow form factors. Documented minimum: 320px.
+   ---------------------------------------------------------- */
+@media (max-width: 320px) {
+  .ok-pillar-chip {
+    font-size: 0.66rem;
+    padding: 0.22em 0.55em;
+    gap: 0.25em;
+  }
+  .ok-footer-brand__mark {
+    font-size: 1.1rem;
+  }
+  .ok-platform-intro__card {
+    padding: 0.7rem;
+  }
+  .ok-platform-intro__card-icon {
+    font-size: 1rem;
+  }
+}
+
+/* ----------------------------------------------------------
+   AC-9: Pillar chip hover lift.
+   Consistent with the card + button translateY(-2px) lift language
+   established in Section AB.
+   ---------------------------------------------------------- */
+.ok-pillar-chip:hover,
+.ok-pillar-chip:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+}
+
+/* ----------------------------------------------------------
+   AC-10: Platform intro pillar-aware focus rings.
+   Global *:focus-visible uses --ok-signal for all elements.
+   These overrides match the focus ring to each card's accent color.
+   ---------------------------------------------------------- */
+.ok-platform-intro__card--pulse:focus-visible     { outline-color: var(--ok-pulse); }
+.ok-platform-intro__card--signals:focus-visible   { outline-color: var(--ok-signal); }
+.ok-platform-intro__card--arcana:focus-visible    { outline-color: var(--ok-arcana); }
+.ok-platform-intro__card--creators:focus-visible  { outline-color: var(--ok-accent); }
+.ok-platform-intro__card--community:focus-visible { outline-color: var(--ok-community); }
+
+/* ----------------------------------------------------------
+   AC-11: Reduced motion guard for all AC interactions.
+   ---------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .ok-pillar-chip:hover,
+  .ok-pillar-chip:focus-visible {
+    transform: none;
+    box-shadow: none;
+  }
+  .ok-btn--pulse:hover,
+  .ok-btn--pulse:focus-visible {
+    transform: none;
+    filter: none;
+    box-shadow: 0 0 0 3px rgba(45, 224, 192, 0.22);
+  }
+}
