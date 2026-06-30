@@ -52,6 +52,11 @@ class OKArcana_Scheduler
 
     public static function run_scheduler()
     {
+        // Operator kill switch: add_filter('okarcana_enable_scheduler', '__return_false').
+        if (!apply_filters('okarcana_enable_scheduler', true)) {
+            return;
+        }
+
         global $wpdb;
 
         $table = OKArcana_DB::table_name();
@@ -61,8 +66,27 @@ class OKArcana_Scheduler
             return;
         }
 
+        $deprecated_terms = class_exists('OKArcana_Settings') ? OKArcana_Settings::deprecated_creator_term_ids() : array();
+
         // Promote imported records into queued before time-slot assignment.
         foreach ($imported as $row) {
+            // Hold (do not auto-publish) any post tagged to a deprecated creator
+            // term while the upstream campaign mis-tagging is being corrected.
+            if (!empty($deprecated_terms) && self::post_has_deprecated_term((int) $row['post_id'], $deprecated_terms)) {
+                $wpdb->update(
+                    $table,
+                    array(
+                        'queue_state' => 'held',
+                        'updated_at' => current_time('mysql'),
+                    ),
+                    array('id' => (int) $row['id']),
+                    array('%s', '%s'),
+                    array('%d')
+                );
+                update_post_meta((int) $row['post_id'], '_arcana_queue_state', 'held');
+                continue;
+            }
+
             $wpdb->update(
                 $table,
                 array(
@@ -148,6 +172,29 @@ class OKArcana_Scheduler
             array('%s', '%s', '%s'),
             array('%d')
         );
+    }
+
+    /**
+     * Does the post carry any of the given deprecated creator term IDs?
+     * Creator identity lives in the vidmov_video_category taxonomy.
+     *
+     * @param int   $post_id
+     * @param int[] $term_ids
+     * @return bool
+     */
+    private static function post_has_deprecated_term($post_id, $term_ids)
+    {
+        $taxonomy = apply_filters('okarcana_creator_taxonomy', 'vidmov_video_category');
+        if (!taxonomy_exists($taxonomy)) {
+            return false;
+        }
+
+        $terms = wp_get_post_terms($post_id, $taxonomy, array('fields' => 'ids'));
+        if (is_wp_error($terms) || empty($terms)) {
+            return false;
+        }
+
+        return (bool) array_intersect(array_map('intval', $terms), array_map('intval', $term_ids));
     }
 
     private static function build_available_slots($days, $needed)
