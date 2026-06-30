@@ -561,7 +561,7 @@ class OKArcana_Discovery
                     'meta_query'     => array(
                         array(
                             'key'     => OKArcana_Signals::META_CLASS,
-                            'value'   => OKArcana_Signals::CLASS_WATCH,
+                            'value'   => OKArcana_Signals::CLASS_VIDEO,
                             'compare' => '=',
                         ),
                     ),
