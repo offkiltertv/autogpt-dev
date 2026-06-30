@@ -805,15 +805,26 @@ class OKArcana_Discovery
                 $creator_ids   = array_filter(array_map('absint', explode(',', (string) $atts['creator_ids'])));
                 $creators_limit = max(1, min(8, (int) $atts['creators_limit']));
 
-                // When no IDs given, fetch creators with published vidmov_video content
+                // When no IDs given, prefer the curated launch lineup; otherwise
+                // fall back to top creators by post count, excluding deprecated ones.
                 if (empty($creator_ids)) {
-                    $creator_users = get_users(array(
-                        'has_published_posts' => array('vidmov_video'),
-                        'number'             => $creators_limit,
-                        'orderby'            => 'post_count',
-                        'order'              => 'DESC',
-                    ));
-                    $creator_ids = wp_list_pluck($creator_users, 'ID');
+                    $featured = class_exists('OKArcana_Settings') ? OKArcana_Settings::featured_creator_ids() : array();
+                    if (!empty($featured)) {
+                        $creator_ids = array_slice($featured, 0, $creators_limit);
+                    } else {
+                        $query_args = array(
+                            'has_published_posts' => array('vidmov_video'),
+                            'number'             => $creators_limit,
+                            'orderby'            => 'post_count',
+                            'order'              => 'DESC',
+                        );
+                        $excluded = class_exists('OKArcana_Settings') ? OKArcana_Settings::deprecated_creator_user_ids() : array();
+                        if (!empty($excluded)) {
+                            $query_args['exclude'] = $excluded;
+                        }
+                        $creator_users = get_users($query_args);
+                        $creator_ids = wp_list_pluck($creator_users, 'ID');
+                    }
                 }
             ?>
                 <div class="ok-discover-section">

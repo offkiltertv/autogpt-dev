@@ -517,16 +517,28 @@ class OKArcana_Pulse
                     </header>
                     <div class="ok-discover-creators-row">
                         <?php
-                        $creators = get_users(array(
-                            'has_published_posts' => array(self::POST_TYPE),
-                            'number'              => 3,
-                            'orderby'             => 'post_count',
-                            'order'               => 'DESC',
-                        ));
-                        if (!empty($creators) && class_exists('OKArcana_Signals')) {
-                            foreach ($creators as $u) {
+                        // Prefer the curated launch lineup; otherwise top creators
+                        // by post count, excluding deprecated ones.
+                        $featured_pulse = class_exists('OKArcana_Settings') ? OKArcana_Settings::featured_creator_ids() : array();
+                        if (!empty($featured_pulse)) {
+                            $creator_ids = array_slice($featured_pulse, 0, 3);
+                        } else {
+                            $pulse_query = array(
+                                'has_published_posts' => array(self::POST_TYPE),
+                                'number'              => 3,
+                                'orderby'             => 'post_count',
+                                'order'               => 'DESC',
+                            );
+                            $excluded_pulse = class_exists('OKArcana_Settings') ? OKArcana_Settings::deprecated_creator_user_ids() : array();
+                            if (!empty($excluded_pulse)) {
+                                $pulse_query['exclude'] = $excluded_pulse;
+                            }
+                            $creator_ids = wp_list_pluck(get_users($pulse_query), 'ID');
+                        }
+                        if (!empty($creator_ids) && class_exists('OKArcana_Signals')) {
+                            foreach ($creator_ids as $cid) {
                                 echo OKArcana_Signals::render_creator_spotlight_shortcode(array(
-                                    'user_id'     => (int) $u->ID,
+                                    'user_id'     => (int) $cid,
                                     'show_stats'  => 1,
                                     'show_latest' => 0,
                                 ));
