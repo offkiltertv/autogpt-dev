@@ -64,21 +64,35 @@ class OKArcana_Creator
 
     // -------------------------------------------------------------------------
     // [oktv_footer_brand]
-    // Reimagined footer brand messaging. Operator embeds in the Elementor
-    // footer template (replaces the legacy "© 2023 OFFKILTER.TV" line).
+    // Premium product footer. Operator embeds in the Elementor footer template.
+    // Renders a 3-column layout on desktop, 2-column on tablet, stacked on mobile.
     //
     // Attributes:
-    //   tagline       string  "Discover. Create. Discuss. Return."
-    //   creator_href  string  "/why-am-i-here/" (Why am I on here? page)
-    //   wrapper_class string  ""
+    //   tagline          string  "Where the signal finds you."
+    //   line             string  "" (empty = platform default line)
+    //   creator_href     string  "/why-am-i-here/"
+    //   privacy_href     string  "" (empty = no Privacy link rendered)
+    //   terms_href       string  "" (empty = no Terms link rendered)
+    //   social_x         string  "" (URL for X/Twitter, empty = hidden)
+    //   social_youtube   string  "" (URL for YouTube, empty = hidden)
+    //   social_instagram string  "" (URL for Instagram, empty = hidden)
+    //   show_version     int     0  (1 = display plugin version in bottom bar)
+    //   wrapper_class    string  ""
     // -------------------------------------------------------------------------
 
     public static function render_footer_brand($atts)
     {
         $atts = shortcode_atts(array(
-            'tagline'       => 'Discover. Create. Discuss. Return.',
-            'creator_href'  => '/why-am-i-here/',
-            'wrapper_class' => '',
+            'tagline'          => 'Where the signal finds you.',
+            'line'             => '',
+            'creator_href'     => '/why-am-i-here/',
+            'privacy_href'     => '',
+            'terms_href'       => '',
+            'social_x'         => '',
+            'social_youtube'   => '',
+            'social_instagram' => '',
+            'show_version'     => 0,
+            'wrapper_class'    => '',
         ), $atts, 'oktv_footer_brand');
 
         $outer_class = 'ok-footer-brand';
@@ -88,41 +102,97 @@ class OKArcana_Creator
 
         $year = (int) current_time('Y');
 
+        $brand_line = $atts['line']
+            ? esc_html($atts['line'])
+            : esc_html('OFFKILTER is where short clips, intuitive readings, and fast Pulse observations surface from creators worth returning for.');
+
         $pillars = array(
+            'Pulse'     => '/pulse/',
             'Signals'   => '/video-category/signals/',
             'Arcana'    => '/video-category/arcana/',
             'Creators'  => '/member-list/',
             'Community' => '/community/',
         );
 
+        $socials = array();
+        if ($atts['social_x']) {
+            $socials['X']  = esc_url($atts['social_x']);
+        }
+        if ($atts['social_youtube']) {
+            $socials['YT'] = esc_url($atts['social_youtube']);
+        }
+        if ($atts['social_instagram']) {
+            $socials['IG'] = esc_url($atts['social_instagram']);
+        }
+
         ob_start();
         ?>
         <footer class="<?php echo esc_attr($outer_class); ?>" role="contentinfo">
-            <div class="ok-footer-brand__lead">
-                <p class="ok-footer-brand__mark">OFFKILTER</p>
-                <p class="ok-footer-brand__tagline"><?php echo esc_html($atts['tagline']); ?></p>
-                <p class="ok-footer-brand__line">
-                    A home for the signal that finds you — short clips, intuitive readings,
-                    and the creators worth returning for.
+            <div class="ok-footer-brand__inner">
+
+                <div class="ok-footer-brand__col ok-footer-brand__col--brand">
+                    <p class="ok-footer-brand__mark">OFFKILTER</p>
+                    <p class="ok-footer-brand__tagline"><?php echo esc_html($atts['tagline']); ?></p>
+                    <p class="ok-footer-brand__line"><?php echo $brand_line; ?></p>
+
+                    <?php if (!empty($socials)) : ?>
+                        <div class="ok-footer-brand__social">
+                            <?php foreach ($socials as $label => $href) : ?>
+                                <a href="<?php echo $href; ?>"
+                                   class="ok-footer-brand__social-link"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   aria-label="<?php printf(esc_attr__('OFFKILTER on %s', 'offkilter-arcana'), $label); ?>">
+                                    <?php echo esc_html($label); ?>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <div class="ok-footer-brand__col ok-footer-brand__col--nav">
+                    <p class="ok-footer-brand__col-heading"><?php esc_html_e('Discover', 'offkilter-arcana'); ?></p>
+                    <nav class="ok-footer-brand__nav" aria-label="<?php esc_attr_e('Footer sections', 'offkilter-arcana'); ?>">
+                        <?php foreach ($pillars as $label => $href) : ?>
+                            <a href="<?php echo esc_url($href); ?>"><?php echo esc_html($label); ?></a>
+                        <?php endforeach; ?>
+                    </nav>
+                </div>
+
+                <div class="ok-footer-brand__col ok-footer-brand__col--meta">
+                    <p class="ok-footer-brand__col-heading"><?php esc_html_e('Platform', 'offkilter-arcana'); ?></p>
+                    <div class="ok-footer-brand__creator">
+                        <a href="<?php echo esc_url($atts['creator_href']); ?>" class="ok-footer-brand__creator-link">
+                            <?php esc_html_e('Creators: Why am I on OFFKILTER?', 'offkilter-arcana'); ?>
+                        </a>
+                    </div>
+                </div>
+
+            </div><!-- /.ok-footer-brand__inner -->
+
+            <div class="ok-footer-brand__bottom">
+                <p class="ok-footer-brand__legal">
+                    &copy; <?php echo esc_html($year); ?> OFFKILTER.TV<?php
+                    if ($atts['privacy_href']) {
+                        printf(
+                            ' &middot; <a href="%s">%s</a>',
+                            esc_url($atts['privacy_href']),
+                            esc_html__('Privacy', 'offkilter-arcana')
+                        );
+                    }
+                    if ($atts['terms_href']) {
+                        printf(
+                            ' &middot; <a href="%s">%s</a>',
+                            esc_url($atts['terms_href']),
+                            esc_html__('Terms', 'offkilter-arcana')
+                        );
+                    }
+                    ?>
                 </p>
+                <?php if (!empty($atts['show_version'])) : ?>
+                    <p class="ok-footer-brand__version">v<?php echo esc_html(OKARCANA_VERSION); ?></p>
+                <?php endif; ?>
             </div>
-
-            <nav class="ok-footer-brand__nav" aria-label="<?php esc_attr_e('Footer sections', 'offkilter-arcana'); ?>">
-                <?php foreach ($pillars as $label => $href) : ?>
-                    <a href="<?php echo esc_url($href); ?>"><?php echo esc_html($label); ?></a>
-                <?php endforeach; ?>
-            </nav>
-
-            <div class="ok-footer-brand__creator">
-                <a href="<?php echo esc_url($atts['creator_href']); ?>" class="ok-footer-brand__creator-link">
-                    <?php esc_html_e('Creators: Why am I on OFFKILTER?', 'offkilter-arcana'); ?>
-                </a>
-            </div>
-
-            <p class="ok-footer-brand__legal">
-                &copy; <?php echo esc_html($year); ?> OFFKILTER.TV ·
-                <?php esc_html_e('Made for discovery.', 'offkilter-arcana'); ?>
-            </p>
         </footer>
         <?php
         return (string) ob_get_clean();
