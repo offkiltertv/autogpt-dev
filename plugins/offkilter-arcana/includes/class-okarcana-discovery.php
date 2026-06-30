@@ -338,7 +338,7 @@ class OKArcana_Discovery
     {
         $atts = shortcode_atts(array(
             'user_id'          => 0,
-            'show_bio'         => 0,
+            'show_bio'         => 1,
             'featured_ids'     => '',
             'show_signals'     => 1,
             'signals_limit'    => 6,
@@ -355,6 +355,7 @@ class OKArcana_Discovery
             'related_ids'       => '',
             'show_discuss_cta'  => 0,
             'show_completeness' => 0,
+            'show_banner'       => 1,
             'wrapper_class'     => '',
         ), $atts, 'oktv_creator_page');
 
@@ -383,10 +384,29 @@ class OKArcana_Discovery
         ?>
         <div class="<?php echo esc_attr($outer_class); ?>">
 
+            <?php if (!empty($atts['show_banner'])) :
+                $banner_url      = get_user_meta($user_id, 'okarcana_banner', true);
+                $banner_fallback = OKARCANA_PLUGIN_URL . 'assets/img/default-channel-banner.svg';
+            ?>
+            <div class="ok-creator-page__banner"
+                 role="img"
+                 aria-label="<?php echo esc_attr($display_name); ?>"
+                 style="background-image:url('<?php echo esc_url($banner_url ?: $banner_fallback); ?>')">
+            </div>
+            <?php endif; ?>
+
             <!-- Creator header -->
             <div class="ok-creator-page__header">
                 <div class="ok-creator-page__avatar">
-                    <?php echo get_avatar($user_id, 80, '', esc_attr($display_name)); ?>
+                    <?php $custom_avatar_url = get_user_meta($user_id, 'okarcana_avatar', true); ?>
+                    <?php if ($custom_avatar_url) : ?>
+                        <img src="<?php echo esc_url($custom_avatar_url); ?>"
+                             alt="<?php echo esc_attr($display_name); ?>"
+                             class="ok-creator-page__avatar-img"
+                             width="80" height="80" loading="lazy">
+                    <?php else : ?>
+                        <?php echo get_avatar($user_id, 80, '', esc_attr($display_name)); ?>
+                    <?php endif; ?>
                 </div>
                 <div class="ok-creator-page__identity">
                     <p class="ok-creator-page__name">

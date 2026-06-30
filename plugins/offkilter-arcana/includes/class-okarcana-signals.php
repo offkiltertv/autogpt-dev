@@ -181,7 +181,8 @@ class OKArcana_Signals
                             <a href="<?php echo esc_url(get_permalink()); ?>"><?php echo esc_html(get_the_title()); ?></a>
                             <?php if (!empty($atts['show_creator'])) : ?>
                                 <span class="oktv-signals-meta">
-                                    <?php echo esc_html(get_the_author_meta('display_name', (int) get_post_field('post_author', get_the_ID()))); ?>
+                                    <?php $list_author_id = (int) get_post_field('post_author', get_the_ID()); ?>
+                                    <a href="<?php echo esc_url(get_author_posts_url($list_author_id)); ?>"><?php echo esc_html(get_the_author_meta('display_name', $list_author_id)); ?></a>
                                 </span>
                             <?php endif; ?>
                             <?php if (!empty($atts['show_duration'])) : ?>
@@ -216,9 +217,10 @@ class OKArcana_Signals
             <?php else : ?>
                 <div class="oktv-signals-cards">
                     <?php while ($q->have_posts()) : $q->the_post();
-                        $thumb_url = get_the_post_thumbnail_url(get_the_ID(), 'medium');
-                        $duration  = self::format_duration((int) get_post_meta(get_the_ID(), self::META_DURATION_SECONDS, true));
-                        $creator   = get_the_author_meta('display_name', (int) get_post_field('post_author', get_the_ID()));
+                        $thumb_url  = get_the_post_thumbnail_url(get_the_ID(), 'medium');
+                        $duration   = self::format_duration((int) get_post_meta(get_the_ID(), self::META_DURATION_SECONDS, true));
+                        $creator_id = (int) get_post_field('post_author', get_the_ID());
+                        $creator    = get_the_author_meta('display_name', $creator_id);
                     ?>
                         <article class="oktv-signals-card">
                             <a href="<?php echo esc_url(get_permalink()); ?>" tabindex="-1" aria-hidden="true">
@@ -240,7 +242,7 @@ class OKArcana_Signals
                                 </p>
                                 <div class="oktv-signals-card__footer">
                                     <?php if (!empty($atts['show_creator']) && $creator !== '') : ?>
-                                        <span class="oktv-signals-card__creator"><?php echo esc_html($creator); ?></span>
+                                        <span class="oktv-signals-card__creator"><a href="<?php echo esc_url(get_author_posts_url($creator_id)); ?>"><?php echo esc_html($creator); ?></a></span>
                                     <?php endif; ?>
                                     <?php if (!empty($atts['show_date'])) : ?>
                                         <span class="oktv-signals-card__date"><?php echo esc_html(get_the_date('M j')); ?></span>
