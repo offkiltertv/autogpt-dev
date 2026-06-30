@@ -306,6 +306,11 @@ class OKArcana_Cleanup
         if (!self::is_public_view(get_queried_object_id())) {
             return;
         }
+        // Auto-retire when a child theme is active. The child theme's template
+        // overrides (and the data-layer guard) handle protection cleanly.
+        if (get_stylesheet() !== get_template()) {
+            return;
+        }
         if (!apply_filters('okarcana_guard_buffer_enabled', true)) {
             return;
         }

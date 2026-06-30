@@ -1,0 +1,8 @@
+/*
+Theme Name:   VidMov OFFKILTER Child
+Description:  OFFKILTER platform child theme for VidMov. Activating this
+              theme retires the render-path lockdown buffer; the data-layer
+              guard (get_post_metadata filter) and content filters remain active.
+Template:     vidmov
+Version:      1.0.0
+*/
