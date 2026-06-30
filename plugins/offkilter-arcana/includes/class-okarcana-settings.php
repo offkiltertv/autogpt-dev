@@ -27,6 +27,10 @@ class OKArcana_Settings
             'signals_threshold_seconds' => 90,
             'signals_backfill_batch_size' => 75,
             'signals_duration_meta_keys' => 'beeteam368_video_duration',
+            // Launch curation layer (v2.8). Comma-separated ID lists.
+            'featured_creator_ids' => '',          // launch-creator user IDs, priority lineup for discovery/pulse
+            'deprecated_creator_user_ids' => '',   // legacy author user IDs excluded from discovery/pulse fallback
+            'deprecated_creator_term_ids' => '',   // legacy creator term IDs (e.g. 2055) the scheduler will hold
             'playlist_mappings' => array(
                 array(
                     'match' => 'Poem',
@@ -80,6 +84,10 @@ class OKArcana_Settings
         $out['signals_backfill_batch_size'] = isset($settings['signals_backfill_batch_size']) ? max(1, min(500, (int) $settings['signals_backfill_batch_size'])) : (int) $defaults['signals_backfill_batch_size'];
         $out['signals_duration_meta_keys'] = isset($settings['signals_duration_meta_keys']) ? sanitize_textarea_field((string) $settings['signals_duration_meta_keys']) : (string) $defaults['signals_duration_meta_keys'];
 
+        $out['featured_creator_ids'] = self::normalize_id_csv(isset($settings['featured_creator_ids']) ? $settings['featured_creator_ids'] : '');
+        $out['deprecated_creator_user_ids'] = self::normalize_id_csv(isset($settings['deprecated_creator_user_ids']) ? $settings['deprecated_creator_user_ids'] : '');
+        $out['deprecated_creator_term_ids'] = self::normalize_id_csv(isset($settings['deprecated_creator_term_ids']) ? $settings['deprecated_creator_term_ids'] : '');
+
         $out['playlist_mappings'] = array();
         if (!empty($settings['playlist_mappings']) && is_array($settings['playlist_mappings'])) {
             foreach ($settings['playlist_mappings'] as $row) {
@@ -123,6 +131,73 @@ class OKArcana_Settings
         }
 
         return array_values(array_unique($terms));
+    }
+
+    /**
+     * Normalize a comma/newline/space separated list of IDs into a clean,
+     * de-duplicated, comma-separated string of positive integers for storage.
+     *
+     * @param mixed $raw
+     * @return string
+     */
+    public static function normalize_id_csv($raw)
+    {
+        return implode(',', self::ids_from_csv($raw));
+    }
+
+    /**
+     * Parse a stored ID-CSV value into an array of positive ints.
+     *
+     * @param mixed $raw
+     * @return int[]
+     */
+    public static function ids_from_csv($raw)
+    {
+        if (is_array($raw)) {
+            $parts = $raw;
+        } else {
+            $parts = preg_split('/[\s,]+/', (string) $raw);
+        }
+
+        $ids = array();
+        foreach ((array) $parts as $part) {
+            $id = (int) trim((string) $part);
+            if ($id > 0) {
+                $ids[$id] = $id;
+            }
+        }
+
+        return array_values($ids);
+    }
+
+    /**
+     * Launch-creator user IDs (priority lineup for discovery/pulse).
+     *
+     * @return int[]
+     */
+    public static function featured_creator_ids()
+    {
+        return self::ids_from_csv(self::get('featured_creator_ids', ''));
+    }
+
+    /**
+     * Legacy author user IDs to exclude from discovery/pulse fallbacks.
+     *
+     * @return int[]
+     */
+    public static function deprecated_creator_user_ids()
+    {
+        return self::ids_from_csv(self::get('deprecated_creator_user_ids', ''));
+    }
+
+    /**
+     * Legacy creator term IDs (e.g. 2055) the scheduler should hold.
+     *
+     * @return int[]
+     */
+    public static function deprecated_creator_term_ids()
+    {
+        return self::ids_from_csv(self::get('deprecated_creator_term_ids', ''));
     }
 
     public static function render_mapping_lines($mappings)
