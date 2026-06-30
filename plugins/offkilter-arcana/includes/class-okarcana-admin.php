@@ -160,6 +160,26 @@ class OKArcana_Admin
                             <p class="description"><?php esc_html_e('One mapping per line: playlist_match|category1,category2|tag1,tag2', 'offkilter-arcana'); ?></p>
                         </td>
                     </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Launch Curation', 'offkilter-arcana'); ?></th>
+                        <td>
+                            <p>
+                                <label for="featured_creator_ids"><?php esc_html_e('Featured Creator User IDs', 'offkilter-arcana'); ?></label><br>
+                                <input type="text" id="featured_creator_ids" name="featured_creator_ids" class="regular-text" value="<?php echo esc_attr((string) $settings['featured_creator_ids']); ?>" placeholder="87,123,124" />
+                            </p>
+                            <p class="description"><?php esc_html_e('Comma-separated user IDs of the launch lineup. When set, these are used (in order) for "Creators to Watch" and "Creators on Pulse" instead of the top-by-post-count fallback.', 'offkilter-arcana'); ?></p>
+                            <p>
+                                <label for="deprecated_creator_user_ids"><?php esc_html_e('Deprecated Creator User IDs', 'offkilter-arcana'); ?></label><br>
+                                <input type="text" id="deprecated_creator_user_ids" name="deprecated_creator_user_ids" class="regular-text" value="<?php echo esc_attr((string) $settings['deprecated_creator_user_ids']); ?>" placeholder="" />
+                            </p>
+                            <p class="description"><?php esc_html_e('Comma-separated legacy author user IDs to exclude from the discovery/pulse fallback when no featured lineup is set.', 'offkilter-arcana'); ?></p>
+                            <p>
+                                <label for="deprecated_creator_term_ids"><?php esc_html_e('Deprecated Creator Term IDs', 'offkilter-arcana'); ?></label><br>
+                                <input type="text" id="deprecated_creator_term_ids" name="deprecated_creator_term_ids" class="regular-text" value="<?php echo esc_attr((string) $settings['deprecated_creator_term_ids']); ?>" placeholder="2055" />
+                            </p>
+                            <p class="description"><?php esc_html_e('Comma-separated creator term IDs (vidmov_video_category, e.g. 2055 for @lipps). Imported posts tagged to these terms are held (never auto-published) by the scheduler.', 'offkilter-arcana'); ?></p>
+                        </td>
+                    </tr>
                 </table>
 
                 <p><button class="button button-primary" type="submit"><?php esc_html_e('Save Arcana Settings', 'offkilter-arcana'); ?></button></p>
@@ -231,6 +251,9 @@ class OKArcana_Admin
             'signals_threshold_seconds' => isset($_POST['signals_threshold_seconds']) ? (int) $_POST['signals_threshold_seconds'] : 90,
             'signals_backfill_batch_size' => isset($_POST['signals_backfill_batch_size']) ? (int) $_POST['signals_backfill_batch_size'] : 75,
             'signals_duration_meta_keys' => isset($_POST['signals_duration_meta_keys']) ? wp_unslash($_POST['signals_duration_meta_keys']) : '',
+            'featured_creator_ids' => isset($_POST['featured_creator_ids']) ? wp_unslash($_POST['featured_creator_ids']) : '',
+            'deprecated_creator_user_ids' => isset($_POST['deprecated_creator_user_ids']) ? wp_unslash($_POST['deprecated_creator_user_ids']) : '',
+            'deprecated_creator_term_ids' => isset($_POST['deprecated_creator_term_ids']) ? wp_unslash($_POST['deprecated_creator_term_ids']) : '',
             'playlist_mappings' => OKArcana_Settings::parse_mapping_lines($mappings_raw),
         );
 
