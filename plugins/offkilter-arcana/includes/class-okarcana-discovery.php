@@ -15,6 +15,46 @@ class OKArcana_Discovery
         add_shortcode('oktv_watch_nav',         array(__CLASS__, 'render_watch_nav'));
         add_shortcode('oktv_featured_creator',  array(__CLASS__, 'render_featured_creator'));
         add_shortcode('oktv_platform_story',    array(__CLASS__, 'render_platform_story'));
+
+        // v2.9 Watch experience: append "Watch Next" + discuss slot to public
+        // single-video pages via the_content (no theme template edits needed).
+        add_filter('the_content', array(__CLASS__, 'append_watch_next'), 40);
+    }
+
+    /**
+     * Append the recommended-next block (+ reserved discuss slot) to the main
+     * content of public single vidmov_video pages. Gated by the
+     * `enable_watch_next_append` setting and the `okarcana_watch_next_append`
+     * filter; runs once per request.
+     *
+     * @param string $content
+     * @return string
+     */
+    public static function append_watch_next($content)
+    {
+        static $done = false;
+
+        if ($done || is_admin() || !is_string($content)) {
+            return $content;
+        }
+        if (!is_singular('vidmov_video') || !in_the_loop() || !is_main_query()) {
+            return $content;
+        }
+        if (class_exists('OKArcana_Settings') && !OKArcana_Settings::get('enable_watch_next_append', 1)) {
+            return $content;
+        }
+        if (!apply_filters('okarcana_watch_next_append', true)) {
+            return $content;
+        }
+
+        $done = true;
+
+        $extra = self::render_recommended_next(array('limit' => 3));
+        if (shortcode_exists('oktv_discuss_slot')) {
+            $extra .= do_shortcode('[oktv_discuss_slot type="discuss"]');
+        }
+
+        return $content . $extra;
     }
 
     // -------------------------------------------------------------------------

@@ -161,6 +161,15 @@ class OKArcana_Admin
                         </td>
                     </tr>
                     <tr>
+                        <th scope="row"><?php esc_html_e('Watch Experience', 'offkilter-arcana'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="enable_watch_next_append" value="1" <?php checked(!empty($settings['enable_watch_next_append'])); ?> />
+                                <?php esc_html_e('Append "Watch Next" recommendations and the discussion slot to public single-video pages.', 'offkilter-arcana'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
                         <th scope="row"><?php esc_html_e('Launch Curation', 'offkilter-arcana'); ?></th>
                         <td>
                             <p>
@@ -251,6 +260,7 @@ class OKArcana_Admin
             'signals_threshold_seconds' => isset($_POST['signals_threshold_seconds']) ? (int) $_POST['signals_threshold_seconds'] : 90,
             'signals_backfill_batch_size' => isset($_POST['signals_backfill_batch_size']) ? (int) $_POST['signals_backfill_batch_size'] : 75,
             'signals_duration_meta_keys' => isset($_POST['signals_duration_meta_keys']) ? wp_unslash($_POST['signals_duration_meta_keys']) : '',
+            'enable_watch_next_append' => isset($_POST['enable_watch_next_append']) ? 1 : 0,
             'featured_creator_ids' => isset($_POST['featured_creator_ids']) ? wp_unslash($_POST['featured_creator_ids']) : '',
             'deprecated_creator_user_ids' => isset($_POST['deprecated_creator_user_ids']) ? wp_unslash($_POST['deprecated_creator_user_ids']) : '',
             'deprecated_creator_term_ids' => isset($_POST['deprecated_creator_term_ids']) ? wp_unslash($_POST['deprecated_creator_term_ids']) : '',

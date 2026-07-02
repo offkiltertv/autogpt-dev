@@ -27,6 +27,9 @@ class OKArcana_Settings
             'signals_threshold_seconds' => 90,
             'signals_backfill_batch_size' => 75,
             'signals_duration_meta_keys' => 'beeteam368_video_duration',
+            // Watch experience (v2.9): append Watch Next + discuss slot to
+            // public single-video pages.
+            'enable_watch_next_append' => 1,
             // Launch curation layer (v2.8). Comma-separated ID lists.
             'featured_creator_ids' => '',          // launch-creator user IDs, priority lineup for discovery/pulse
             'deprecated_creator_user_ids' => '',   // legacy author user IDs excluded from discovery/pulse fallback
@@ -84,6 +87,7 @@ class OKArcana_Settings
         $out['signals_backfill_batch_size'] = isset($settings['signals_backfill_batch_size']) ? max(1, min(500, (int) $settings['signals_backfill_batch_size'])) : (int) $defaults['signals_backfill_batch_size'];
         $out['signals_duration_meta_keys'] = isset($settings['signals_duration_meta_keys']) ? sanitize_textarea_field((string) $settings['signals_duration_meta_keys']) : (string) $defaults['signals_duration_meta_keys'];
 
+        $out['enable_watch_next_append'] = !empty($settings['enable_watch_next_append']) ? 1 : 0;
         $out['featured_creator_ids'] = self::normalize_id_csv(isset($settings['featured_creator_ids']) ? $settings['featured_creator_ids'] : '');
         $out['deprecated_creator_user_ids'] = self::normalize_id_csv(isset($settings['deprecated_creator_user_ids']) ? $settings['deprecated_creator_user_ids'] : '');
         $out['deprecated_creator_term_ids'] = self::normalize_id_csv(isset($settings['deprecated_creator_term_ids']) ? $settings['deprecated_creator_term_ids'] : '');
