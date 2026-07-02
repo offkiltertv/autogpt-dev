@@ -100,8 +100,10 @@ class OKArcana_Cleanup
         }
 
         $targets = apply_filters('okarcana_guard_submit_surface_hooks', array(
-            'wp_footer'               => array('submit_form_html'),
-            'beeteam368_submit_icon'  => array('submit_icon'),
+            // Upload/edit modal + live-stream ("go live") form — both carry the
+            // Purchase Price / PPV / Categories / Featured Image fields.
+            'wp_footer'               => array('submit_form_html', 'live_form_html'),
+            'beeteam368_submit_icon'  => array('submit_icon', 'live_icon'),
         ));
 
         foreach ($targets as $hook => $methods) {
@@ -121,6 +123,9 @@ class OKArcana_Cleanup
 
         $hooks = apply_filters('okarcana_guard_nopriv_hooks', array(
             'wp_ajax_nopriv_beeteam368_handle_submit_fn_fe',
+            // Live-stream SUBMIT handler only. The live-channel-info nopriv
+            // endpoint is a viewer read path and is intentionally left alone.
+            'wp_ajax_nopriv_beeteam368_handle_live_fn_fe',
         ));
 
         foreach ($hooks as $hook) {
