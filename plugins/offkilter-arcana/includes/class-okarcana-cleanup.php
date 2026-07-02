@@ -52,6 +52,163 @@ class OKArcana_Cleanup
         // Render-path lockdown: on anonymous single-video views, buffer the page and
         // remove the authoring/monetization blocks at the source (not CSS).
         add_action('template_redirect', array(__CLASS__, 'maybe_start_lockdown_buffer'), 1);
+
+        // v2.9 Priority Zero root-cause guards:
+        // 1) The theme's front-end upload/edit modal (Purchase Price, Pay Per View,
+        //    Video/Audio Categories, Featured Image) is hooked to wp_footer on EVERY
+        //    page with no permission gate. Unhook it for users who cannot submit.
+        add_action('wp', array(__CLASS__, 'suppress_submit_surface'), 5);
+        // 2) The theme registers an ANONYMOUS submit AJAX endpoint (wp_ajax_nopriv_*).
+        //    Remove it — anonymous visitors must never reach an authoring handler.
+        add_action('init', array(__CLASS__, 'remove_nopriv_submit'), 99);
+        // 3) Archived creator terms (slug prefix `archived-`) must not appear in
+        //    front-end taxonomy dropdowns/selects.
+        add_filter('get_terms', array(__CLASS__, 'hide_archived_terms'), 10, 3);
+    }
+
+    /**
+     * True when the current user may use the theme's front-end submit/edit surface.
+     * Default: logged in AND can edit posts (contributor+). Filterable so the
+     * operator can align with the theme's own role options.
+     *
+     * @return bool
+     */
+    private static function user_can_submit()
+    {
+        return (bool) apply_filters(
+            'okarcana_can_submit',
+            is_user_logged_in() && current_user_can('edit_posts')
+        );
+    }
+
+    /**
+     * Unhook the theme's upload/edit modal + submit icons for users who cannot
+     * submit. Root-cause template-layer fix for the Priority Zero cluster:
+     * the modal carries Purchase Price / Pay Per View / Video Categories /
+     * Audio Categories / Featured Image markup into every public page.
+     *
+     * Class-agnostic: callbacks are matched by METHOD name (the theme class name
+     * is a pro-plugin internal), via a filterable map of hook => methods.
+     */
+    public static function suppress_submit_surface()
+    {
+        if (is_admin()) {
+            return;
+        }
+        if (self::user_can_submit()) {
+            return;
+        }
+
+        $targets = apply_filters('okarcana_guard_submit_surface_hooks', array(
+            'wp_footer'               => array('submit_form_html'),
+            'beeteam368_submit_icon'  => array('submit_icon'),
+        ));
+
+        foreach ($targets as $hook => $methods) {
+            self::remove_hooked_methods($hook, (array) $methods);
+        }
+    }
+
+    /**
+     * Remove the theme's anonymous (nopriv) submit AJAX handlers. Filterable list;
+     * disable entirely via `okarcana_disable_nopriv_submit`.
+     */
+    public static function remove_nopriv_submit()
+    {
+        if (!apply_filters('okarcana_disable_nopriv_submit', true)) {
+            return;
+        }
+
+        $hooks = apply_filters('okarcana_guard_nopriv_hooks', array(
+            'wp_ajax_nopriv_beeteam368_handle_submit_fn_fe',
+        ));
+
+        foreach ($hooks as $hook) {
+            remove_all_actions($hook);
+        }
+    }
+
+    /**
+     * Remove every callback on $hook whose method name matches one in $methods,
+     * regardless of the owning class (works for object-method and static-method
+     * callbacks). Returns the number of callbacks removed.
+     *
+     * @param string   $hook
+     * @param string[] $methods
+     * @return int
+     */
+    private static function remove_hooked_methods($hook, $methods)
+    {
+        global $wp_filter;
+
+        if (empty($wp_filter[$hook]) || !($wp_filter[$hook] instanceof WP_Hook)) {
+            return 0;
+        }
+
+        $removed = 0;
+        foreach ($wp_filter[$hook]->callbacks as $priority => $callbacks) {
+            foreach ($callbacks as $cb) {
+                $fn = isset($cb['function']) ? $cb['function'] : null;
+                if (is_array($fn) && count($fn) === 2 && in_array((string) $fn[1], $methods, true)) {
+                    remove_action($hook, $fn, $priority);
+                    $removed++;
+                }
+            }
+        }
+
+        return $removed;
+    }
+
+    /**
+     * Hide archived creator terms (slug-prefixed `archived-`) from front-end term
+     * queries so they never appear in category dropdowns/selects. Admin, WP-CLI,
+     * and non-object results are untouched.
+     *
+     * @param array        $terms
+     * @param string[]     $taxonomies
+     * @param array        $args
+     * @return array
+     */
+    public static function hide_archived_terms($terms, $taxonomies, $args)
+    {
+        if (is_admin() || (defined('WP_CLI') && WP_CLI)) {
+            return $terms;
+        }
+        if (!is_array($terms) || empty($terms)) {
+            return $terms;
+        }
+
+        $prefixes = apply_filters('okarcana_archived_term_prefixes', array('archived-'));
+        if (empty($prefixes)) {
+            return $terms;
+        }
+
+        $out = array();
+        foreach ($terms as $key => $term) {
+            $slug = '';
+            if ($term instanceof WP_Term) {
+                $slug = (string) $term->slug;
+            } elseif (is_object($term) && isset($term->slug)) {
+                $slug = (string) $term->slug;
+            } else {
+                // ids/names/count shapes — leave untouched.
+                $out[$key] = $term;
+                continue;
+            }
+
+            $archived = false;
+            foreach ($prefixes as $prefix) {
+                if ($prefix !== '' && strpos($slug, $prefix) === 0) {
+                    $archived = true;
+                    break;
+                }
+            }
+            if (!$archived) {
+                $out[$key] = $term;
+            }
+        }
+
+        return array_values($out);
     }
 
     /**
