@@ -1,6 +1,6 @@
 /*
  * OFFKILTER Platform Design System
-* Version: 3.2.0  Branch: feature/arcana-plugin
+* Version: 3.2.1  Branch: feature/arcana-plugin
  *
  * Scope: frontend normalization for VidMov surfaces, plugin shortcodes,
  * and brand-consistent UI elements across OffKilter.TV.
@@ -4957,4 +4957,21 @@ body.single-vidmov_video table.compat-attachment-fields {
   max-width: 1200px;
   margin: 0 auto;
   padding: 1.5rem 1rem 3rem;
+}
+
+/* AF-7: Logo crispness — the header/side logo is now a high-res (760px) white
+   wordmark; constrain its DISPLAY size via CSS so it renders sharp on HiDPI
+   without being blown up to natural size. Sizing, not hiding. */
+.beeteam368-logo-img {
+  width: auto !important;
+  height: auto !important;
+  max-height: 52px;
+  object-fit: contain;
+}
+.beeteam368-side-header .beeteam368-logo-img,
+[class*="side"] .beeteam368-logo-img {
+  max-height: 40px;
+}
+@media (max-width: 768px) {
+  .beeteam368-logo-img { max-height: 42px; }
 }
