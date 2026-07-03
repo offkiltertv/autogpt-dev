@@ -30,6 +30,8 @@ class OKArcana_Settings
             // Watch experience (v2.9): append Watch Next + discuss slot to
             // public single-video pages.
             'enable_watch_next_append' => 1,
+            // Avatar sync (v3.1): auto-enrich imported creators from YouTube.
+            'enable_avatar_sync' => 1,
             // Launch curation layer (v2.8). Comma-separated ID lists.
             'featured_creator_ids' => '',          // launch-creator user IDs, priority lineup for discovery/pulse
             'deprecated_creator_user_ids' => '',   // legacy author user IDs excluded from discovery/pulse fallback
@@ -88,6 +90,7 @@ class OKArcana_Settings
         $out['signals_duration_meta_keys'] = isset($settings['signals_duration_meta_keys']) ? sanitize_textarea_field((string) $settings['signals_duration_meta_keys']) : (string) $defaults['signals_duration_meta_keys'];
 
         $out['enable_watch_next_append'] = !empty($settings['enable_watch_next_append']) ? 1 : 0;
+        $out['enable_avatar_sync'] = !empty($settings['enable_avatar_sync']) ? 1 : 0;
         $out['featured_creator_ids'] = self::normalize_id_csv(isset($settings['featured_creator_ids']) ? $settings['featured_creator_ids'] : '');
         $out['deprecated_creator_user_ids'] = self::normalize_id_csv(isset($settings['deprecated_creator_user_ids']) ? $settings['deprecated_creator_user_ids'] : '');
         $out['deprecated_creator_term_ids'] = self::normalize_id_csv(isset($settings['deprecated_creator_term_ids']) ? $settings['deprecated_creator_term_ids'] : '');
