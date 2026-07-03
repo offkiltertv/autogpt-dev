@@ -1,6 +1,6 @@
 /*
  * OFFKILTER Platform Design System
- * Version: 1.0  Branch: feature/arcana-plugin
+ * Version: 3.0.0  Branch: feature/arcana-plugin
  *
  * Scope: frontend normalization for VidMov surfaces, plugin shortcodes,
  * and brand-consistent UI elements across OffKilter.TV.
@@ -282,30 +282,8 @@ body.tax-vidmov_video_category .heateor_sss_sharing_container {
   color: var(--ok-arcana);
 }
 
-/* Empty state */
-.oktv-signals-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 2.5rem 1rem;
-  text-align: center;
-  border: 1px dashed var(--ok-border);
-  border-radius: var(--ok-radius);
-  color: var(--ok-text-faint);
-}
-
-.oktv-signals-empty__icon {
-  font-size: 1.8rem;
-  opacity: 0.35;
-  line-height: 1;
-}
-
-.oktv-signals-empty__label {
-  font-size: 0.82rem;
-  color: var(--ok-text-muted);
-}
+/* (v3.0 hygiene: legacy .oktv-signals-empty block removed — markup was
+   unified onto .ok-empty-state in v2.7; no PHP renders the old class.) */
 
 
 /* ============================================================
@@ -4553,4 +4531,195 @@ body.single-vidmov_video table.compat-attachment-fields {
   .oktv-signals-card__creator a {
     transition: none;
   }
+}
+
+
+/* ============================================================
+   SECTION AE — v3.0 CREATOR EXPERIENCE
+   Hero mode, Pulse identity chips, featured rails, post-watch.
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   AE-1: Homepage hero ([oktv_platform_story hero="1"]).
+   5-second comprehension: headline, promise, two CTAs.
+   ---------------------------------------------------------- */
+.ok-platform-story--hero {
+  padding-top: 1.25rem;
+}
+.ok-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+.ok-hero__headline {
+  margin: 0;
+  font-size: clamp(1.9rem, 4.5vw, 3rem);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ok-text);
+}
+.ok-hero__sub {
+  margin: 0;
+  max-width: 42rem;
+  font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+  line-height: 1.5;
+  color: var(--ok-text-muted);
+}
+.ok-hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.35rem;
+}
+.ok-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1.3rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform var(--ok-transition), background var(--ok-transition), color var(--ok-transition);
+}
+.ok-hero__cta--primary {
+  background: var(--ok-accent);
+  color: #fff;
+}
+.ok-hero__cta--primary:hover,
+.ok-hero__cta--primary:focus-visible {
+  background: #ff1f2c;
+  color: #fff;
+  transform: translateY(-1px);
+}
+.ok-hero__cta--secondary {
+  background: transparent;
+  color: var(--ok-text);
+  border: 1px solid var(--ok-border);
+}
+.ok-hero__cta--secondary:hover,
+.ok-hero__cta--secondary:focus-visible {
+  border-color: var(--ok-pulse);
+  color: var(--ok-pulse);
+  transform: translateY(-1px);
+}
+
+/* ----------------------------------------------------------
+   AE-2: Pulse identity chips.
+   Duration overlay (thumb, bottom-right) + tag chip (footer)
+   + destination hero pulsing dot.
+   ---------------------------------------------------------- */
+.ok-pulse-duration {
+  position: absolute;
+  right: 0.45rem;
+  bottom: 0.45rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.78);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.ok-pulse-tag {
+  font-size: 0.72rem;
+  color: var(--ok-pulse);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 9rem;
+}
+.ok-pulse-destination__dot {
+  display: inline-block;
+  width: 0.55em;
+  height: 0.55em;
+  margin-right: 0.35em;
+  border-radius: 50%;
+  background: var(--ok-pulse);
+  vertical-align: middle;
+  animation: ok-pulse-dot 1.6s ease-in-out infinite;
+}
+@keyframes ok-pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(45, 224, 192, 0.55); }
+  50%      { box-shadow: 0 0 0 7px rgba(45, 224, 192, 0); }
+}
+
+/* ----------------------------------------------------------
+   AE-3: Creator featured rail — content-type chips.
+   ---------------------------------------------------------- */
+.ok-creator-page__featured-item {
+  position: relative;
+}
+.ok-creator-page__featured-type {
+  position: absolute;
+  top: 0.45rem;
+  left: 0.45rem;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.72);
+  color: var(--ok-text);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.ok-creator-page__featured-type--pulse {
+  color: var(--ok-pulse);
+}
+
+/* ----------------------------------------------------------
+   AE-4: Spotlight featured line + linked name.
+   ---------------------------------------------------------- */
+.ok-creator-spotlight__name a {
+  color: inherit;
+  text-decoration: none;
+}
+.ok-creator-spotlight__name a:hover,
+.ok-creator-spotlight__name a:focus-visible {
+  text-decoration: underline;
+}
+.ok-creator-spotlight__featured {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+.ok-creator-spotlight__featured-label {
+  display: inline-block;
+  margin-right: 0.4rem;
+  padding: 0.06rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid var(--ok-pulse);
+  color: var(--ok-pulse);
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.ok-creator-spotlight__featured a {
+  color: var(--ok-text-muted);
+  text-decoration: none;
+}
+.ok-creator-spotlight__featured a:hover,
+.ok-creator-spotlight__featured a:focus-visible {
+  color: var(--ok-text);
+  text-decoration: underline;
+}
+
+/* ----------------------------------------------------------
+   AE-5: Post-watch composite spacing.
+   ---------------------------------------------------------- */
+.ok-post-watch {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ok-border);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ok-pulse-destination__dot { animation: none; }
+  .ok-hero__cta { transition: none; }
 }
