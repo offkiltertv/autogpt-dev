@@ -5025,3 +5025,94 @@ body.single-vidmov_video table.compat-attachment-fields {
   .ok-brandbar { height: 3px !important; box-shadow: none; transition: none; background-position: 0 0 !important; }
   .ok-brandbar.ok-bar-idle { animation: none; }
 }
+
+/* ============================================================
+   SECTION AH — v3.4 BOTTOM NAVIGATION (primary product nav)
+   Fixed native-app tab bar at mobile + tablet widths. Desktop
+   keeps the header. Per-pillar accent + active state.
+   ============================================================ */
+.ok-bottom-nav { display: none; }
+
+@media (max-width: 1024px) {
+  .ok-bottom-nav {
+    display: block;
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 99990;
+    background: rgba(13, 16, 22, 0.92);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    backdrop-filter: saturate(1.4) blur(14px);
+    border-top: 1px solid var(--ok-border);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.4);
+  }
+  .ok-bottom-nav__list {
+    display: flex;
+    margin: 0; padding: 0;
+    list-style: none;
+  }
+  .ok-bottom-nav__item {
+    flex: 1 1 0;
+    text-align: center;
+    min-width: 0;
+  }
+  .ok-bottom-nav__item > a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-height: 56px;
+    padding: 7px 2px 6px;
+    text-decoration: none;
+    color: var(--ok-text-muted);
+    position: relative;
+    transition: color var(--ok-transition);
+  }
+  .ok-bottom-nav__icon {
+    font-size: 1.15rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 22px;
+  }
+  .ok-bottom-nav__icon .ok-arcana-orb { width: 22px; height: 22px; }
+  .ok-bottom-nav__label {
+    font-size: 0.66rem;
+    letter-spacing: 0.02em;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* Active tab — pillar accent + top indicator. */
+  .ok-bottom-nav__item.is-active > a { color: var(--ok-tab-accent, var(--ok-text)); }
+  .ok-bottom-nav__item.is-active > a::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 50%;
+    width: 26px; height: 3px;
+    transform: translateX(-50%);
+    border-radius: 0 0 3px 3px;
+    background: var(--ok-tab-accent, var(--ok-accent));
+    box-shadow: 0 0 10px var(--ok-tab-accent, var(--ok-accent));
+  }
+  .ok-bottom-nav__item > a:active { transform: scale(0.96); }
+
+  /* Per-pillar accent wiring. */
+  .ok-bottom-nav__item--accent    { --ok-tab-accent: var(--ok-accent); }
+  .ok-bottom-nav__item--pulse     { --ok-tab-accent: var(--ok-pulse); }
+  .ok-bottom-nav__item--signal    { --ok-tab-accent: var(--ok-signal); }
+  .ok-bottom-nav__item--arcana    { --ok-tab-accent: var(--ok-arcana); }
+  .ok-bottom-nav__item--community { --ok-tab-accent: var(--ok-community); }
+  .ok-bottom-nav__item--creators  { --ok-tab-accent: var(--ok-creators); }
+
+  /* Give page content room so the bar never covers the footer/content. */
+  body { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)); }
+}
+
+@media (max-width: 1024px) and (prefers-reduced-motion: reduce) {
+  .ok-bottom-nav__item > a { transition: none; }
+  .ok-bottom-nav__item > a:active { transform: none; }
+}

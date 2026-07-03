@@ -43,6 +43,7 @@ function autoload_okarcana()
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-wpforo.php';
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-identity.php';
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-avatar-sync.php';
+    require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-bottom-nav.php';
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-frontend.php';
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-cleanup.php';
     require_once OKARCANA_PLUGIN_DIR . 'includes/class-okarcana-editorial.php';
@@ -67,6 +68,7 @@ function okarcana_bootstrap()
     OKArcana_WPForo::init();
     OKArcana_Identity::init();
     OKArcana_Avatar_Sync::init();
+    OKArcana_Bottom_Nav::init();
     OKArcana_Frontend::init();
     OKArcana_Cleanup::init();
     OKArcana_Editorial::init();
