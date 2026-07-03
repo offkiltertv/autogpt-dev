@@ -93,6 +93,13 @@ class OKArcana_Discovery
     {
         $atts = shortcode_atts(array(
             'lede'          => 'OFFKILTER surfaces the content worth returning to.',
+            'hero'          => 0,
+            'headline'      => 'Off-script. On point.',
+            'sub'           => 'Short-form Pulse, standout Signals, and intuitive Arcana — from independent creators who publish here first.',
+            'cta_primary_label'   => 'Start Watching',
+            'cta_primary_href'    => '/video/',
+            'cta_secondary_label' => 'Discover',
+            'cta_secondary_href'  => '/discover/',
             'wrapper_class' => '',
         ), $atts, 'oktv_platform_story');
 
@@ -104,7 +111,11 @@ class OKArcana_Discovery
             'community' => array('term' => 'Community',  'desc' => 'Where the conversation lives — discuss what you discover.'),
         );
 
+        $is_hero     = !empty($atts['hero']);
         $outer_class = 'ok-platform-story';
+        if ($is_hero) {
+            $outer_class .= ' ok-platform-story--hero';
+        }
         if ($atts['wrapper_class']) {
             $outer_class .= ' ' . esc_attr($atts['wrapper_class']);
         }
@@ -112,6 +123,16 @@ class OKArcana_Discovery
         ob_start();
         ?>
         <section class="<?php echo esc_attr($outer_class); ?>" role="region" aria-label="<?php esc_attr_e('What OFFKILTER is', 'offkilter-arcana'); ?>">
+            <?php if ($is_hero) : ?>
+                <div class="ok-hero">
+                    <h1 class="ok-hero__headline"><?php echo esc_html($atts['headline']); ?></h1>
+                    <p class="ok-hero__sub"><?php echo esc_html($atts['sub']); ?></p>
+                    <div class="ok-hero__ctas">
+                        <a class="ok-hero__cta ok-hero__cta--primary" href="<?php echo esc_url($atts['cta_primary_href']); ?>"><?php echo esc_html($atts['cta_primary_label']); ?></a>
+                        <a class="ok-hero__cta ok-hero__cta--secondary" href="<?php echo esc_url($atts['cta_secondary_href']); ?>"><?php echo esc_html($atts['cta_secondary_label']); ?></a>
+                    </div>
+                </div>
+            <?php endif; ?>
             <p class="ok-platform-story__lede"><?php echo esc_html($atts['lede']); ?></p>
             <div class="ok-platform-story__rows">
                 <?php foreach ($rows as $key => $row) : ?>
