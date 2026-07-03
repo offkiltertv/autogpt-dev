@@ -912,6 +912,9 @@ class OKArcana_Discovery
             'pulse_label'      => 'Featured Pulse',
             'pulse_ids'        => '',
             'pulse_limit'      => 4,
+            'show_trending_pulse' => 1,
+            'trending_pulse_label' => 'Trending Pulse',
+            'trending_pulse_limit' => 4,
             'signals_label'    => 'Featured Signals',
             'signals_ids'      => '',
             'signals_limit'    => 4,
@@ -922,6 +925,8 @@ class OKArcana_Discovery
             'creators_label'   => 'Creators to Watch',
             'creator_ids'      => '',
             'creators_limit'   => 3,
+            'show_recommended'  => 1,
+            'recommended_label' => 'Recommended Creator',
             'show_discussions' => 1,
             'discussions_label' => 'In the Community',
             'wrapper_class'    => '',
@@ -964,6 +969,20 @@ class OKArcana_Discovery
                 ));
                 ?>
             </div>
+
+            <?php // Trending Pulse — engagement-ordered, not chronological. ?>
+            <?php if (!empty($atts['show_trending_pulse'])) : ?>
+            <div class="ok-discover-section">
+                <?php
+                echo OKArcana_Pulse::render_pulse_feed_shortcode(array(
+                    'title'   => $atts['trending_pulse_label'],
+                    'limit'   => (int) $atts['trending_pulse_limit'],
+                    'orderby' => 'trending',
+                    'layout'  => 'cards',
+                ));
+                ?>
+            </div>
+            <?php endif; ?>
             <?php endif; ?>
 
             <!-- Featured Signals section -->
@@ -1037,6 +1056,43 @@ class OKArcana_Discovery
                     </div>
                 </div>
             <?php endif; ?>
+
+            <?php
+            // Recommended Creator — deterministic rotation among the featured
+            // lineup: whoever published most recently leads (not chronological
+            // feed presentation; a single editorial-style callout).
+            if (!empty($atts['show_recommended']) && class_exists('OKArcana_Settings')) :
+                $rec_id = 0;
+                $rec_latest = 0;
+                foreach (OKArcana_Settings::featured_creator_ids() as $cid) {
+                    $latest = get_posts(array(
+                        'post_type'        => array('vidmov_video', 'pulse_item'),
+                        'post_status'      => 'publish',
+                        'author'           => (int) $cid,
+                        'numberposts'      => 1,
+                        'fields'           => 'ids',
+                        'orderby'          => 'date',
+                        'order'            => 'DESC',
+                        'suppress_filters' => false,
+                    ));
+                    if (!empty($latest)) {
+                        $t = (int) get_post_time('U', true, $latest[0]);
+                        if ($t > $rec_latest) {
+                            $rec_latest = $t;
+                            $rec_id     = (int) $cid;
+                        }
+                    }
+                }
+                if ($rec_id > 0) :
+            ?>
+                <div class="ok-discover-section">
+                    <?php echo self::render_featured_creator(array(
+                        'user_id'  => $rec_id,
+                        'headline' => $atts['recommended_label'],
+                        'body'     => __('Actively publishing on OFFKILTER right now.', 'offkilter-arcana'),
+                    )); ?>
+                </div>
+            <?php endif; endif; ?>
 
             <?php
             // Discussions placeholder
