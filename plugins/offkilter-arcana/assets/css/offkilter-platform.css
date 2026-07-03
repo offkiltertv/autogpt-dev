@@ -21,12 +21,13 @@
   --ok-border:         #1E2430;
   --ok-border-accent:  #2A3040;
 
-  /* Brand accents */
-  --ok-accent:         #E50914;   /* OFFKILTER red   */
-  --ok-signal:         #00C2FF;   /* Signals blue    */
-  --ok-arcana:         #8B5CF6;   /* Arcana purple   */
-  --ok-community:      #22C55E;   /* Community green */
-  --ok-pulse:          #2DE0C0;   /* Pulse teal — its own accent */
+  /* Brand accents (v3.4 pillar palette) */
+  --ok-accent:         #E50914;   /* OFFKILTER red — master brand: logo + primary CTAs */
+  --ok-signal:         #00C2FF;   /* Signals — blue (intelligence, discovery) */
+  --ok-arcana:         #8B5CF6;   /* Arcana — purple (mystery, intuition) */
+  --ok-community:      #22C55E;   /* Community — green (conversation) */
+  --ok-pulse:          #FF6A00;   /* Pulse — orange (fast, breaking, short-form) */
+  --ok-creators:       #F5B301;   /* Creators — gold (people, stories) */
 
   /* Text */
   --ok-text:           #F3F6FB;
@@ -1464,7 +1465,7 @@ body.arm-page-register .arm-form,
 }
 
 .ok-content-explainer--creators {
-  border-left-color: var(--ok-accent);
+  border-left-color: var(--ok-creators);
 }
 
 .ok-content-explainer__icon {
@@ -2023,7 +2024,7 @@ button:focus:not(:focus-visible) {
 /* Pillar top-border accents */
 .ok-destination-hero--signals   { border-top-color: var(--ok-signal); }
 .ok-destination-hero--arcana    { border-top-color: var(--ok-arcana); }
-.ok-destination-hero--creators  { border-top-color: var(--ok-accent); }
+.ok-destination-hero--creators  { border-top-color: var(--ok-creators); }
 .ok-destination-hero--community { border-top-color: var(--ok-community); }
 .ok-destination-hero--watch     { border-top-color: var(--ok-accent); }
 
@@ -2153,9 +2154,9 @@ button:focus:not(:focus-visible) {
 
 .ok-pillar-chip--creators:hover,
 .ok-pillar-chip--creators.ok-pillar-chip--active {
-  border-color: var(--ok-accent);
-  color: var(--ok-accent);
-  background: rgba(229, 9, 20, 0.07);
+  border-color: var(--ok-creators);
+  color: var(--ok-creators);
+  background: rgba(245, 179, 1, 0.09);
 }
 
 .ok-pillar-chip--community:hover,
@@ -3951,7 +3952,7 @@ body.single-vidmov_video table.compat-attachment-fields {
 .ok-platform-story__row--pulse .ok-platform-story__term { color: var(--ok-pulse); }
 .ok-platform-story__row--signals .ok-platform-story__term { color: var(--ok-signal); }
 .ok-platform-story__row--arcana .ok-platform-story__term { color: var(--ok-arcana); }
-.ok-platform-story__row--creators .ok-platform-story__term { color: var(--ok-accent); }
+.ok-platform-story__row--creators .ok-platform-story__term { color: var(--ok-creators); }
 .ok-platform-story__row--community .ok-platform-story__term { color: var(--ok-community); }
 
 .ok-featured-creator__name .ok-verified-badge,
@@ -4354,7 +4355,7 @@ body.single-vidmov_video table.compat-attachment-fields {
    Was implicitly inheriting --ok-accent (correct), now documented.
    ---------------------------------------------------------- */
 .ok-platform-intro__card--creators .ok-platform-intro__card-icon {
-  color: var(--ok-accent);
+  color: var(--ok-creators);
 }
 
 /* ----------------------------------------------------------
@@ -4445,7 +4446,7 @@ body.single-vidmov_video table.compat-attachment-fields {
 .ok-platform-intro__card--pulse:focus-visible     { outline-color: var(--ok-pulse); }
 .ok-platform-intro__card--signals:focus-visible   { outline-color: var(--ok-signal); }
 .ok-platform-intro__card--arcana:focus-visible    { outline-color: var(--ok-arcana); }
-.ok-platform-intro__card--creators:focus-visible  { outline-color: var(--ok-accent); }
+.ok-platform-intro__card--creators:focus-visible  { outline-color: var(--ok-creators); }
 .ok-platform-intro__card--community:focus-visible { outline-color: var(--ok-community); }
 
 /* ----------------------------------------------------------
@@ -4891,12 +4892,13 @@ body.single-vidmov_video table.compat-attachment-fields {
 /* ----------------------------------------------------------
    AF-3: Creators identity — the missing pillar variant + empty.
    ---------------------------------------------------------- */
-.ok-featured-creator--creators { border-left-color: var(--ok-accent); }
+.ok-featured-creator--creators { border-left-color: var(--ok-creators); }
 .ok-curated-section__header--creators {
-  background: linear-gradient(90deg, rgba(229, 9, 20, 0.12), transparent 78%);
-  border-bottom: 1px solid rgba(229, 9, 20, 0.28);
+  background: linear-gradient(90deg, rgba(245, 179, 1, 0.14), transparent 78%);
+  border-bottom: 1px solid rgba(245, 179, 1, 0.3);
 }
-.ok-empty-state--creators .ok-empty-state__icon { color: var(--ok-accent); }
+.ok-curated-section__header--creators .ok-curated-section__title { color: var(--ok-creators); }
+.ok-empty-state--creators .ok-empty-state__icon { color: var(--ok-creators); }
 
 /* ----------------------------------------------------------
    AF-4: Loading / skeleton affordance (reuses Section E .ok-skeleton).
