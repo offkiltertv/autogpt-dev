@@ -1,6 +1,6 @@
 /*
  * OFFKILTER Platform Design System
-* Version: 3.3.2  Branch: feature/arcana-plugin
+* Version: 3.3.3  Branch: feature/arcana-plugin
  *
  * Scope: frontend normalization for VidMov surfaces, plugin shortcodes,
  * and brand-consistent UI elements across OffKilter.TV.
@@ -4978,42 +4978,48 @@ body.single-vidmov_video table.compat-attachment-fields {
 
 /* ============================================================
    SECTION AG — v3.3 OKTV BRAND BAR
-   Recolor the theme's top color/loading bar to the OKTV pillar
-   palette and flow it with scroll position. --ok-scroll (0..1)
-   is set by assets/js/ok-brandbar.js (rAF-throttled).
+   A self-owned fixed brand bar (injected by assets/js/ok-brandbar.js) in the
+   OKTV pillar palette that flows with scroll. We also recolor the theme's own
+   top color bar so the very top of the document is on-brand before our bar
+   mounts. --ok-scroll (0..1) is set by the script (rAF-throttled).
    ============================================================ */
-.beeteam368_color_bar {
+
+/* Our own persistent brand bar — full control, no theme specificity war. */
+.ok-brandbar {
   --ok-scroll: 0;
-  position: fixed !important;
+  position: fixed;
   top: 0; left: 0; right: 0;
+  height: 3px;
   z-index: 100000;
-}
-.beeteam368_color_bar.beeteam368_color_loading_control::before {
+  pointer-events: none;
   background-image: linear-gradient(
     90deg,
-    var(--ok-accent) 0%,
-    var(--ok-pulse) 22%,
-    var(--ok-signal) 42%,
-    var(--ok-arcana) 64%,
-    var(--ok-community) 82%,
-    var(--ok-accent) 100%
-  ) !important;
-  background-size: 200% 100% !important;
-  /* flows left as the reader scrolls down; static (but on-brand) at rest */
-  background-position: calc(var(--ok-scroll) * -100%) 0 !important;
-  height: calc(3px + var(--ok-scroll) * 1px) !important;
-  box-shadow: 0 0 calc(var(--ok-scroll) * 10px) rgba(139, 92, 246, calc(var(--ok-scroll) * 0.5));
-  transition: box-shadow 0.2s ease;
+    var(--ok-accent) 0%, var(--ok-pulse) 22%, var(--ok-signal) 42%,
+    var(--ok-arcana) 64%, var(--ok-community) 82%, var(--ok-accent) 100%
+  );
+  background-size: 200% 100%;
+  background-position: calc(var(--ok-scroll) * -100%) 0;
+  height: calc(3px + var(--ok-scroll) * 1px);
+  box-shadow: 0 0 calc(var(--ok-scroll) * 12px) rgba(139, 92, 246, calc(var(--ok-scroll) * 0.55));
+  transition: box-shadow 0.2s ease, height 0.2s ease;
 }
-/* Idle shimmer only when the user isn't driving it via scroll. */
-.beeteam368_color_bar.beeteam368_color_loading_control.ok-bar-idle::before {
-  animation: ok-brandbar-pan 14s linear infinite;
-}
+.ok-brandbar.ok-bar-idle { animation: ok-brandbar-pan 14s linear infinite; }
 @keyframes ok-brandbar-pan {
   0%   { background-position: 0 0; }
   100% { background-position: -200% 0; }
 }
+
+/* Recolor the theme's stock top bar (higher specificity than its :before). */
+.beeteam368_color_bar.beeteam368_color_loading_control::before {
+  background-image: linear-gradient(
+    90deg,
+    var(--ok-accent) 0%, var(--ok-pulse) 22%, var(--ok-signal) 42%,
+    var(--ok-arcana) 64%, var(--ok-community) 82%, var(--ok-accent) 100%
+  ) !important;
+  background-size: 200% 100% !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .beeteam368_color_bar.beeteam368_color_loading_control::before { transition: none; height: 3px !important; box-shadow: none; }
-  .beeteam368_color_bar.beeteam368_color_loading_control.ok-bar-idle::before { animation: none; }
+  .ok-brandbar { height: 3px !important; box-shadow: none; transition: none; background-position: 0 0 !important; }
+  .ok-brandbar.ok-bar-idle { animation: none; }
 }
