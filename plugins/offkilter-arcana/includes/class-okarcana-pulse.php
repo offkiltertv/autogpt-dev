@@ -397,13 +397,24 @@ class OKArcana_Pulse
      */
     public static function pulse_card($post_id)
     {
-        $post_id   = (int) $post_id;
-        $thumb     = get_the_post_thumbnail_url($post_id, 'medium');
-        $creator   = get_the_author_meta('display_name', (int) get_post_field('post_author', $post_id));
-        $status    = (string) get_post_meta($post_id, self::META_STATUS, true);
-        $is_owner  = get_current_user_id() && (int) get_post_field('post_author', $post_id) === get_current_user_id();
+        $post_id    = (int) $post_id;
+        $thumb      = get_the_post_thumbnail_url($post_id, 'medium');
+        $creator_id = (int) get_post_field('post_author', $post_id);
+        $creator    = get_the_author_meta('display_name', $creator_id);
+        $status     = (string) get_post_meta($post_id, self::META_STATUS, true);
+        $is_owner   = get_current_user_id() && $creator_id === get_current_user_id();
         // "NEW" while the Pulse is fresh (< 48h) — reinforces the "what's happening now" promise.
-        $is_new    = (time() - (int) get_post_time('U', true, $post_id)) < (48 * HOUR_IN_SECONDS);
+        $is_new     = (time() - (int) get_post_time('U', true, $post_id)) < (48 * HOUR_IN_SECONDS);
+
+        // v3.0 identity chips: duration (from clipper meta) + first pulse tag.
+        $duration_ms = (int) get_post_meta($post_id, self::META_DURATION, true);
+        $duration    = '';
+        if ($duration_ms > 0) {
+            $secs     = (int) round($duration_ms / 1000);
+            $duration = sprintf('%d:%02d', (int) floor($secs / 60), $secs % 60);
+        }
+        $tags      = wp_get_post_terms($post_id, self::TAX_TAG, array('fields' => 'names'));
+        $first_tag = (!is_wp_error($tags) && !empty($tags)) ? (string) $tags[0] : '';
 
         ob_start();
         ?>
@@ -414,6 +425,9 @@ class OKArcana_Pulse
                         <img src="<?php echo esc_url($thumb); ?>" alt="<?php echo esc_attr(get_the_title($post_id)); ?>" loading="lazy" width="320" height="180">
                     <?php endif; ?>
                     <span class="ok-pulse-badge">Pulse</span>
+                    <?php if ($duration !== '') : ?>
+                        <span class="ok-pulse-duration"><?php echo esc_html($duration); ?></span>
+                    <?php endif; ?>
                     <?php if ($is_new) : ?>
                         <span class="ok-pulse-new"><?php esc_html_e('New', 'offkilter-arcana'); ?></span>
                     <?php endif; ?>
@@ -428,7 +442,10 @@ class OKArcana_Pulse
                 </p>
                 <div class="oktv-signals-card__footer">
                     <?php if ($creator !== '') : ?>
-                        <span class="oktv-signals-card__creator"><?php echo esc_html($creator); ?></span>
+                        <span class="oktv-signals-card__creator"><a href="<?php echo esc_url(get_author_posts_url($creator_id)); ?>"><?php echo esc_html($creator); ?></a></span>
+                    <?php endif; ?>
+                    <?php if ($first_tag !== '') : ?>
+                        <span class="ok-pulse-tag">#<?php echo esc_html($first_tag); ?></span>
                     <?php endif; ?>
                     <span class="oktv-signals-card__date"><?php echo esc_html(get_the_date('M j', $post_id)); ?></span>
                 </div>
@@ -473,7 +490,10 @@ class OKArcana_Pulse
         <div class="<?php echo esc_attr($outer_class); ?>">
             <header class="ok-pulse-destination__hero">
                 <span class="ok-pulse-destination__icon" aria-hidden="true"><i class="fas fa-wave-square"></i></span>
-                <h1 class="ok-pulse-destination__headline"><?php echo esc_html($atts['headline']); ?></h1>
+                <h1 class="ok-pulse-destination__headline">
+                    <span class="ok-pulse-destination__dot" aria-hidden="true"></span>
+                    <?php echo esc_html($atts['headline']); ?>
+                </h1>
                 <p class="ok-pulse-destination__sub"><?php echo esc_html($atts['sub']); ?></p>
             </header>
 
