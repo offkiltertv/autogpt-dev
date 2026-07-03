@@ -1,6 +1,6 @@
 /*
  * OFFKILTER Platform Design System
-* Version: 3.3.3  Branch: feature/arcana-plugin
+* Version: 3.3.4  Branch: feature/arcana-plugin
  *
  * Scope: frontend normalization for VidMov surfaces, plugin shortcodes,
  * and brand-consistent UI elements across OffKilter.TV.
@@ -4990,7 +4990,7 @@ body.single-vidmov_video table.compat-attachment-fields {
   position: fixed;
   top: 0; left: 0; right: 0;
   height: 3px;
-  z-index: 100000;
+  z-index: 2147483647;
   pointer-events: none;
   background-image: linear-gradient(
     90deg,
