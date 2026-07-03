@@ -1,6 +1,6 @@
 /*
  * OFFKILTER Platform Design System
- * Version: 3.0.0  Branch: feature/arcana-plugin
+* Version: 3.2.0  Branch: feature/arcana-plugin
  *
  * Scope: frontend normalization for VidMov surfaces, plugin shortcodes,
  * and brand-consistent UI elements across OffKilter.TV.
@@ -4722,4 +4722,205 @@ body.single-vidmov_video table.compat-attachment-fields {
 @media (prefers-reduced-motion: reduce) {
   .ok-pulse-destination__dot { animation: none; }
   .ok-hero__cta { transition: none; }
+}
+
+
+/* ============================================================
+   SECTION AF — v3.2 BRAND IDENTITY & EDITORIAL
+   Arcana flagship (refined & premium), Signals destination,
+   creators identity, editorial collections, polish.
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   AF-1: Arcana flagship destination — refined, premium purple.
+   ---------------------------------------------------------- */
+.ok-arcana-destination {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+.ok-arcana-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.6rem;
+  padding: 2.75rem 1.25rem 2.25rem;
+  border-radius: var(--ok-radius-lg);
+  border: 1px solid rgba(139, 92, 246, 0.28);
+  background:
+    radial-gradient(120% 140% at 50% 0%, rgba(139, 92, 246, 0.16) 0%, rgba(139, 92, 246, 0.04) 45%, transparent 72%),
+    linear-gradient(180deg, var(--ok-surface-raised), var(--ok-surface));
+  box-shadow: inset 0 1px 0 rgba(169, 133, 255, 0.12), 0 0 40px rgba(139, 92, 246, 0.08);
+}
+.ok-arcana-hero__orb {
+  display: inline-flex;
+  filter: drop-shadow(0 4px 18px rgba(139, 92, 246, 0.45));
+}
+.ok-arcana-hero__headline {
+  margin: 0.35rem 0 0;
+  font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  background: linear-gradient(90deg, #EAD9FF, #A985FF 55%, #8B5CF6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.ok-arcana-hero__sub {
+  margin: 0;
+  max-width: 40rem;
+  color: var(--ok-text-muted);
+  font-size: clamp(0.95rem, 1.6vw, 1.08rem);
+  line-height: 1.5;
+}
+.ok-arcana-explainer {
+  border-left: 3px solid var(--ok-arcana);
+  background: rgba(139, 92, 246, 0.05);
+  border-radius: 0 var(--ok-radius) var(--ok-radius) 0;
+  padding: 1rem 1.15rem;
+}
+.ok-arcana-explainer__body {
+  margin: 0;
+  color: var(--ok-text-muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  font-style: italic;
+}
+/* Premium purple gradient headers for Arcana sections + gentle hover glow. */
+.ok-arcana-destination .ok-curated-section__header,
+.ok-curated-section__header--arcana {
+  position: relative;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.14), transparent 78%);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.28);
+}
+.ok-arcana-destination .ok-curated-section__title,
+.ok-curated-section__header--arcana .ok-curated-section__title {
+  color: #C9B6FF;
+  letter-spacing: 0.04em;
+}
+.ok-arcana-destination .oktv-signals-card {
+  border: 1px solid rgba(139, 92, 246, 0.22);
+  transition: box-shadow var(--ok-transition), transform var(--ok-transition), border-color var(--ok-transition);
+}
+.ok-arcana-destination .oktv-signals-card:hover {
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.25);
+  transform: translateY(-2px);
+}
+/* Branded Arcana empty state. */
+.ok-empty-state--arcana {
+  background: rgba(139, 92, 246, 0.05);
+  border: 1px dashed rgba(139, 92, 246, 0.4);
+  border-radius: var(--ok-radius);
+}
+.ok-empty-state--arcana .ok-empty-state__icon { color: var(--ok-arcana); }
+
+/* ----------------------------------------------------------
+   AF-2: Signals destination — blue, sharp, fast.
+   ---------------------------------------------------------- */
+.ok-signals-destination {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+.ok-signals-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.55rem;
+  padding: 2.5rem 1.25rem 2rem;
+  border-radius: var(--ok-radius-lg);
+  border: 1px solid rgba(0, 194, 255, 0.24);
+  background:
+    radial-gradient(120% 140% at 50% 0%, rgba(0, 194, 255, 0.14) 0%, rgba(0, 194, 255, 0.03) 45%, transparent 72%),
+    linear-gradient(180deg, var(--ok-surface-raised), var(--ok-surface));
+}
+.ok-signals-hero__icon {
+  font-size: 2.4rem;
+  color: var(--ok-signal);
+  filter: drop-shadow(0 2px 12px rgba(0, 194, 255, 0.4));
+}
+.ok-signals-hero__headline {
+  margin: 0.2rem 0 0;
+  font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+  font-weight: 800;
+  color: var(--ok-text);
+}
+.ok-signals-hero__sub {
+  margin: 0;
+  max-width: 40rem;
+  color: var(--ok-text-muted);
+  font-size: clamp(0.95rem, 1.6vw, 1.08rem);
+}
+.ok-signals-explainer {
+  border-left: 3px solid var(--ok-signal);
+  background: rgba(0, 194, 255, 0.05);
+  border-radius: 0 var(--ok-radius) var(--ok-radius) 0;
+  padding: 1rem 1.15rem;
+}
+.ok-signals-explainer__body { margin: 0; color: var(--ok-text-muted); font-size: 0.92rem; line-height: 1.55; }
+
+/* ----------------------------------------------------------
+   AF-3: Creators identity — the missing pillar variant + empty.
+   ---------------------------------------------------------- */
+.ok-featured-creator--creators { border-left-color: var(--ok-accent); }
+.ok-curated-section__header--creators {
+  background: linear-gradient(90deg, rgba(229, 9, 20, 0.12), transparent 78%);
+  border-bottom: 1px solid rgba(229, 9, 20, 0.28);
+}
+.ok-empty-state--creators .ok-empty-state__icon { color: var(--ok-accent); }
+
+/* ----------------------------------------------------------
+   AF-4: Loading / skeleton affordance (reuses Section E .ok-skeleton).
+   A feed can render this placeholder row while content is pending.
+   ---------------------------------------------------------- */
+.ok-feed-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.ok-feed-skeleton__card {
+  border: 1px solid var(--ok-border);
+  border-radius: var(--ok-radius);
+  overflow: hidden;
+  background: var(--ok-surface);
+}
+.ok-feed-skeleton__thumb { aspect-ratio: 16 / 9; background: var(--ok-surface-raised); }
+.ok-feed-skeleton__line {
+  height: 0.7rem;
+  margin: 0.6rem;
+  border-radius: 4px;
+  background: var(--ok-surface-raised);
+}
+.ok-feed-skeleton__line--short { width: 55%; }
+.ok-feed-skeleton__card,
+.ok-feed-skeleton__thumb,
+.ok-feed-skeleton__line { animation: ok-skeleton-pulse 1.6s ease-in-out infinite; }
+@keyframes ok-skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+
+/* ----------------------------------------------------------
+   AF-5: Polish — button hierarchy, focus, card rhythm.
+   ---------------------------------------------------------- */
+.ok-hero__cta:focus-visible,
+.ok-arcana-hero a:focus-visible,
+.ok-signals-hero a:focus-visible {
+  outline: 2px solid var(--ok-signal);
+  outline-offset: 2px;
+}
+.ok-discover-section { scroll-margin-top: 1.5rem; }
+
+@media (max-width: 768px) {
+  .ok-arcana-hero, .ok-signals-hero { padding: 2rem 1rem 1.6rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ok-feed-skeleton__card,
+  .ok-feed-skeleton__thumb,
+  .ok-feed-skeleton__line { animation: none; }
+  .ok-arcana-destination .oktv-signals-card:hover { transform: none; }
 }

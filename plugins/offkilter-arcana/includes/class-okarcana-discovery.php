@@ -16,6 +16,9 @@ class OKArcana_Discovery
         add_shortcode('oktv_featured_creator',  array(__CLASS__, 'render_featured_creator'));
         add_shortcode('oktv_platform_story',    array(__CLASS__, 'render_platform_story'));
         add_shortcode('oktv_post_watch',        array(__CLASS__, 'render_post_watch'));
+        add_shortcode('oktv_arcana_destination', array(__CLASS__, 'render_arcana_destination'));
+        add_shortcode('oktv_signals_destination', array(__CLASS__, 'render_signals_destination'));
+        add_shortcode('oktv_collection',        array(__CLASS__, 'render_collection'));
 
         // v2.9 Watch experience: append "Watch Next" + discuss slot to public
         // single-video pages via the_content (no theme template edits needed).
@@ -252,6 +255,205 @@ class OKArcana_Discovery
     // Kept here (not imported from OKArcana_Destinations) to avoid coupling.
     // -------------------------------------------------------------------------
 
+    /**
+     * Inline crystal-ball mark (no Font Awesome dependency) for the Arcana hero.
+     *
+     * @return string
+     */
+    public static function crystal_ball_svg()
+    {
+        return '<svg class="ok-arcana-orb" viewBox="0 0 64 64" width="56" height="56" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">'
+            . '<defs><radialGradient id="okorb" cx="38%" cy="34%" r="70%">'
+            . '<stop offset="0" stop-color="#EAD9FF"/><stop offset="42%" stop-color="#A985FF"/>'
+            . '<stop offset="100%" stop-color="#6D28D9"/></radialGradient></defs>'
+            . '<path d="M20 46 L44 46 L48 54 L16 54 Z" fill="#3A2A5E"/>'
+            . '<rect x="24" y="43" width="16" height="5" rx="2" fill="#4C3579"/>'
+            . '<circle cx="32" cy="27" r="19" fill="url(#okorb)"/>'
+            . '<ellipse cx="25" cy="20" rx="6" ry="4" fill="#FFFFFF" opacity="0.45"/>'
+            . '<path d="M41 15 l1.4 3 3 1.4 -3 1.4 -1.4 3 -1.4 -3 -3 -1.4 3 -1.4 z" fill="#FFFFFF" opacity="0.8"/>'
+            . '</svg>';
+    }
+
+    /**
+     * [oktv_arcana_destination] — the flagship Arcana landing.
+     */
+    public static function render_arcana_destination($atts)
+    {
+        $atts = shortcode_atts(array(
+            'headline'       => 'OFFKILTER Arcana',
+            'sub'            => 'The intuitive layer — readings, premonitions, and outcomes.',
+            'spotlight_ids'  => '',
+            'show_creators'  => 1,
+            'wrapper_class'  => '',
+        ), $atts, 'oktv_arcana_destination');
+
+        $outer = 'ok-arcana-destination';
+        if ($atts['wrapper_class']) {
+            $outer .= ' ' . esc_attr($atts['wrapper_class']);
+        }
+
+        ob_start();
+        ?>
+        <div class="<?php echo esc_attr($outer); ?>">
+            <header class="ok-destination-hero ok-destination-hero--arcana ok-arcana-hero">
+                <span class="ok-arcana-hero__orb"><?php echo self::crystal_ball_svg(); ?></span>
+                <h1 class="ok-arcana-hero__headline"><?php echo esc_html($atts['headline']); ?></h1>
+                <p class="ok-arcana-hero__sub"><?php echo esc_html($atts['sub']); ?></p>
+            </header>
+
+            <div class="ok-arcana-explainer">
+                <p class="ok-arcana-explainer__body">
+                    <?php esc_html_e('Arcana is where intuition meets interpretation — tarot readings, premonitions, and outcome forecasts from creators who read the signs. Not entertainment for its own sake: a reading worth sitting with.', 'offkilter-arcana'); ?>
+                </p>
+            </div>
+
+            <?php if ($atts['spotlight_ids']) : ?>
+            <div class="ok-discover-section">
+                <?php echo self::render_curated_section(array(
+                    'title'    => __('Arcana Spotlight', 'offkilter-arcana'),
+                    'post_ids' => $atts['spotlight_ids'],
+                    'layout'   => 'cards',
+                    'pillar'   => 'arcana',
+                )); ?>
+            </div>
+            <?php endif; ?>
+
+            <div class="ok-discover-section">
+                <?php echo self::render_curated_section(array(
+                    'title' => __('Premonitions', 'offkilter-arcana'), 'categories' => 'premonitions',
+                    'limit' => 6, 'layout' => 'cards', 'pillar' => 'arcana',
+                )); ?>
+            </div>
+            <div class="ok-discover-section">
+                <?php echo self::render_curated_section(array(
+                    'title' => __('Outcomes', 'offkilter-arcana'), 'categories' => 'outcomes',
+                    'limit' => 6, 'layout' => 'cards', 'pillar' => 'arcana',
+                )); ?>
+            </div>
+            <div class="ok-discover-section">
+                <?php echo self::render_curated_section(array(
+                    'title' => __('Readings', 'offkilter-arcana'), 'categories' => 'arcana',
+                    'limit' => 8, 'layout' => 'cards', 'pillar' => 'arcana',
+                )); ?>
+            </div>
+
+            <?php if (!empty($atts['show_creators'])) : ?>
+            <div class="ok-discover-section">
+                <header class="ok-curated-section__header ok-curated-section__header--arcana">
+                    <h3 class="ok-curated-section__title"><?php esc_html_e('Arcana Readers', 'offkilter-arcana'); ?></h3>
+                </header>
+                <div class="ok-discover-creators-row">
+                    <?php
+                    $readers = class_exists('OKArcana_Settings') ? OKArcana_Settings::featured_creator_ids() : array();
+                    foreach (array_slice($readers, 0, 4) as $uid) {
+                        echo OKArcana_Signals::render_creator_spotlight_shortcode(array(
+                            'user_id' => (int) $uid, 'show_stats' => 1, 'show_latest' => 0,
+                        ));
+                    }
+                    ?>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
+        <?php
+        return (string) ob_get_clean();
+    }
+
+    /**
+     * [oktv_signals_destination] — branded Signals landing.
+     */
+    public static function render_signals_destination($atts)
+    {
+        $atts = shortcode_atts(array(
+            'headline'      => 'OFFKILTER Signals',
+            'sub'           => 'The standout clips worth your attention. Under 90 seconds.',
+            'wrapper_class' => '',
+        ), $atts, 'oktv_signals_destination');
+
+        $outer = 'ok-signals-destination';
+        if ($atts['wrapper_class']) {
+            $outer .= ' ' . esc_attr($atts['wrapper_class']);
+        }
+
+        ob_start();
+        ?>
+        <div class="<?php echo esc_attr($outer); ?>">
+            <header class="ok-destination-hero ok-destination-hero--signals ok-signals-hero">
+                <span class="ok-signals-hero__icon" aria-hidden="true"><i class="fas fa-bolt"></i></span>
+                <h1 class="ok-signals-hero__headline"><?php echo esc_html($atts['headline']); ?></h1>
+                <p class="ok-signals-hero__sub"><?php echo esc_html($atts['sub']); ?></p>
+            </header>
+
+            <div class="ok-signals-explainer">
+                <p class="ok-signals-explainer__body">
+                    <?php esc_html_e('A Signal is a fast, high-value moment — a clip, clue, or shift worth tracking right now. Under 90 seconds, always to the point.', 'offkilter-arcana'); ?>
+                </p>
+            </div>
+
+            <div class="ok-discover-section">
+                <?php echo do_shortcode('[oktv_signals_latest title="Breaking Signals" limit="8" layout="cards"]'); ?>
+            </div>
+            <div class="ok-discover-section">
+                <?php echo do_shortcode('[oktv_arcana_signals_latest title="Arcana Signals" limit="6" layout="cards"]'); ?>
+            </div>
+        </div>
+        <?php
+        return (string) ob_get_clean();
+    }
+
+    /**
+     * [oktv_collection preset="..."] — named editorial collections mapped to the
+     * right renderer with branded pillar styling.
+     */
+    public static function render_collection($atts)
+    {
+        $atts = shortcode_atts(array(
+            'preset' => '', 'ids' => '', 'limit' => 0, 'title' => '',
+        ), $atts, 'oktv_collection');
+
+        $preset = sanitize_key($atts['preset']);
+        $ids    = (string) $atts['ids'];
+        $title  = (string) $atts['title'];
+
+        switch ($preset) {
+            case 'breaking_signals':
+                $limit = $atts['limit'] ? (int) $atts['limit'] : 4;
+                return do_shortcode('[oktv_signals_latest title="' . esc_attr($title ?: 'Breaking Signals') . '" limit="' . $limit . '" layout="cards"]');
+
+            case 'arcana_spotlight':
+                $limit = $atts['limit'] ? (int) $atts['limit'] : 4;
+                if ($ids !== '') {
+                    return self::render_curated_section(array('title' => $title ?: 'Arcana Spotlight', 'post_ids' => $ids, 'layout' => 'cards', 'pillar' => 'arcana'));
+                }
+                return do_shortcode('[oktv_arcana_signals_latest title="' . esc_attr($title ?: 'Arcana Spotlight') . '" limit="' . $limit . '" layout="cards"]');
+
+            case 'featured_pulse':
+                if (!class_exists('OKArcana_Pulse')) { return ''; }
+                $limit = $atts['limit'] ? (int) $atts['limit'] : 4;
+                return OKArcana_Pulse::render_pulse_feed_shortcode(array('title' => $title ?: 'Featured Pulse', 'post_ids' => $ids, 'limit' => $limit, 'layout' => 'cards'));
+
+            case 'recently_discovered':
+                $limit = $atts['limit'] ? (int) $atts['limit'] : 6;
+                return self::render_curated_section(array('title' => $title ?: 'Recently Discovered', 'categories' => 'arcana,signals', 'limit' => $limit, 'layout' => 'cards'));
+
+            case 'editors_picks':
+                if ($ids === '') { return ''; }
+                return self::render_curated_section(array('title' => $title ?: "Editor's Picks", 'label' => "Editor's Pick", 'post_ids' => $ids, 'layout' => 'cards'));
+
+            case 'creator_of_the_week':
+                $uid = (int) $ids;
+                if ($uid <= 0) {
+                    $featured = class_exists('OKArcana_Settings') ? OKArcana_Settings::featured_creator_ids() : array();
+                    $uid = !empty($featured) ? (int) $featured[0] : 0;
+                }
+                if ($uid <= 0) { return ''; }
+                return self::render_featured_creator(array('user_id' => $uid, 'headline' => $title ?: 'Creator of the Week', 'body' => __('This week\'s featured OFFKILTER creator.', 'offkilter-arcana')));
+
+            default:
+                return '';
+        }
+    }
+
     private static function pillar_config()
     {
         return array(
@@ -265,13 +467,13 @@ class OKArcana_Discovery
                 'icon'  => 'fas fa-bolt',
                 'name'  => 'Signals',
                 'desc'  => 'The standout clip worth your attention. Under 90 seconds.',
-                'href'  => '/video-category/signals/',
+                'href'  => '/signals/',
             ),
             'arcana'    => array(
                 'icon'  => 'fas fa-gem',
                 'name'  => 'Arcana',
                 'desc'  => 'Readings, premonitions, outcomes.',
-                'href'  => '/video-category/arcana/',
+                'href'  => '/arcana/',
             ),
             'creators'  => array(
                 'icon'  => 'fas fa-user-group',

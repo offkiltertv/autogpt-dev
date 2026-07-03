@@ -3,7 +3,7 @@
  * Plugin Name: OffKilter Arcana
  * Plugin URI: https://offkilter.tv
  * Description: OFFKILTER platform identity, discovery, and content intelligence layer for OffKilter.TV.
- * Version: 3.1.0
+ * Version: 3.2.0
  * Author: OffKilter.TV
  * License: GPLv2 or later
  * Text Domain: offkilter-arcana
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('OKARCANA_VERSION', '3.1.0');
+define('OKARCANA_VERSION', '3.2.0');
 define('OKARCANA_PLUGIN_FILE', __FILE__);
 define('OKARCANA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('OKARCANA_PLUGIN_URL', plugin_dir_url(__FILE__));
