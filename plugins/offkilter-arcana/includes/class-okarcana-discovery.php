@@ -15,6 +15,7 @@ class OKArcana_Discovery
         add_shortcode('oktv_watch_nav',         array(__CLASS__, 'render_watch_nav'));
         add_shortcode('oktv_featured_creator',  array(__CLASS__, 'render_featured_creator'));
         add_shortcode('oktv_platform_story',    array(__CLASS__, 'render_platform_story'));
+        add_shortcode('oktv_post_watch',        array(__CLASS__, 'render_post_watch'));
 
         // v2.9 Watch experience: append "Watch Next" + discuss slot to public
         // single-video pages via the_content (no theme template edits needed).
@@ -70,12 +71,111 @@ class OKArcana_Discovery
 
         $done = true;
 
-        $extra = self::render_recommended_next(array('limit' => 3));
-        if (shortcode_exists('oktv_discuss_slot')) {
-            $extra .= do_shortcode('[oktv_discuss_slot type="discuss"]');
+        return $content . self::render_post_watch(array('post_id' => get_the_ID()));
+    }
+
+    // -------------------------------------------------------------------------
+    // [oktv_post_watch]
+    // v3.0 post-watch engagement composite for single-video pages:
+    // Watch Next + Related Signals + Related Pulse + Related Creator + the
+    // reserved SidebarChat slot. Sections render only when they have content.
+    //
+    // Attributes:
+    //   post_id       int  0  (auto-detects)
+    //   limit         int  3  (watch-next size)
+    //   wrapper_class string ""
+    // -------------------------------------------------------------------------
+
+    public static function render_post_watch($atts)
+    {
+        $atts = shortcode_atts(array(
+            'post_id'       => 0,
+            'limit'         => 3,
+            'wrapper_class' => '',
+        ), (array) $atts, 'oktv_post_watch');
+
+        $post_id = (int) $atts['post_id'];
+        if ($post_id <= 0) {
+            $post_id = (int) get_the_ID();
+        }
+        if ($post_id <= 0) {
+            return '';
         }
 
-        return $content . $extra;
+        $author_id   = (int) get_post_field('post_author', $post_id);
+        $outer_class = 'ok-post-watch';
+        if ($atts['wrapper_class']) {
+            $outer_class .= ' ' . esc_attr($atts['wrapper_class']);
+        }
+
+        $out = '';
+
+        // 1. Watch Next — related by taxonomy (existing block).
+        $out .= self::render_recommended_next(array('post_id' => $post_id, 'limit' => (int) $atts['limit']));
+
+        // 2. Related Signals — the creator's own short-form clips.
+        if (class_exists('OKArcana_Signals')) {
+            $signal_ids = get_posts(array(
+                'post_type'        => 'vidmov_video',
+                'post_status'      => 'publish',
+                'author'           => $author_id,
+                'post__not_in'     => array($post_id),
+                'numberposts'      => 3,
+                'fields'           => 'ids',
+                'meta_key'         => OKArcana_Signals::META_CLASS,
+                'meta_value'       => OKArcana_Signals::CLASS_SIGNAL,
+                'suppress_filters' => false,
+            ));
+            if (!empty($signal_ids)) {
+                $out .= self::render_curated_section(array(
+                    'title'    => __('Related Signals', 'offkilter-arcana'),
+                    'post_ids' => implode(',', array_map('intval', $signal_ids)),
+                    'limit'    => count($signal_ids),
+                    'layout'   => 'cards',
+                    'pillar'   => 'signals',
+                ));
+            }
+        }
+
+        // 3. Related Pulse — the creator's pulses, else skip silently.
+        if (class_exists('OKArcana_Pulse')) {
+            $pulse_ids = get_posts(array(
+                'post_type'        => 'pulse_item',
+                'post_status'      => 'publish',
+                'author'           => $author_id,
+                'numberposts'      => 3,
+                'fields'           => 'ids',
+                'suppress_filters' => false,
+            ));
+            if (!empty($pulse_ids)) {
+                $out .= OKArcana_Pulse::render_pulse_feed_shortcode(array(
+                    'title'    => __('Related Pulse', 'offkilter-arcana'),
+                    'post_ids' => implode(',', array_map('intval', $pulse_ids)),
+                    'limit'    => count($pulse_ids),
+                    'layout'   => 'cards',
+                ));
+            }
+        }
+
+        // 4. Related Creator — spotlight of this video's author.
+        if ($author_id > 0 && class_exists('OKArcana_Signals')) {
+            $out .= OKArcana_Signals::render_creator_spotlight_shortcode(array(
+                'user_id'     => $author_id,
+                'show_stats'  => 1,
+                'show_latest' => 0,
+            ));
+        }
+
+        // 5. Reserved SidebarChat discussion hook.
+        if (shortcode_exists('oktv_discuss_slot')) {
+            $out .= do_shortcode('[oktv_discuss_slot type="discuss"]');
+        }
+
+        if ($out === '') {
+            return '';
+        }
+
+        return '<div class="' . esc_attr($outer_class) . '">' . $out . '</div>';
     }
 
     // -------------------------------------------------------------------------
