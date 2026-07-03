@@ -4950,3 +4950,11 @@ body.single-vidmov_video table.compat-attachment-fields {
   .ok-feed-skeleton__line { animation: none; }
   .ok-arcana-destination .oktv-signals-card:hover { transform: none; }
 }
+
+/* AF-6: Arcana archive wrapper (routed template, mirrors pulse archive). */
+.ok-arcana-archive-main { display: block; }
+.ok-arcana-archive-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}

@@ -14,6 +14,27 @@ class OKArcana_Post_Types
     {
         add_action('init', array(__CLASS__, 'register'));
         add_action('init', array(__CLASS__, 'ensure_default_terms'), 20);
+        // Route the arcana_entry archive (/arcana/) to the branded Arcana
+        // destination — same pattern as the Pulse archive. Makes /arcana/ a
+        // first-class landing instead of the theme's generic CPT archive.
+        add_filter('template_include', array(__CLASS__, 'route_archive'));
+    }
+
+    /**
+     * Serve the branded Arcana destination on the arcana_entry archive.
+     *
+     * @param string $template
+     * @return string
+     */
+    public static function route_archive($template)
+    {
+        if (is_post_type_archive(self::POST_TYPE) || is_tax(self::TAX_CATEGORY) || is_tax(self::TAX_TAG)) {
+            $custom = OKARCANA_PLUGIN_DIR . 'templates/archive-arcana_entry.php';
+            if (file_exists($custom)) {
+                return $custom;
+            }
+        }
+        return $template;
     }
 
     public static function register()
