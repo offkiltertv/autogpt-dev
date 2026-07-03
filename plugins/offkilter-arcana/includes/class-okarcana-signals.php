@@ -301,15 +301,35 @@ class OKArcana_Signals
         ?>
         <div class="<?php echo esc_attr((string) $atts['wrapper_class']); ?>">
             <div class="ok-creator-spotlight__avatar">
-                <?php echo get_avatar($user_id, 72, '', esc_attr($display_name)); ?>
+                <?php $spot_avatar = get_user_meta($user_id, 'okarcana_avatar', true); ?>
+                <?php if ($spot_avatar) : ?>
+                    <img src="<?php echo esc_url($spot_avatar); ?>" alt="<?php echo esc_attr($display_name); ?>" width="72" height="72" loading="lazy">
+                <?php else : ?>
+                    <?php echo get_avatar($user_id, 72, '', esc_attr($display_name)); ?>
+                <?php endif; ?>
             </div>
             <div class="ok-creator-spotlight__body">
-                <p class="ok-creator-spotlight__name"><?php echo esc_html($display_name); ?></p>
+                <p class="ok-creator-spotlight__name">
+                    <a href="<?php echo esc_url(get_author_posts_url($user_id)); ?>"><?php echo esc_html($display_name); ?></a>
+                </p>
                 <p class="ok-creator-spotlight__handle">@<?php echo esc_html($handle); ?></p>
                 <?php if (!empty($atts['show_stats'])) : ?>
                     <div class="ok-creator-spotlight__stats">
                         <span><strong><?php echo (int) $video_count; ?></strong> clips</span>
                     </div>
+                <?php endif; ?>
+                <?php
+                // v3.0: creator's own featured item leads (video/pulse/playlist meta).
+                $spot_featured = class_exists('OKArcana_Discovery') ? OKArcana_Discovery::creator_featured_ids($user_id) : array();
+                $spot_featured_id = 0;
+                foreach ($spot_featured as $fid) {
+                    if (get_post_status($fid) === 'publish') { $spot_featured_id = (int) $fid; break; }
+                }
+                if ($spot_featured_id) : ?>
+                    <p class="ok-creator-spotlight__featured">
+                        <span class="ok-creator-spotlight__featured-label"><?php esc_html_e('Featured', 'offkilter-arcana'); ?></span>
+                        <a href="<?php echo esc_url(get_permalink($spot_featured_id)); ?>"><?php echo esc_html(get_the_title($spot_featured_id)); ?></a>
+                    </p>
                 <?php endif; ?>
                 <?php if (!empty($latest_posts)) : ?>
                     <div class="ok-creator-spotlight__latest">

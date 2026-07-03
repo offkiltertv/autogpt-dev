@@ -22,6 +22,27 @@ class OKArcana_Discovery
     }
 
     /**
+     * Per-creator featured content (v3.0 creator trust). Post IDs stored in user
+     * meta so the featured rail persists without shortcode-attr curation:
+     *   okarcana_featured_video, okarcana_featured_pulse, okarcana_featured_playlist.
+     *
+     * @param int $user_id
+     * @return int[]
+     */
+    public static function creator_featured_ids($user_id)
+    {
+        $ids = array();
+        foreach (array('okarcana_featured_video', 'okarcana_featured_pulse', 'okarcana_featured_playlist') as $key) {
+            $val = (int) get_user_meta((int) $user_id, $key, true);
+            if ($val > 0) {
+                $ids[] = $val;
+            }
+        }
+
+        return apply_filters('okarcana_creator_featured_ids', array_values(array_unique($ids)), (int) $user_id);
+    }
+
+    /**
      * Append the recommended-next block (+ reserved discuss slot) to the main
      * content of public single vidmov_video pages. Gated by the
      * `enable_watch_next_append` setting and the `okarcana_watch_next_append`
@@ -470,7 +491,10 @@ class OKArcana_Discovery
                     __('Avatar', 'offkilter-arcana')   => (bool) get_user_meta($user_id, 'okarcana_avatar', true) || (strpos(get_avatar_url($user_id), 'gravatar.com/avatar') === false),
                     __('Bio', 'offkilter-arcana')      => (bool) get_user_meta($user_id, 'description', true),
                     __('Content', 'offkilter-arcana')  => $clip_count > 0,
-                    __('Verified', 'offkilter-arcana') => (bool) get_user_meta($user_id, '_ok_creator_verified', true),
+                    // Public badge OR internal platform verification both count —
+                    // the badge itself stays gated on the public flag.
+                    __('Verified', 'offkilter-arcana') => (bool) get_user_meta($user_id, '_ok_creator_verified', true)
+                        || (bool) get_user_meta($user_id, '_ok_verification_status', true),
                 );
                 $done = count(array_filter($checks));
                 $total = count($checks);
@@ -505,11 +529,15 @@ class OKArcana_Discovery
             <?php endif; endif; ?>
 
             <?php
-            // Featured content
+            // Featured content — explicit shortcode ids win; otherwise the
+            // creator's own featured meta (video / pulse / playlist).
             $featured_ids = array_filter(array_map('absint', explode(',', (string) $atts['featured_ids'])));
+            if (empty($featured_ids)) {
+                $featured_ids = self::creator_featured_ids($user_id);
+            }
             if (!empty($featured_ids)) :
                 $featured_q = new WP_Query(array(
-                    'post_type'      => 'vidmov_video',
+                    'post_type'      => array('vidmov_video', 'pulse_item', 'vidmov_playlist'),
                     'post_status'    => 'publish',
                     'posts_per_page' => count($featured_ids),
                     'post__in'       => $featured_ids,
@@ -522,12 +550,18 @@ class OKArcana_Discovery
                     <div class="ok-creator-page__featured">
                         <?php while ($featured_q->have_posts()) : $featured_q->the_post();
                             $thumb = get_the_post_thumbnail_url(get_the_ID(), 'medium');
+                            $ptype = get_post_type();
                         ?>
                             <a href="<?php echo esc_url(get_permalink()); ?>" class="ok-creator-page__featured-item">
                                 <?php if ($thumb) : ?>
                                     <img src="<?php echo esc_url($thumb); ?>"
                                          alt="<?php echo esc_attr(get_the_title()); ?>"
                                          loading="lazy" width="320" height="180">
+                                <?php endif; ?>
+                                <?php if ($ptype === 'pulse_item') : ?>
+                                    <span class="ok-creator-page__featured-type ok-creator-page__featured-type--pulse"><?php esc_html_e('Pulse', 'offkilter-arcana'); ?></span>
+                                <?php elseif ($ptype === 'vidmov_playlist') : ?>
+                                    <span class="ok-creator-page__featured-type"><?php esc_html_e('Playlist', 'offkilter-arcana'); ?></span>
                                 <?php endif; ?>
                                 <span class="ok-creator-page__featured-title"><?php echo esc_html(get_the_title()); ?></span>
                             </a>
