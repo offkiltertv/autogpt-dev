@@ -22,6 +22,15 @@ class OKArcana_Frontend
             array(),
             OKARCANA_VERSION
         );
+
+        // v3.3 OKTV brand bar — flow the top color bar with scroll position.
+        wp_enqueue_script(
+            'okarcana-brandbar',
+            OKARCANA_PLUGIN_URL . 'assets/js/ok-brandbar.js',
+            array(),
+            OKARCANA_VERSION,
+            true
+        );
     }
 
     /**

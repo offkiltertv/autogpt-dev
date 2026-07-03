@@ -1,6 +1,6 @@
 /*
  * OFFKILTER Platform Design System
-* Version: 3.2.1  Branch: feature/arcana-plugin
+* Version: 3.3.0  Branch: feature/arcana-plugin
  *
  * Scope: frontend normalization for VidMov surfaces, plugin shortcodes,
  * and brand-consistent UI elements across OffKilter.TV.
@@ -4974,4 +4974,41 @@ body.single-vidmov_video table.compat-attachment-fields {
 }
 @media (max-width: 768px) {
   .beeteam368-logo-img { max-height: 42px; }
+}
+
+/* ============================================================
+   SECTION AG — v3.3 OKTV BRAND BAR
+   Recolor the theme's top color/loading bar to the OKTV pillar
+   palette and flow it with scroll position. --ok-scroll (0..1)
+   is set by assets/js/ok-brandbar.js (rAF-throttled).
+   ============================================================ */
+.beeteam368_color_bar { --ok-scroll: 0; }
+.beeteam368_color_bar::before {
+  background-image: linear-gradient(
+    90deg,
+    var(--ok-accent) 0%,
+    var(--ok-pulse) 22%,
+    var(--ok-signal) 42%,
+    var(--ok-arcana) 64%,
+    var(--ok-community) 82%,
+    var(--ok-accent) 100%
+  ) !important;
+  background-size: 200% 100% !important;
+  /* flows left as the reader scrolls down; static (but on-brand) at rest */
+  background-position: calc(var(--ok-scroll) * -100%) 0 !important;
+  height: calc(3px + var(--ok-scroll) * 1px) !important;
+  box-shadow: 0 0 calc(var(--ok-scroll) * 10px) rgba(139, 92, 246, calc(var(--ok-scroll) * 0.5));
+  transition: box-shadow 0.2s ease;
+}
+/* Idle shimmer only when the user isn't driving it via scroll. */
+.beeteam368_color_bar.ok-bar-idle::before {
+  animation: ok-brandbar-pan 14s linear infinite;
+}
+@keyframes ok-brandbar-pan {
+  0%   { background-position: 0 0; }
+  100% { background-position: -200% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .beeteam368_color_bar::before { transition: none; height: 3px !important; box-shadow: none; }
+  .beeteam368_color_bar.ok-bar-idle::before { animation: none; }
 }
