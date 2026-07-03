@@ -1,6 +1,6 @@
 /*
  * OFFKILTER Platform Design System
-* Version: 3.3.0  Branch: feature/arcana-plugin
+* Version: 3.3.1  Branch: feature/arcana-plugin
  *
  * Scope: frontend normalization for VidMov surfaces, plugin shortcodes,
  * and brand-consistent UI elements across OffKilter.TV.
@@ -4983,7 +4983,7 @@ body.single-vidmov_video table.compat-attachment-fields {
    is set by assets/js/ok-brandbar.js (rAF-throttled).
    ============================================================ */
 .beeteam368_color_bar { --ok-scroll: 0; }
-.beeteam368_color_bar::before {
+.beeteam368_color_bar.beeteam368_color_loading_control::before {
   background-image: linear-gradient(
     90deg,
     var(--ok-accent) 0%,
@@ -5001,7 +5001,7 @@ body.single-vidmov_video table.compat-attachment-fields {
   transition: box-shadow 0.2s ease;
 }
 /* Idle shimmer only when the user isn't driving it via scroll. */
-.beeteam368_color_bar.ok-bar-idle::before {
+.beeteam368_color_bar.beeteam368_color_loading_control.ok-bar-idle::before {
   animation: ok-brandbar-pan 14s linear infinite;
 }
 @keyframes ok-brandbar-pan {
@@ -5009,6 +5009,6 @@ body.single-vidmov_video table.compat-attachment-fields {
   100% { background-position: -200% 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .beeteam368_color_bar::before { transition: none; height: 3px !important; box-shadow: none; }
-  .beeteam368_color_bar.ok-bar-idle::before { animation: none; }
+  .beeteam368_color_bar.beeteam368_color_loading_control::before { transition: none; height: 3px !important; box-shadow: none; }
+  .beeteam368_color_bar.beeteam368_color_loading_control.ok-bar-idle::before { animation: none; }
 }
