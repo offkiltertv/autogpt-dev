@@ -203,16 +203,20 @@ class OKArcana_Discovery
             'cta_primary_href'    => '/video/',
             'cta_secondary_label' => 'Discover',
             'cta_secondary_href'  => '/discover/',
+            'values'        => 'Built for free expression: independent, uncensored, creator-owned.',
             'wrapper_class' => '',
         ), $atts, 'oktv_platform_story');
 
+        // Narrative order (Phase 4): who it's for → the three content types →
+        // where the conversation happens. Each line answers "why it exists".
         $rows = array(
-            'pulse'     => array('term' => 'Pulse',     'desc' => 'Fast observations, breaking developments, and transformative commentary — short-form discovery.'),
-            'signals'   => array('term' => 'Signals',   'desc' => 'The standout clips worth your attention. Under 90 seconds.'),
-            'arcana'    => array('term' => 'Arcana',    'desc' => 'The intuitive layer — readings, premonitions, and outcomes.'),
-            'creators'  => array('term' => 'Creators',  'desc' => 'Independent voices who belong here, with real audiences.'),
-            'community' => array('term' => 'Community',  'desc' => 'Where the conversation lives — discuss what you discover.'),
+            'creators'  => array('term' => 'Creators',  'desc' => 'Independent creators publish here first — and keep their audience. This is their platform, not an algorithm\'s.'),
+            'pulse'     => array('term' => 'Pulse',     'desc' => 'Short-form discovery: fast observations, breaking developments, and commentary worth reacting to now.'),
+            'signals'   => array('term' => 'Signals',   'desc' => 'The standout clip worth your attention — under 90 seconds, always to the point.'),
+            'arcana'    => array('term' => 'Arcana',    'desc' => 'The intuitive layer — tarot readings, premonitions, and outcomes from creators who read the signs.'),
+            'community' => array('term' => 'Community',  'desc' => 'Where it all lands — discuss what you discover, with the people who discovered it too.'),
         );
+        $values_line = isset($atts['values']) ? (string) $atts['values'] : 'Built for free expression: independent, uncensored, creator-owned.';
 
         $is_hero     = !empty($atts['hero']);
         $outer_class = 'ok-platform-story';
@@ -245,6 +249,9 @@ class OKArcana_Discovery
                     </p>
                 <?php endforeach; ?>
             </div>
+            <?php if ($values_line !== '') : ?>
+                <p class="ok-platform-story__values"><?php echo esc_html($values_line); ?></p>
+            <?php endif; ?>
         </section>
         <?php
         return (string) ob_get_clean();

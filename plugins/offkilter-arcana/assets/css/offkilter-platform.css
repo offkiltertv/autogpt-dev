@@ -2331,6 +2331,32 @@ body.single-vidmov_video .alignright {
   display: none !important;
 }
 
+/* v3.2 Phase 5 — cosmetic noise. Theme-rendered chrome with no data-layer
+   alternative in a theme we cannot edit; suppression is scoped, documented,
+   and paired with theme-option changes (see docs/platform-brand-review-v3_2).
+
+   REMOVE: auto-inserted "Spread the love" social-share row INSIDE plugin
+   destinations — it never belongs on our branded landings (kept elsewhere). */
+.ok-discover-page .sassy-social-share,
+.ok-discover-page .heateor_sss_sharing_container,
+.ok-arcana-destination .sassy-social-share,
+.ok-arcana-destination .heateor_sss_sharing_container,
+.ok-signals-destination .sassy-social-share,
+.ok-signals-destination .heateor_sss_sharing_container,
+.ok-pulse-destination .sassy-social-share,
+.ok-pulse-destination .heateor_sss_sharing_container {
+  display: none !important;
+}
+
+/* NEUTRALIZE: zero-value reaction-score bubble on cards within plugin creator
+   rows (redundant with our clean spotlight stat line; theme setting disables
+   it globally, this covers our surfaces regardless). */
+.ok-discover-creators-row .beeteam368-reaction-score,
+.ok-discover-creators-row [class*="reaction-score"],
+.ok-creator-spotlight [class*="reaction-score"] {
+  display: none;
+}
+
 
 /* ============================================================
    SECTION Q — DISCOVERY UX
