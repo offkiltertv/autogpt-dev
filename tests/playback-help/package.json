@@ -1,0 +1,11 @@
+{
+  "name": "oktv-playback-release-tests",
+  "private": true,
+  "scripts": {
+    "test": "node --test state.test.cjs mount.test.cjs"
+  },
+  "devDependencies": {
+    "linkedom": "0.18.14",
+    "playwright": "1.63.0"
+  }
+}
