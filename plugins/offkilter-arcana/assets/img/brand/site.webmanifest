@@ -1,0 +1,19 @@
+{
+  "name": "OFFKILTER.TV",
+  "short_name": "OFFKILTER",
+  "icons": [
+    {
+      "src": "/wp-content/plugins/offkilter-arcana/assets/img/brand/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/wp-content/plugins/offkilter-arcana/assets/img/brand/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#E50914",
+  "background_color": "#07090D",
+  "display": "browser"
+}

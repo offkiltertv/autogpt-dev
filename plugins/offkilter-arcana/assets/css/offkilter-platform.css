@@ -21,13 +21,12 @@
   --ok-border:         #1E2430;
   --ok-border-accent:  #2A3040;
 
-  /* Brand accents (v3.4 pillar palette) */
-  --ok-accent:         #E50914;   /* OFFKILTER red — master brand: logo + primary CTAs */
-  --ok-signal:         #00C2FF;   /* Signals — blue (intelligence, discovery) */
-  --ok-arcana:         #8B5CF6;   /* Arcana — purple (mystery, intuition) */
-  --ok-community:      #22C55E;   /* Community — green (conversation) */
-  --ok-pulse:          #FF6A00;   /* Pulse — orange (fast, breaking, short-form) */
-  --ok-creators:       #F5B301;   /* Creators — gold (people, stories) */
+  /* Brand accents */
+  --ok-accent:         #E50914;   /* OFFKILTER red   */
+  --ok-signal:         #00C2FF;   /* Signals blue    */
+  --ok-arcana:         #8B5CF6;   /* Arcana purple   */
+  --ok-community:      #22C55E;   /* Community green */
+  --ok-pulse:          #2DE0C0;   /* Pulse teal — its own accent */
 
   /* Text */
   --ok-text:           #F3F6FB;
@@ -1465,7 +1464,7 @@ body.arm-page-register .arm-form,
 }
 
 .ok-content-explainer--creators {
-  border-left-color: var(--ok-creators);
+  border-left-color: var(--ok-accent);
 }
 
 .ok-content-explainer__icon {
@@ -2024,7 +2023,7 @@ button:focus:not(:focus-visible) {
 /* Pillar top-border accents */
 .ok-destination-hero--signals   { border-top-color: var(--ok-signal); }
 .ok-destination-hero--arcana    { border-top-color: var(--ok-arcana); }
-.ok-destination-hero--creators  { border-top-color: var(--ok-creators); }
+.ok-destination-hero--creators  { border-top-color: var(--ok-accent); }
 .ok-destination-hero--community { border-top-color: var(--ok-community); }
 .ok-destination-hero--watch     { border-top-color: var(--ok-accent); }
 
@@ -2154,9 +2153,9 @@ button:focus:not(:focus-visible) {
 
 .ok-pillar-chip--creators:hover,
 .ok-pillar-chip--creators.ok-pillar-chip--active {
-  border-color: var(--ok-creators);
-  color: var(--ok-creators);
-  background: rgba(245, 179, 1, 0.09);
+  border-color: var(--ok-accent);
+  color: var(--ok-accent);
+  background: rgba(229, 9, 20, 0.07);
 }
 
 .ok-pillar-chip--community:hover,
@@ -3485,11 +3484,9 @@ body.single-vidmov_video table.compat-attachment-fields {
 }
 
 .ok-footer-brand__mark {
-  font-family: var(--ok-font-sans);
-  font-size: 1.4rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  color: var(--ok-text);
+  display: inline-block;
+  height: 28px;
+  width: auto;
   margin: 0;
 }
 
@@ -3952,7 +3949,7 @@ body.single-vidmov_video table.compat-attachment-fields {
 .ok-platform-story__row--pulse .ok-platform-story__term { color: var(--ok-pulse); }
 .ok-platform-story__row--signals .ok-platform-story__term { color: var(--ok-signal); }
 .ok-platform-story__row--arcana .ok-platform-story__term { color: var(--ok-arcana); }
-.ok-platform-story__row--creators .ok-platform-story__term { color: var(--ok-creators); }
+.ok-platform-story__row--creators .ok-platform-story__term { color: var(--ok-accent); }
 .ok-platform-story__row--community .ok-platform-story__term { color: var(--ok-community); }
 
 .ok-featured-creator__name .ok-verified-badge,
@@ -4355,7 +4352,7 @@ body.single-vidmov_video table.compat-attachment-fields {
    Was implicitly inheriting --ok-accent (correct), now documented.
    ---------------------------------------------------------- */
 .ok-platform-intro__card--creators .ok-platform-intro__card-icon {
-  color: var(--ok-creators);
+  color: var(--ok-accent);
 }
 
 /* ----------------------------------------------------------
@@ -4417,7 +4414,7 @@ body.single-vidmov_video table.compat-attachment-fields {
     gap: 0.25em;
   }
   .ok-footer-brand__mark {
-    font-size: 1.1rem;
+    height: 22px;
   }
   .ok-platform-intro__card {
     padding: 0.7rem;
@@ -4446,7 +4443,7 @@ body.single-vidmov_video table.compat-attachment-fields {
 .ok-platform-intro__card--pulse:focus-visible     { outline-color: var(--ok-pulse); }
 .ok-platform-intro__card--signals:focus-visible   { outline-color: var(--ok-signal); }
 .ok-platform-intro__card--arcana:focus-visible    { outline-color: var(--ok-arcana); }
-.ok-platform-intro__card--creators:focus-visible  { outline-color: var(--ok-creators); }
+.ok-platform-intro__card--creators:focus-visible  { outline-color: var(--ok-accent); }
 .ok-platform-intro__card--community:focus-visible { outline-color: var(--ok-community); }
 
 /* ----------------------------------------------------------
@@ -4892,13 +4889,12 @@ body.single-vidmov_video table.compat-attachment-fields {
 /* ----------------------------------------------------------
    AF-3: Creators identity — the missing pillar variant + empty.
    ---------------------------------------------------------- */
-.ok-featured-creator--creators { border-left-color: var(--ok-creators); }
+.ok-featured-creator--creators { border-left-color: var(--ok-accent); }
 .ok-curated-section__header--creators {
-  background: linear-gradient(90deg, rgba(245, 179, 1, 0.14), transparent 78%);
-  border-bottom: 1px solid rgba(245, 179, 1, 0.3);
+  background: linear-gradient(90deg, rgba(229, 9, 20, 0.12), transparent 78%);
+  border-bottom: 1px solid rgba(229, 9, 20, 0.28);
 }
-.ok-curated-section__header--creators .ok-curated-section__title { color: var(--ok-creators); }
-.ok-empty-state--creators .ok-empty-state__icon { color: var(--ok-creators); }
+.ok-empty-state--creators .ok-empty-state__icon { color: var(--ok-accent); }
 
 /* ----------------------------------------------------------
    AF-4: Loading / skeleton affordance (reuses Section E .ok-skeleton).
@@ -5024,95 +5020,4 @@ body.single-vidmov_video table.compat-attachment-fields {
 @media (prefers-reduced-motion: reduce) {
   .ok-brandbar { height: 3px !important; box-shadow: none; transition: none; background-position: 0 0 !important; }
   .ok-brandbar.ok-bar-idle { animation: none; }
-}
-
-/* ============================================================
-   SECTION AH — v3.4 BOTTOM NAVIGATION (primary product nav)
-   Fixed native-app tab bar at mobile + tablet widths. Desktop
-   keeps the header. Per-pillar accent + active state.
-   ============================================================ */
-.ok-bottom-nav { display: none; }
-
-@media (max-width: 1024px) {
-  .ok-bottom-nav {
-    display: block;
-    position: fixed;
-    left: 0; right: 0; bottom: 0;
-    z-index: 99990;
-    background: rgba(13, 16, 22, 0.92);
-    -webkit-backdrop-filter: saturate(1.4) blur(14px);
-    backdrop-filter: saturate(1.4) blur(14px);
-    border-top: 1px solid var(--ok-border);
-    padding-bottom: env(safe-area-inset-bottom, 0);
-    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.4);
-  }
-  .ok-bottom-nav__list {
-    display: flex;
-    margin: 0; padding: 0;
-    list-style: none;
-  }
-  .ok-bottom-nav__item {
-    flex: 1 1 0;
-    text-align: center;
-    min-width: 0;
-  }
-  .ok-bottom-nav__item > a {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    min-height: 56px;
-    padding: 7px 2px 6px;
-    text-decoration: none;
-    color: var(--ok-text-muted);
-    position: relative;
-    transition: color var(--ok-transition);
-  }
-  .ok-bottom-nav__icon {
-    font-size: 1.15rem;
-    line-height: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 22px;
-  }
-  .ok-bottom-nav__icon .ok-arcana-orb { width: 22px; height: 22px; }
-  .ok-bottom-nav__label {
-    font-size: 0.66rem;
-    letter-spacing: 0.02em;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  /* Active tab — pillar accent + top indicator. */
-  .ok-bottom-nav__item.is-active > a { color: var(--ok-tab-accent, var(--ok-text)); }
-  .ok-bottom-nav__item.is-active > a::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 50%;
-    width: 26px; height: 3px;
-    transform: translateX(-50%);
-    border-radius: 0 0 3px 3px;
-    background: var(--ok-tab-accent, var(--ok-accent));
-    box-shadow: 0 0 10px var(--ok-tab-accent, var(--ok-accent));
-  }
-  .ok-bottom-nav__item > a:active { transform: scale(0.96); }
-
-  /* Per-pillar accent wiring. */
-  .ok-bottom-nav__item--accent    { --ok-tab-accent: var(--ok-accent); }
-  .ok-bottom-nav__item--pulse     { --ok-tab-accent: var(--ok-pulse); }
-  .ok-bottom-nav__item--signal    { --ok-tab-accent: var(--ok-signal); }
-  .ok-bottom-nav__item--arcana    { --ok-tab-accent: var(--ok-arcana); }
-  .ok-bottom-nav__item--community { --ok-tab-accent: var(--ok-community); }
-  .ok-bottom-nav__item--creators  { --ok-tab-accent: var(--ok-creators); }
-
-  /* Give page content room so the bar never covers the footer/content. */
-  body { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)); }
-}
-
-@media (max-width: 1024px) and (prefers-reduced-motion: reduce) {
-  .ok-bottom-nav__item > a { transition: none; }
-  .ok-bottom-nav__item > a:active { transform: none; }
 }

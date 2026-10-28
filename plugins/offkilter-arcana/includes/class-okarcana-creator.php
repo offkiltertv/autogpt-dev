@@ -131,7 +131,18 @@ class OKArcana_Creator
             <div class="ok-footer-brand__inner">
 
                 <div class="ok-footer-brand__col ok-footer-brand__col--brand">
-                    <p class="ok-footer-brand__mark">OFFKILTER</p>
+                    <img
+                        class="ok-footer-brand__mark"
+                        src="<?php echo esc_url(OKARCANA_PLUGIN_URL . 'assets/img/brand/footer-wordmark@2x.png'); ?>"
+                        srcset="<?php echo esc_attr(
+                            OKARCANA_PLUGIN_URL . 'assets/img/brand/footer-wordmark@1x.png 1x, '
+                            . OKARCANA_PLUGIN_URL . 'assets/img/brand/footer-wordmark@2x.png 2x, '
+                            . OKARCANA_PLUGIN_URL . 'assets/img/brand/footer-wordmark@3x.png 3x'
+                        ); ?>"
+                        alt="OFFKILTER TV"
+                        height="28"
+                        loading="lazy"
+                    >
                     <p class="ok-footer-brand__tagline"><?php echo esc_html($atts['tagline']); ?></p>
                     <p class="ok-footer-brand__line"><?php echo $brand_line; ?></p>
 
