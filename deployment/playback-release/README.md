@@ -1,5 +1,11 @@
 # Playback-only release
 
+**Current state, 2026-10-28:** the release is installed in production and enabled
+only for the anonymous canonical public-video canary. Live desktop and mobile
+emulation passed without response overrides. See
+[`docs/oktv-playback-canary-2026-10-28.md`](../../docs/oktv-playback-canary-2026-10-28.md)
+for the exact deployment/backup receipt, observed health and remaining boundaries.
+
 ## Authorization and boundary
 
 The owner explicitly approved publishing the OffKilter-owned production baseline,
