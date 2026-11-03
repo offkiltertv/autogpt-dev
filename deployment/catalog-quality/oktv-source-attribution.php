@@ -1,0 +1,124 @@
+<?php
+/**
+ * Plugin Name: OKTV Source Attribution
+ * Description: Credit imported YouTube sources without creating or claiming member accounts.
+ * Version: 1.0.0
+ */
+declare(strict_types=1);
+namespace OffKilter\CatalogQuality;
+if(!defined('ABSPATH')){exit;}
+
+final class SourceAttribution
+{
+    public const RELEASE='oktv-source-attribution-1.0.0';
+    public const MARKER='/opt/bitnami/oktv-release-state/source-attribution-enabled';
+    public const VERIFIED='_oktv_ingest_verified_v1';
+    private static bool $wrapped=false;
+
+    public static function init():void
+    {
+        add_action('wp_loaded',[self::class,'install'],100);
+        add_action('wp_head',[self::class,'styles']);
+        add_filter('query_vars',static function($vars){$vars[]='oktv_source_channel';return $vars;});
+        add_action('pre_get_posts',[self::class,'source_collection']);
+        add_filter('okarcana_watch_next_append',static function($on){return self::context((int)get_the_ID())?false:$on;});
+        add_filter('the_content',[self::class,'more_from_source'],45);
+    }
+
+    public static function enabled():bool
+    {
+        $bytes=is_file(self::MARKER)&&!is_link(self::MARKER)?@file_get_contents(self::MARKER,false,null,0,128):false;
+        return is_string($bytes)&&trim($bytes)===self::RELEASE;
+    }
+
+    public static function supported():bool
+    {
+        return function_exists('beeteam368_post_listing_header')&&function_exists('beeteam368_author_single_element')
+            &&get_template()==='vidmov'&&wp_get_theme('vidmov')->get('Version')==='2.3.8'
+            &&has_action('beeteam368_post_listing_header','beeteam368_post_listing_header')===10
+            &&has_action('beeteam368_after_player_in_single_video','beeteam368_author_single_element')===20;
+    }
+
+    public static function ready():bool {return self::enabled()&&(self::$wrapped||self::supported());}
+
+    private static function public_request():bool
+    {
+        if((defined('WP_CLI')&&WP_CLI)||(defined('REST_REQUEST')&&REST_REQUEST)||(function_exists('wp_doing_cron')&&wp_doing_cron()))return false;
+        if(function_exists('wp_doing_ajax')&&wp_doing_ajax())return ($_REQUEST['action']??'')==='beeteam368_filter_posts';
+        return !is_admin();
+    }
+
+    public static function install():void
+    {
+        if(!self::enabled()||!self::public_request()||!self::supported())return;
+        remove_action('beeteam368_post_listing_header','beeteam368_post_listing_header',10);
+        add_action('beeteam368_post_listing_header',[self::class,'listing'],10,2);
+        remove_action('beeteam368_after_player_in_single_video','beeteam368_author_single_element',20);
+        add_action('beeteam368_after_player_in_single_video',[self::class,'single'],20,2);
+        self::$wrapped=true;
+    }
+
+    public static function valid_channel(string $id):bool {return preg_match('/^UC[A-Za-z0-9_-]{22}$/D',$id)===1;}
+
+    public static function context(int $postId):?array
+    {
+        if($postId<1||get_post_type($postId)!=='vidmov_video'||get_post_meta($postId,self::VERIFIED,true)!=='1')return null;
+        $channel=(string)get_post_meta($postId,'channel_id',true);
+        $title=trim((string)get_post_meta($postId,'channel_title',true));
+        if(!self::valid_channel($channel)||$title==='')return null;
+        return ['channel'=>$channel,'title'=>$title];
+    }
+
+    public static function collection_url(string $channel):string
+    {
+        return self::valid_channel($channel)?add_query_arg('oktv_source_channel',$channel,get_post_type_archive_link('vidmov_video')):'';
+    }
+
+    public static function markup(int $postId,bool $single=false):string
+    {
+        $source=self::context($postId);if(!$source)return '';
+        return '<div class="oktv-source-byline blog-author-element flex-row-control flex-vertical-middle" data-oktv-source="'.esc_attr($source['channel']).'">'
+            .'<span class="oktv-source-symbol" aria-hidden="true">YT</span><div class="oktv-source-name">'
+            .'<a class="author-avatar-name-link" href="'.esc_url(self::collection_url($source['channel'])).'">'.esc_html($source['title']).'</a>'
+            .'<span class="oktv-source-label">YouTube source · curated on OKTV</span></div>'
+            .($single?'<a class="oktv-source-original" href="'.esc_url('https://www.youtube.com/channel/'.$source['channel']).'" target="_blank" rel="noopener noreferrer">Original channel <span aria-hidden="true">↗</span></a>':'').'</div>';
+    }
+
+    public static function listing($postId=null,$params=[]):void
+    {
+        $postId=(int)($postId?:get_the_ID());
+        if(self::context($postId)){if(($params['show_author']??true)!==false)echo self::markup($postId);return;}
+        \beeteam368_post_listing_header($postId,$params);
+    }
+
+    public static function single($postId=null,$style='small'):void
+    {
+        $postId=(int)($postId?:get_the_ID());
+        if(self::context($postId)){echo self::markup($postId,true);return;}
+        \beeteam368_author_single_element($postId,$style);
+    }
+
+    public static function source_collection($query):void
+    {
+        if(!self::ready()||!self::public_request()||!$query->is_main_query()||!$query->is_post_type_archive('vidmov_video'))return;
+        $channel=$query->get('oktv_source_channel');
+        if(!is_string($channel)||!self::valid_channel($channel))return;
+        $existing=$query->get('meta_query');$condition=['key'=>'channel_id','value'=>$channel,'compare'=>'='];
+        $query->set('meta_query',$existing?['relation'=>'AND',$existing,$condition]:[$condition]);
+        $query->set('post_status','publish');
+    }
+
+    public static function more_from_source(string $content):string
+    {
+        if(!self::ready()||!self::public_request()||!is_singular('vidmov_video')||!in_the_loop()||!is_main_query())return $content;
+        $source=self::context((int)get_the_ID());if(!$source)return $content;
+        return $content.'<p class="oktv-source-more"><a href="'.esc_url(self::collection_url($source['channel'])).'">More from '.esc_html($source['title']).' on OKTV</a></p>';
+    }
+
+    public static function styles():void
+    {
+        if(!self::ready()||!self::public_request())return;
+        echo '<style id="oktv-source-attribution">.oktv-source-byline{gap:12px;flex-wrap:wrap;margin-bottom:18px}.oktv-source-symbol{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:50%;background:#b91c1c;color:#fff;font-size:11px;font-weight:800;letter-spacing:.04em}.oktv-source-name{display:flex;flex:1;min-width:0;flex-direction:column;gap:3px}.oktv-source-name>a{font-weight:700;line-height:1.35;overflow-wrap:anywhere}.oktv-source-label{font-size:12px;line-height:1.4;color:#bfc4cb}.oktv-source-original{font-size:12px}.oktv-source-more{margin:24px 0}</style>';
+    }
+}
+SourceAttribution::init();
