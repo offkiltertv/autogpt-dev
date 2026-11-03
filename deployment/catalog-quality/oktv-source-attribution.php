@@ -21,7 +21,11 @@ final class SourceAttribution
         add_action('wp_head',[self::class,'styles']);
         add_filter('query_vars',static function($vars){$vars[]='oktv_source_channel';return $vars;});
         add_action('pre_get_posts',[self::class,'source_collection']);
-        add_filter('okarcana_watch_next_append',static function($on){return self::context((int)get_the_ID())?false:$on;});
+        add_filter('okarcana_watch_next_append',static function($on){return self::ready()&&self::context((int)get_the_ID())?false:$on;});
+        add_filter('get_the_author_display_name',[self::class,'author_name'],30,2);
+        add_filter('beeteam368_author_url',[self::class,'author_url'],30,2);
+        add_filter('beeteam368_member_verification_icon',[self::class,'source_icon'],30,2);
+        add_filter('beeteam368_member_verification_icon_in_single',[self::class,'source_icon'],30,2);
         add_filter('the_content',[self::class,'more_from_source'],45);
     }
 
@@ -72,6 +76,29 @@ final class SourceAttribution
     public static function collection_url(string $channel):string
     {
         return self::valid_channel($channel)?add_query_arg('oktv_source_channel',$channel,get_post_type_archive_link('vidmov_video')):'';
+    }
+
+    private static function author_context($authorId):?array
+    {
+        if(!self::ready()||!self::public_request())return null;
+        $postId=(int)get_the_ID();
+        if((int)get_post_field('post_author',$postId)!==(int)$authorId)return null;
+        return self::context($postId);
+    }
+
+    public static function author_name($name,$authorId):string
+    {
+        $source=self::author_context($authorId);return $source?$source['title']:(string)$name;
+    }
+
+    public static function author_url($url,$authorId):string
+    {
+        $source=self::author_context($authorId);return $source?self::collection_url($source['channel']):(string)$url;
+    }
+
+    public static function source_icon($html,$authorId):string
+    {
+        return self::author_context($authorId)?'<span class="oktv-source-label">YouTube source · </span>':(string)$html;
     }
 
     public static function markup(int $postId,bool $single=false):string
