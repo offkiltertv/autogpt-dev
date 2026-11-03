@@ -127,16 +127,17 @@ The receipt must be under four hours old and bound to the source's current
 playlist fingerprint. Start with `prepare` and inspect a single draft before
 enabling source presentation and running a one-item `publish` canary.
 
-The backfill uses the installed native importer's single-video operation in an
-internal draft configuration, preserving the original campaign's pagination.
-It rejects paid processing templates, forces one draft per import, blocks new
-member insertion and email in that request, and suppresses source-comment and
-avatar importing. It refreshes provider availability before publication,
+The backfill uses checked provider metadata with WordPress's standard draft,
+thumbnail and publishing APIs and the installed native player fields. It does
+not execute vendor processing templates or copy provider comments. Original
+campaign pagination is preserved. It blocks new member insertion and email in
+that request and suppresses avatar importing. It refreshes availability before publication,
 normalizes source credit, requires a thumbnail and valid immutable channel ID,
+accepts thumbnails only from the provider's fixed image host for that video,
 starts new local counters at zero, and checks for a published duplicate across
 the entire catalog. Unrelated pre-existing drafts are preserved. Publication
 requires the reviewed source presentation to be ready. Private per-batch
 receipts record created drafts before later checks, allowing recovery without
-exposing vendor output, credentials or playlist identifiers. No media is
-rehosted. Removing a presentation marker is not a database rollback; any
+exposing credentials or playlist identifiers. Only the thumbnail is copied;
+video playback remains the provider embed. Removing a presentation marker is not a database rollback; any
 publication rollback must name the exact new records and return them to draft.
