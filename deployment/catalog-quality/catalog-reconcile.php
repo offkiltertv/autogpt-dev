@@ -24,7 +24,12 @@ foreach(array_keys($allowed) as $video){
   $id=$record['id'];$before=[];
   foreach([CatalogQuality::AVAILABILITY,'_oktv_source_checked_at'] as $key){$before[$key]=get_post_meta($id,$key,false);if(count($before[$key])>1)throw new \RuntimeException('Ambiguous existing availability metadata.');}
   $changes[$id]=['before'=>$before,'state'=>$state,'video_id'=>$video];
-  if($state==='available'&&CatalogQuality::placeholder((string)get_post_field('post_title',$id)))$availablePlaceholders[]=$id;
+  $oldTitle=(string)get_post_field('post_title',$id);
+  if($state==='available'&&CatalogQuality::placeholder($oldTitle)){
+   $newTitle=wp_strip_all_tags((string)($inventory['details'][$video]['snippet']['title']??''),true);
+   if($newTitle===''||CatalogQuality::placeholder($newTitle))throw new \RuntimeException('Restored source title is invalid.');
+   $availablePlaceholders[]=$id;$changes[$id]['title_before']=$oldTitle;$changes[$id]['title_after']=$newTitle;
+  }
  }
 }
 $cadence=null;
@@ -55,6 +60,11 @@ try{
    update_post_meta($id,$key,$value);
    if(get_post_meta($id,$key,true)!==$value)throw new \RuntimeException('Availability metadata readback failed.');
   }
+  if(isset($change['title_after'])){
+   $changed=$wpdb->query($wpdb->prepare("UPDATE {$wpdb->posts} SET post_title=%s WHERE ID=%d AND post_type='vidmov_video' AND BINARY post_title=BINARY %s",$change['title_after'],$id,$change['title_before']));
+   if($changed!==1)throw new \RuntimeException('Placeholder title changed during reconciliation.');
+   clean_post_cache($id);
+  }
  }
  if($cadence&&$cadence['before']!==$cadence['after']){
   $changed=$wpdb->query($wpdb->prepare('UPDATE '.$wpdb->prefix.'automatic_camps SET camp_general=%s WHERE camp_id=%d AND BINARY camp_general=BINARY %s',$cadence['after'],$cadence['campaign_id'],$cadence['before']));
@@ -68,6 +78,6 @@ try{
  }
  update_option(CatalogQuality::SNAPSHOT,$summary,false);
  if(get_option(CatalogQuality::SNAPSHOT)!==$summary)throw new \RuntimeException('Aggregate snapshot readback failed.');
- $result['backup']=$backup;$result['snapshot']=$summary;
+ $result['backup']=$backup;$result['titles_restored']=count($availablePlaceholders);$result['snapshot']=$summary;
  echo json_encode($result,JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR).PHP_EOL;
 }finally{$wpdb->get_var("SELECT RELEASE_LOCK('oktv_catalog_reconcile_v1')");}

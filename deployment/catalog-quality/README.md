@@ -87,3 +87,15 @@ API responses, source playlist IDs, credentials or production records.
 Source coverage repair and any backfill are separate operator operations with
 their own before-state receipts and bounded import batches. Inventory completion
 or importer activity is never a successful-publication receipt.
+
+## Apply a reviewed inventory
+
+`catalog-reconcile.php` accepts `plan` or `apply`, a root-only inventory receipt,
+and optionally an approved campaign ID plus its new interval in minutes. Load
+it through the same strict-file CLI entry point above. It rejects stale or
+unprotected receipts. `plan` reads only; `apply` takes a database advisory lock,
+writes a root-only before-state receipt, updates only the owned availability
+fields and aggregate snapshot, and verifies readback. A source-confirmed restored
+video can recover its placeholder title without changing its slug, dates or
+discussion. The optional cadence change uses a byte-exact compare-and-swap of
+the original campaign configuration and is bounded to 15–1,440 minutes.
