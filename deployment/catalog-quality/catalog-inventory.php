@@ -169,8 +169,9 @@ foreach($campaignIds as $rawId){
     $config=CatalogInventory::decode_config($row['camp_general']);
     $options=CatalogInventory::decode_config($row['camp_options']);
     if(!in_array('OPT_YT_PLAYLIST',$options,true))throw new \RuntimeException('source_is_not_playlist');
-    $playlist=$client->playlist(CatalogInventory::playlist_id((string)($config['cg_yt_playlist']??'')));
-    $sources[$id]=['label'=>get_the_title($id),'playlist'=>$playlist,'interval_minutes'=>(int)($config['cg_update_every']??0)*(int)($config['cg_update_unit']??0)];
+    $playlistId=CatalogInventory::playlist_id((string)($config['cg_yt_playlist']??''));
+    $playlist=$client->playlist($playlistId);
+    $sources[$id]=['label'=>get_the_title($id),'playlist'=>$playlist,'source_fingerprint'=>hash('sha256',$playlistId),'interval_minutes'=>(int)($config['cg_update_every']??0)*(int)($config['cg_update_unit']??0)];
     foreach($playlist['ids'] as $video)$all[$video]=true;
 }
 $details=$client->videos(array_keys($all));

@@ -130,7 +130,7 @@ final class SourceAttribution
 
     public static function source_collection($query):void
     {
-        if(!self::ready()||!self::public_request()||!$query->is_main_query()||!$query->is_post_type_archive('vidmov_video'))return;
+        if(!self::public_request()||!$query->is_main_query()||!$query->is_post_type_archive('vidmov_video'))return;
         $channel=$query->get('oktv_source_channel');
         if(!is_string($channel)||!self::valid_channel($channel))return;
         $existing=$query->get('meta_query');$condition=['key'=>'channel_id','value'=>$channel,'compare'=>'='];
@@ -148,7 +148,7 @@ final class SourceAttribution
     public static function account_library_where(string $where,$query):string
     {
         global $wpdb;
-        if(!self::ready()||!self::public_request()||$query->is_singular())return $where;
+        if(!self::public_request()||$query->is_singular())return $where;
         if(!$query->is_author()&&!$query->get('author')&&!$query->get('author_name')&&!$query->get('author__in'))return $where;
         return $where.$wpdb->prepare(" AND NOT ({$wpdb->posts}.post_type=%s AND EXISTS (SELECT 1 FROM {$wpdb->postmeta} oktv_source_record WHERE oktv_source_record.post_id={$wpdb->posts}.ID AND oktv_source_record.meta_key=%s AND oktv_source_record.meta_value=%s))",'vidmov_video',self::VERIFIED,'1');
     }

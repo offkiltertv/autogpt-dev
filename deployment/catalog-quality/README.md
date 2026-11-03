@@ -64,7 +64,7 @@ API responses, source playlist IDs, credentials or production records.
 
 ## Qualification and release
 
-1. Run the two isolated PHP tests under `tests/catalog-quality/`.
+1. Run the isolated PHP tests under `tests/catalog-quality/`.
 2. Commit the owned source. Build the deployment bundle from that exact commit;
    verify its file inventory and SHA-256 before staging it outside the webroot.
 3. Check current WordPress/PHP versions, disk, services, release markers and
@@ -99,3 +99,44 @@ fields and aggregate snapshot, and verifies readback. A source-confirmed restore
 video can recover its placeholder title without changing its slug, dates or
 discussion. The optional cadence change uses a byte-exact compare-and-swap of
 the original campaign configuration and is bounded to 15–1,440 minutes.
+
+## Source credit and controlled backfill
+
+`catalog-ingestion-policy.php` has `plan` and `apply` modes with a private
+release directory and explicit campaign IDs. It backs up the exact prior
+configuration, changes future imports to drafts, and removes the vendor's
+automatic member-account and comment-copying options. Existing member accounts,
+roles, posts, comments and source campaign pagination are preserved.
+
+Install `oktv-source-attribution.php` as a separate MU plugin, default off. Its
+exact release marker is `/opt/bitnami/oktv-release-state/source-attribution-enabled`.
+The reviewed presentation supports VidMov 2.3.8 and its inspected native hooks.
+Only records carrying the owned verification field and a valid provider channel
+ID receive source presentation. They use “YouTube source · curated on OKTV”,
+an original-channel link and a local collection. This is source attribution,
+not evidence of a creator's OKTV membership or account ownership. Ordinary
+member posts retain native presentation. Source collections and exclusion from
+the editorial curator's member library remain correct if presentation is off.
+The old homepage “publish here first” claim is replaced with truthful curation
+copy while this presentation is enabled.
+
+`catalog-backfill.php` accepts `plan`, `prepare` or `publish`, a root-only complete
+inventory receipt, one approved campaign ID, and a batch limit of 1–20. Run with
+the full native plugins and theme, through the same strict-file CLI entry point.
+The receipt must be under four hours old and bound to the source's current
+playlist fingerprint. Start with `prepare` and inspect a single draft before
+enabling source presentation and running a one-item `publish` canary.
+
+The backfill uses the installed native importer's single-video operation in an
+internal draft configuration, preserving the original campaign's pagination.
+It rejects paid processing templates, forces one draft per import, blocks new
+member insertion and email in that request, and suppresses source-comment and
+avatar importing. It refreshes provider availability before publication,
+normalizes source credit, requires a thumbnail and valid immutable channel ID,
+starts new local counters at zero, and checks for a published duplicate across
+the entire catalog. Unrelated pre-existing drafts are preserved. Publication
+requires the reviewed source presentation to be ready. Private per-batch
+receipts record created drafts before later checks, allowing recovery without
+exposing vendor output, credentials or playlist identifiers. No media is
+rehosted. Removing a presentation marker is not a database rollback; any
+publication rollback must name the exact new records and return them to draft.
