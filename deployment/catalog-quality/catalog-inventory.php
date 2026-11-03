@@ -134,6 +134,7 @@ if (defined('OKTV_CATALOG_INVENTORY_LIBRARY_ONLY') && OKTV_CATALOG_INVENTORY_LIB
 if (!defined('WP_CLI') || !WP_CLI || !in_array(wp_parse_url(home_url('/'),PHP_URL_HOST), ['www.offkilter.tv','www.offkilter.test'],true)) {
     throw new \RuntimeException('Use WP-CLI on the reviewed site.');
 }
+global $wpdb;
 
 $mode=$args[0]??'audit';
 $campaignIds=array_slice($args??[],1);
