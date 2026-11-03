@@ -36,9 +36,13 @@ scheduled publisher. Keep it outside the webroot with a matching copy of the
 runtime source. Run through WordPress CLI with explicit approved campaign IDs:
 
 ```text
-wp --path=WORDPRESS --skip-plugins --skip-themes eval-file catalog-inventory.php audit CAMPAIGN_ID ...
-wp --path=WORDPRESS --skip-plugins --skip-themes eval-file catalog-inventory.php snapshot CAMPAIGN_ID ...
+php wp-cli.phar --path=WORDPRESS --allow-root --skip-plugins --skip-themes eval '$args=["audit","CAMPAIGN_ID"]; require "/PRIVATE_RELEASE/deployment/catalog-quality/catalog-inventory.php";'
+php wp-cli.phar --path=WORDPRESS --allow-root --skip-plugins --skip-themes eval '$args=["snapshot","CAMPAIGN_ID"]; require "/PRIVATE_RELEASE/deployment/catalog-quality/catalog-inventory.php";'
 ```
+
+Use the reviewed PHP binary and CLI phar directly for root-only receipts. Load
+these strict, namespaced files with `eval` plus `require`; the installed CLI's
+`eval-file` wrapper cannot execute their top-level strict declaration.
 
 `audit` reads only. `snapshot` saves aggregate counts after every source has
 completed successfully. It reads the existing configured YouTube credential

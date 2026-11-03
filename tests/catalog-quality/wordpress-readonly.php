@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
 if (!defined('WP_CLI') || !WP_CLI) { throw new RuntimeException('WP-CLI only.'); }
-require_once dirname(__DIR__,2).'/deployment/catalog-quality/oktv-catalog-quality.php';
 use OffKilter\CatalogQuality\CatalogQuality as Quality;
+if (!class_exists(Quality::class, false)) {
+    require_once dirname(__DIR__,2).'/deployment/catalog-quality/oktv-catalog-quality.php';
+}
 global $wpdb;
 if (wp_parse_url(home_url('/'),PHP_URL_HOST)!=='www.offkilter.tv') { throw new RuntimeException('Unexpected site.'); }
 $passes=0;

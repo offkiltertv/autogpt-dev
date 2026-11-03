@@ -3,7 +3,9 @@ declare(strict_types=1);
 namespace OffKilter\CatalogQuality;
 
 if (!defined('ABSPATH')) { exit; }
-require_once __DIR__ . '/oktv-catalog-quality.php';
+if (!class_exists(CatalogQuality::class, false)) {
+    require_once __DIR__ . '/oktv-catalog-quality.php';
+}
 
 /** Complete, bounded provider inventories; provider failures never become missing-video counts. */
 final class CatalogInventory
