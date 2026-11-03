@@ -77,7 +77,8 @@ try{
   if(!$postId&&$records){$result['items'][]=['video_id'=>$video,'status'=>'existing_draft_preserved'];continue;}
   if(!$postId){
    $created=[];$activeVideo=$video;$config['camp_keywords']=$video;$wpdb->update($wpdb->prefix.'automatic_camps',['camp_keywords'=>$video],['camp_id'=>$shadowId]);
-   $engine=new \wp_automatic();ob_start();try{$engine->process_campaign((object)$config);}finally{ob_end_clean();}
+   $_SERVER['SERVER_NAME']='www.offkilter.tv';
+   ob_start();try{$engine=new \wp_automatic();$engine->process_campaign((object)$config);}finally{ob_end_clean();}
    if(count($created)!==1)throw new \RuntimeException('bounded_import_did_not_create_one_draft');
    $postId=$created[0];
   }
@@ -108,7 +109,7 @@ try{
  }
  $result['finished_at']=gmdate('c');$result['processed']=$done;$save();
  echo json_encode(['mode'=>$mode,'processed'=>$done,'published'=>count(array_filter($result['items'],static fn($item)=>$item['status']==='published')),'verified_drafts'=>count(array_filter($result['items'],static fn($item)=>$item['status']==='verified_draft')),'users_created'=>0,'receipt'=>$receipt,'post_ids'=>array_column($result['items'],'post_id')],JSON_PRETTY_PRINT).PHP_EOL;
-}catch(\Throwable $error){$message=$error->getMessage();$result['error']=preg_match('/^[a-z_]{1,100}$/D',$message)?$message:'vendor_processing_failed';$save();throw new \RuntimeException($result['error']);}
+}catch(\Throwable $error){$message=$error->getMessage();$result['error']=preg_match('/^[a-z_]{1,100}$/D',$message)?$message:'vendor_processing_failed';$result['error_class']=get_class($error);$result['error_at']=basename($error->getFile()).':'.$error->getLine();$save();throw new \RuntimeException($result['error'].' ('.$result['error_class'].' at '.$result['error_at'].')');}
 finally{
  remove_filter('wp_pre_insert_user_data',$blockUsers,PHP_INT_MAX);remove_filter('pre_wp_mail',$blockMail,PHP_INT_MAX);remove_filter('okarcana_avatar_sync_enabled','__return_false',PHP_INT_MAX);remove_filter('publicize_should_publicize_published_post','__return_false',PHP_INT_MAX);remove_action('wp_insert_post',$capture,PHP_INT_MAX);remove_filter('wp_automatic_before_insert',$draft,PHP_INT_MAX);$wpdb->get_var("SELECT RELEASE_LOCK('oktv_catalog_backfill_v1')");
 }
