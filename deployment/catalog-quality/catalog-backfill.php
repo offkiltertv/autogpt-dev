@@ -64,7 +64,8 @@ try{
  if($exists)$wpdb->update($wpdb->prefix.'automatic_camps',$config,['camp_id'=>$shadowId]);else $wpdb->insert($wpdb->prefix.'automatic_camps',$config);
  if($wpdb->last_error)throw new \RuntimeException('backfill_configuration_write_failed');
  $result['shadow_campaign']=$shadowId;$save();
- if(!class_exists('wp_automatic',false))require_once WP_PLUGIN_DIR.'/wp-automatic/core.php';
+ if(!class_exists('WpAutomaticYoutube',false))require_once WP_PLUGIN_DIR.'/wp-automatic/core.youtube.php';
+ if(!method_exists('WpAutomaticYoutube','youtube_get_post'))throw new \RuntimeException('native_youtube_adapter_not_supported');
  $pool=(string)get_option('wp_automatic_yt_tocken','');preg_match_all('/AIza[A-Za-z0-9_-]{35}/',$pool,$keys);$key=$keys[0][0]??'';
  if(!$key)throw new \RuntimeException('provider_credential_missing');
  $done=0;
@@ -77,8 +78,8 @@ try{
   if(!$postId&&$records){$result['items'][]=['video_id'=>$video,'status'=>'existing_draft_preserved'];continue;}
   if(!$postId){
    $created=[];$activeVideo=$video;$config['camp_keywords']=$video;$wpdb->update($wpdb->prefix.'automatic_camps',['camp_keywords'=>$video],['camp_id'=>$shadowId]);
-   $_SERVER['SERVER_NAME']='www.offkilter.tv';
-   ob_start();try{$engine=new \wp_automatic();$engine->process_campaign((object)$config);}finally{ob_end_clean();}
+   $_SERVER['SERVER_NAME']='www.offkilter.tv';$_SERVER['REQUEST_SCHEME']='https';
+   ob_start();try{$engine=new \WpAutomaticYoutube();$engine->process_campaign((object)$config);}finally{ob_end_clean();}
    if(count($created)!==1)throw new \RuntimeException('bounded_import_did_not_create_one_draft');
    $postId=$created[0];
   }
