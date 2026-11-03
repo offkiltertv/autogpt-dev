@@ -27,6 +27,9 @@ final class SourceAttribution
         add_filter('beeteam368_member_verification_icon',[self::class,'source_icon'],30,2);
         add_filter('beeteam368_member_verification_icon_in_single',[self::class,'source_icon'],30,2);
         add_filter('the_content',[self::class,'more_from_source'],45);
+        add_filter('posts_where',[self::class,'account_library_where'],40,2);
+        add_filter('beeteam368_post_listing_top_meta_params',static function($params,$id){if(self::ready()&&self::context((int)$id))$params['show_author']=false;return $params;},30,2);
+        add_filter('do_shortcode_tag',[self::class,'story_copy'],30,2);
     }
 
     public static function enabled():bool
@@ -68,7 +71,7 @@ final class SourceAttribution
     {
         if($postId<1||get_post_type($postId)!=='vidmov_video'||get_post_meta($postId,self::VERIFIED,true)!=='1')return null;
         $channel=(string)get_post_meta($postId,'channel_id',true);
-        $title=trim((string)get_post_meta($postId,'channel_title',true));
+        $title=sanitize_text_field((string)get_post_meta($postId,'channel_title',true));
         if(!self::valid_channel($channel)||$title==='')return null;
         return ['channel'=>$channel,'title'=>$title];
     }
@@ -140,6 +143,26 @@ final class SourceAttribution
         if(!self::ready()||!self::public_request()||!is_singular('vidmov_video')||!in_the_loop()||!is_main_query())return $content;
         $source=self::context((int)get_the_ID());if(!$source)return $content;
         return $content.'<p class="oktv-source-more"><a href="'.esc_url(self::collection_url($source['channel'])).'">More from '.esc_html($source['title']).' on OKTV</a></p>';
+    }
+
+    public static function account_library_where(string $where,$query):string
+    {
+        global $wpdb;
+        if(!self::ready()||!self::public_request()||$query->is_singular())return $where;
+        if(!$query->is_author()&&!$query->get('author')&&!$query->get('author_name')&&!$query->get('author__in'))return $where;
+        return $where.$wpdb->prepare(" AND NOT ({$wpdb->posts}.post_type=%s AND EXISTS (SELECT 1 FROM {$wpdb->postmeta} oktv_source_record WHERE oktv_source_record.post_id={$wpdb->posts}.ID AND oktv_source_record.meta_key=%s AND oktv_source_record.meta_value=%s))",'vidmov_video',self::VERIFIED,'1');
+    }
+
+    public static function story_copy($html,$tag):string
+    {
+        if(!self::enabled()||!in_array($tag,['oktv_platform_story','oktv_platform_intro'],true))return (string)$html;
+        return str_replace([
+            esc_html('Short-form Pulse, standout Signals, and intuitive Arcana — from independent creators who publish here first.'),
+            esc_html("Independent creators publish here first — and keep their audience. This is their platform, not an algorithm's."),
+        ],[
+            esc_html('Independent voices and curated videos worth returning to.'),
+            esc_html('Discover independent creators, explore their work, and follow the subjects that matter to you.'),
+        ],(string)$html);
     }
 
     public static function styles():void

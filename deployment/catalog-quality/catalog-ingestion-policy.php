@@ -16,10 +16,10 @@ foreach($ids as $id){
  if(!$row||$row['camp_post_type']!=='vidmov_video')throw new \RuntimeException('Unexpected import target.');
  $options=CatalogInventory::decode_config($row['camp_options']);
  if(!in_array('OPT_YT_PLAYLIST',$options,true))throw new \RuntimeException('Only approved playlist campaigns are supported.');
- $after=array_values(array_filter($options,static fn($option)=>$option!=='OPT_YT_AUTHOR'));
+ $after=array_values(array_filter($options,static fn($option)=>!in_array($option,['OPT_YT_AUTHOR','OPT_YT_COMMENT'],true)));
  $changes[(int)$id]=['before'=>$row,'options_after'=>serialize($after),'was_creating_authors'=>in_array('OPT_YT_AUTHOR',$options,true)];
 }
-$summary=['mode'=>$mode,'campaigns'=>array_map(static fn($id,$change)=>['id'=>$id,'new_video_status'=>'draft','display_name_account_creation'=>false,'previously_created_authors'=>$change['was_creating_authors']],array_keys($changes),$changes),'existing_accounts_changed'=>0];
+$summary=['mode'=>$mode,'campaigns'=>array_map(static fn($id,$change)=>['id'=>$id,'new_video_status'=>'draft','display_name_account_creation'=>false,'copy_provider_comments'=>false,'previously_created_authors'=>$change['was_creating_authors']],array_keys($changes),$changes),'existing_accounts_changed'=>0];
 if($mode==='plan'){echo json_encode($summary,JSON_PRETTY_PRINT).PHP_EOL;return;}
 $backup=$directory.'/ingestion-policy-before.'.bin2hex(random_bytes(6)).'.json';$old=umask(0077);
 $handle=fopen($backup,'x');if(!$handle)throw new \RuntimeException('Could not create policy backup.');
