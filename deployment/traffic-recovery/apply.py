@@ -93,7 +93,7 @@ try:
             raise RuntimeError('Concurrent configuration edit.')
         atomic(path, data, stat)
         written.append(path)
-    subprocess.run([NGINX, '-t'], check=True, capture_output=True)
+    subprocess.run([NGINX, '-t'], check=True)
     subprocess.run([NGINX, '-s', 'reload'], check=True, capture_output=True)
     probes = []
     for route in ['/', '/video/', '/video/why-i-want-youtube-to-be-my-main-platform-streaming-stream/']:
@@ -119,6 +119,6 @@ except BaseException:
             path.unlink()
         else:
             atomic(path, data, stat)
-    subprocess.run([NGINX, '-t'], check=True, capture_output=True)
+    subprocess.run([NGINX, '-t'], check=True)
     subprocess.run([NGINX, '-s', 'reload'], check=True, capture_output=True)
     raise
