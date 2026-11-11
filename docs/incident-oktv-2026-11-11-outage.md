@@ -70,7 +70,7 @@ then reloaded NGINX gracefully; PHP and the database stayed running.
   homepage, Watch, video canary, Creators, Community, login, REST index and bare
   domain canonicalization. External management access remained **403**.
 - The browser rendered the homepage and played the existing video canary.
-- At 14:59 UTC the installed hashes matched the release. The first 74 logged
+- At 15:00 UTC the installed hashes matched the release. The first 127 logged
   post-change requests contained no 5xx responses and no requests over ten
   seconds. This is a short observation window, not production load acceptance.
 - The healthguard timer stayed active and reported failcount zero. No content,
