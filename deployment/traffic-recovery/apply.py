@@ -21,7 +21,7 @@ for name, expected in manifest['files'].items():
     if path.is_symlink() or hashlib.sha256(path.read_bytes()).hexdigest() != expected:
         raise SystemExit('Release source drifted.')
 qualifications = list(stage.glob('qualification.*/results.json'))
-if not any(len(results := json.loads(p.read_text())) == 10
+if not any(len(results := json.loads(p.read_text())) == 11
            and all(r.get('pass') is True for r in results) for p in qualifications):
     raise SystemExit('Require the completed isolated NGINX qualification.')
 source = stage / 'deployment/traffic-recovery'

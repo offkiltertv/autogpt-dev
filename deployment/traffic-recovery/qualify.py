@@ -68,6 +68,10 @@ http {{
         real_ip_header X-OKTV-Test-IP;
         root {private};
         location / {{ try_files $uri $uri/ /index.php?$args; }}
+        # The actual Bitnami management location reuses the PHP include here.
+        location ^~ /synthetic-admin {{
+            include {private}/locations.conf;
+        }}
         include {private}/locations.conf;
     }}
 }}
@@ -138,6 +142,7 @@ try:
     check(statuses.count(200) == 1 and statuses.count(429) == 2,
           'Duplicate cron requests cannot fill the PHP queue', statuses=statuses)
     check(request('/nonexistent.php', 203) == 404, 'Nonexistent PHP is rejected without upstream work')
+    check(request('/synthetic-admin/missing.php', 205) == 404, 'Nested management includes remain valid')
     check(request('/asset.txt', 204) == 200, 'Static assets remain available')
     print(json.dumps({'passed': len(checks), 'checks': checks, 'private_receipt': str(private)}, indent=2))
 finally:
