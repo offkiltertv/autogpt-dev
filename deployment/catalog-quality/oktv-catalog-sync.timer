@@ -1,0 +1,12 @@
+[Unit]
+Description=Check the approved OKTV playlists hourly
+
+[Timer]
+OnBootSec=15min
+OnUnitActiveSec=1h
+RandomizedDelaySec=5min
+Persistent=true
+Unit=oktv-catalog-sync.service
+
+[Install]
+WantedBy=timers.target

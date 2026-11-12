@@ -1,96 +1,100 @@
-# OFFKILTER Content Ingestion Policy (Launch Curation Sprint — Phase 7)
+# OFFKILTER content ingestion policy
 
-**Date:** 2026-06-29
-**Owner:** OFFKILTER editorial / platform ops
-**Purpose:** Define how content enters OFFKILTER so the platform presents a deliberate, curated creator lineup rather than historical test imports. This policy is the standing reference for every future import.
+Updated November 12, 2026 for the approved catalog and creator studio plan. This
+replaces the June launch-sprint rule that required placeholder member accounts
+for imported channels. Existing accounts and editorial holds are preserved.
 
----
+## Curated sources and actual creators
 
-## 1. Ingestion architecture (how content actually arrives)
+A YouTube source is credited by its immutable provider channel ID and plain-text
+channel name. A source collection on OKTV is separate from an OKTV member profile.
+Importing a video never establishes a creator claim, verification badge, follower
+count, platform membership or permission to broadcast on that channel.
 
-- **Import engine:** the **wp-automatic** plugin (production only) pulls YouTube content into the `vidmov_video` post type. It is the *only* sanctioned ingestion path.
-- **Enhancement layer:** the **OffKilter Arcana** plugin (this repo) enriches and schedules wp-automatic output — disclaimers, Signals classification, 90-day publish scheduling, wpForo topics, discovery curation. **Arcana does not import and must never be treated as an importer.**
-- **Creator identity:** every imported post must carry a **creator-specific term** in the `vidmov_video_category` taxonomy, matching its true channel. A placeholder author user is created/assigned per creator.
+Actual creators use their own authenticated OKTV accounts. Account linking and
+creator claiming require ownership proof. The selected first studio pilot is
+**itsjustrobby**, with SidebarChat as the continuing creator conversation.
 
----
+## Approved playlist ingestion
 
-## 2. Approved sources
+The owner-approved Outcome and Prem playlist campaigns, 8089 and 8090, are the
+current catalog scope. Source playlist identifiers and provider credentials stay
+on the server, outside this public repository. Structural categories describe
+subjects; they do not assert that all videos in a playlist share one creator.
+Every published curated video receives the source channel returned for that
+specific video.
 
-A source is approved for ingestion only when **all** of the following hold:
+Native wp-automatic campaigns check for new items every 15 minutes and stage
+imports as drafts. Automatic member creation and provider comment copying are
+disabled for those campaigns. The verified publishing operator uses WordPress's
+standard APIs; it does not run vendor processing templates. Arcana continues as
+an enhancement and discovery layer, not a second import engine.
 
-1. It maps to a single, identifiable creator with a dedicated `vidmov_video_category` creator term.
-2. The creator is on the KEEP list in `creator-audit.md` (or has been added via the approval process in §6).
-3. The wp-automatic campaign's **category assignment names that creator's term** — never a catch-all term.
+The hourly verified job inventories both playlists, checks current availability
+and embedding permission, and publishes at most 20 eligible items per source in
+a run. It refreshes each video's provider metadata before publication, requires
+valid source credit and a thumbnail, checks duplicates across the library, and
+starts new local engagement counters at zero. Only the thumbnail is copied;
+video playback remains the original YouTube embed.
 
-Currently approved: the launch lineup and the data-driven Arcana top creators listed in `creator-audit.md`.
+## Holds and incomplete provider inventories
 
----
+Older editorial drafts, revised drafts, pending posts and unrelated campaign
+content are not adopted. The three available Prem drafts held since July remain
+on hold until the owner resolves that existing editorial decision. A title
+becoming unavailable at the provider does not justify deleting its OKTV page
+or discussion.
 
-## 3. Deprecated sources (do not re-enable)
+Coverage counts distinguish published, draft, missing, unavailable,
+embedding-restricted and unknown states. A provider pagination gap stays
+unresolved. The explicit observation mode can retain a small terminal count
+discrepancy while importing identifiable eligible items; it never invents a
+video identifier or labels that inventory complete.
 
-The following are deprecated. Their campaigns must stay paused/retired and their terms archived:
+## Source presentation and discovery
 
-- `@Lipps` / Casey (Lipps) — term **2055**, campaign **4206**.
-- `@LC` — campaign **4708**.
-- `@DaniElleLuminati` — campaign **4168**.
+Verified imports display “YouTube source · curated on OKTV”, a local source
+collection and the original YouTube channel. They do not inherit a member's
+verification, subscriptions or following controls. Ordinary member posts retain
+their existing presentation. Source verification can be reconciled for existing
+imports from the approved campaigns without reassigning authors, changing local
+engagement, creating accounts or claiming creators.
 
-**Hard rule — no catch-all tagging:** no campaign may assign term **2055** (or any creator term that is not the post's true creator). The Arcana campaigns `8089`/`8090` must be corrected to drop 2055 and assign creator-correct terms. This single rule is the root-cause fix for the mis-attribution that motivated this sprint.
+Deleted/private placeholder titles and provider-confirmed unavailable or
+embedding-restricted videos are excluded from discovery. Existing direct pages,
+slugs and conversations remain available. Homepage language describes curation
+accurately. Featuring a source or member remains a deliberate editorial choice;
+backlog completion does not automatically feature every imported video.
 
-The plugin enforces a backstop: any imported post tagged to a **deprecated creator term** (configured in Arcana settings → *Launch Curation → Deprecated Creator Term IDs*) is **held** by the scheduler and never auto-published.
+## Existing restrictions retained
 
----
+The deprecated campaigns stay retired: @Lipps / Casey campaign 4206 and term
+2055, @LC campaign 4708, and @DaniElleLuminati campaign 4168. Do not apply term
+2055 as a catch-all creator label or re-enable those sources through this job.
+Test campaigns remain isolated from public discovery. Blank or unidentifiable
+source rows are not importable.
 
-## 4. Test imports
+New source approval requires owner/editorial authorization, an identifiable
+provider source, an initial draft canary and a source-credit check. A new member
+profile requires the creator's actual account and ownership evidence; importing
+a source is not identity provisioning.
 
-- Test imports are allowed **only** on a clearly named test campaign (e.g. `… TEST …`) and **only** against a staging environment where possible.
-- Test campaigns must be **retired and their artifacts removed/reassigned** before launch (e.g. campaign `8092` + post `8093`).
-- Test content must never be assigned a real creator term or surface in discovery.
-- `NA` / blank-channel source rows are not importable — they are unattributable and must be excluded from import scope.
+## Operations and rollback
 
----
+**Tools → OKTV Catalog Health** reports aggregate coverage, unresolved provider
+items, held drafts and verified import times. Counts older than four hours are
+flagged as stale. A failed source request never overwrites a successful inventory
+with zero coverage.
 
-## 5. Editorial review workflow
+The hourly job stops on failed site health, ongoing recovery, low disk reserve,
+changed release hashes, provider failures, ambiguous records or overlapping
+execution. It keeps root-private before-state and publication receipts, with
+verified compression for new large receipts and a bounded archive reserve.
+No raw inventory, credentials or production records belong in Git.
 
-1. **Propose** — editor identifies a creator + source (channel/playlist) and confirms backlog depth.
-2. **Verify identity** — confirm the creator's `vidmov_video_category` term exists (create if missing); confirm/assign the placeholder author user.
-3. **Configure campaign** — create the wp-automatic campaign with category assignment = the creator's term (+ structural terms like Arcana/Outcomes/Premonitions as appropriate); never 2055.
-4. **Stage** — run on staging or a small batch; confirm Signals classification, scheduling, and correct creator attribution.
-5. **Review** — spot-check 3–5 imported posts: correct term, correct author, disclaimer present, no catch-all tag.
-6. **Promote** — enable scheduled publishing; optionally feature via the curation layer (§7).
-
----
-
-## 6. Creator approval process
-
-A creator is added to the platform only after:
-
-1. **Editorial approval** recorded against the KEEP list in `creator-audit.md`.
-2. **Identity provisioning** — dedicated creator term + author user.
-3. **Profile minimum** — avatar, banner, and a 2–4 sentence bio set (`okarcana_avatar`, `okarcana_banner`, `description`; legacy theme equivalents `beeteam368_user_avatar` / `beeteam368_user_channel_banner` where used). See `food-for-thought-313-readiness.md` for the readiness rubric.
-4. **Verification flag** (`_ok_creator_verified`) set once the creator is claimed/confirmed.
-
-Featuring a creator on the homepage/discovery rails is done via the curation layer, not by editing queries.
-
----
-
-## 7. Discovery curation (durable enforcement)
-
-Plugin **v2.8.0** adds an Arcana settings panel (*Launch Curation*) that governs discovery without per-page edits:
-
-- **Featured Creator User IDs** — the ordered launch lineup used by "Creators to Watch" and "Creators on Pulse". When set, it overrides the default top-by-post-count behavior so legacy high-volume creators cannot dominate.
-- **Deprecated Creator User IDs** — excluded from the discovery/pulse fallback.
-- **Deprecated Creator Term IDs** — held by the scheduler (never auto-published).
-
-Curation is enforced at the **data/query layer**, never by hiding content with CSS.
-
----
-
-## 8. Future import guidelines (checklist)
-
-- [ ] Source maps to one identifiable, approved creator.
-- [ ] Dedicated creator term exists; campaign assigns it (not 2055 / not a catch-all).
-- [ ] Author user assigned; profile minimum met before featuring.
-- [ ] Test imports named/staged and cleaned up before launch.
-- [ ] `NA`/blank rows excluded.
-- [ ] New featured creators added to the *Featured Creator User IDs* setting; deprecated ones added to the deprecated lists.
-- [ ] Post-import spot-check: correct term + author + disclaimer, no catch-all tag.
+Disable the dedicated timer to pause verified publication; native campaigns
+continue staging drafts. Presentation markers provide a reversible display
+switch. Publication rollback must identify the exact records from a private
+receipt and return those records to draft. Restore metadata only from its named
+before-state receipt after checking for later editorial changes. Preserve the
+existing uptime protections throughout catalog or studio work.

@@ -124,6 +124,33 @@ final class CatalogInventory
         return $result;
     }
 
+    /** Aggregate coverage must retain provider gaps instead of implying completion. */
+    public static function summary(int $id, array $source, array $details, array $library, ?string $lastImport = null): array
+    {
+        $coverage = self::reconcile($source['playlist']['ids'], $details, $library);
+        unset($coverage['missing_ids']);
+        return ['campaign_id'=>$id,'label'=>$source['label'],
+            'reported_total'=>$source['playlist']['reported_total'],
+            'enumerated_items'=>$source['playlist']['item_count'],
+            'inventory_complete'=>$source['playlist']['complete'],
+            'unresolved_items'=>$source['playlist']['unresolved_items'],
+            'unique_videos'=>count($source['playlist']['ids']),
+            'interval_minutes'=>$source['interval_minutes'],
+            'last_import_at'=>$lastImport] + $coverage;
+    }
+
+    public static function latest_verified_import(int $source): ?string
+    {
+        global $wpdb;
+        $value=$wpdb->get_var($wpdb->prepare("SELECT MAX(stamp.meta_value) FROM {$wpdb->posts} p
+            JOIN {$wpdb->postmeta} campaign ON campaign.post_id=p.ID AND campaign.meta_key='_oktv_backfill_source' AND campaign.meta_value=%s
+            JOIN {$wpdb->postmeta} verified ON verified.post_id=p.ID AND verified.meta_key='_oktv_ingest_verified_v1' AND verified.meta_value='1'
+            JOIN {$wpdb->postmeta} stamp ON stamp.post_id=p.ID AND stamp.meta_key='_oktv_imported_at'
+            WHERE p.post_type='vidmov_video' AND p.post_status='publish'",(string)$source));
+        if($wpdb->last_error)throw new \RuntimeException('verified_import_read_failed');
+        return is_string($value)&&preg_match('/^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/D',$value)?$value:null;
+    }
+
     public static function read_library(): array
     {
         global $wpdb;
@@ -188,7 +215,7 @@ foreach($sources as $id=>$source){
     $coverage=CatalogInventory::reconcile($source['playlist']['ids'],$details,$library);
     $sources[$id]['coverage']=$coverage;
     unset($coverage['missing_ids']);
-    $summary['sources'][]=['campaign_id'=>$id,'label'=>$source['label'],'reported_total'=>$source['playlist']['reported_total'],'enumerated_items'=>$source['playlist']['item_count'],'inventory_complete'=>$source['playlist']['complete'],'unresolved_items'=>$source['playlist']['unresolved_items'],'unique_videos'=>count($source['playlist']['ids']),'interval_minutes'=>$source['interval_minutes']]+$coverage;
+    $summary['sources'][]=CatalogInventory::summary((int)$id,$source,$details,$library,CatalogInventory::latest_verified_import((int)$id));
 }
 $receipt=getenv('OKTV_CATALOG_RECEIPT');
 if($receipt!==false&&$receipt!==''){

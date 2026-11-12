@@ -1,0 +1,31 @@
+[Unit]
+Description=OKTV bounded verified playlist publishing
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/sbin/oktv-catalog-sync.py
+User=root
+Group=root
+UMask=0077
+RuntimeDirectory=oktv-catalog-sync
+RuntimeDirectoryMode=0700
+StateDirectory=oktv-catalog-sync
+StateDirectoryMode=0700
+TimeoutStartSec=900
+Nice=10
+IOSchedulingClass=idle
+MemoryMax=768M
+CPUQuota=75%
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

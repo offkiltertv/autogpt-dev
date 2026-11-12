@@ -34,6 +34,9 @@ $result=Inventory::reconcile(['aaaaaaaaaaa','aaaaaaaaaaa','bbbbbbbbbbb','ccccccc
 check($result['eligible']===4&&$result['published']===1&&$result['draft']===1&&$result['other']===1&&$result['missing_ids']===['ccccccccccc'],'Cross-source coverage deduplicates IDs and distinguishes published, draft, other, and missing');
 check($result['not_embeddable']===1&&$result['unknown']===1&&$result['unavailable']===1,'Provider unavailability, embedding restrictions, and unknown state remain distinct');
 check(Inventory::availability($available)==='available','Available source can recover after a previous unavailable result');
+$summary=Inventory::summary(100,['label'=>'Synthetic source','playlist'=>['ids'=>['aaaaaaaaaaa'],'reported_total'=>2,'item_count'=>1,'complete'=>false,'unresolved_items'=>1],'interval_minutes'=>15],$details,$library,'2026-11-12 14:00:00');
+check($summary['inventory_complete']===false&&$summary['unresolved_items']===1&&$summary['enumerated_items']===1&&$summary['published']===1&&!isset($summary['missing_ids']),'Aggregate reconciliation preserves an unresolved provider item without publishing raw identifiers');
+check($summary['last_import_at']==='2026-11-12 14:00:00','Verified import time survives aggregate reconciliation');
 $client=new Inventory(fn()=>['error'=>['message'=>'not an inventory']]);
 fails(fn()=>$client->videos(['aaaaaaaaaaa']),'video_response_incomplete');
 echo $passed.' inventory checks passed.'.PHP_EOL;

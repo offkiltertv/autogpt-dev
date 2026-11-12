@@ -51,6 +51,12 @@ availability/embedding status, and reconciles immutable video IDs across the
 whole WordPress video catalog. Counts are not campaign-attribution totals and
 do not establish anonymous playback or rights to rehost media.
 
+`audit-observed` explicitly retains a terminal provider gap of one to five items
+as `inventory_complete=false` and `unresolved_items`. It rejects other pagination
+loops, changing totals and unidentified items. The identifiable eligible records
+may be processed while that gap remains unresolved; it is never represented as
+a complete inventory.
+
 The inventory bounds each playlist to 5,000 entries and each video request to 50
 IDs. It rejects changing/incomplete inventories, repeated page tokens, malformed
 IDs and API failures. It retains the distinction between unavailable,
@@ -100,6 +106,14 @@ video can recover its placeholder title without changing its slug, dates or
 discussion. The optional cadence change uses a byte-exact compare-and-swap of
 the original campaign configuration and is bounded to 15–1,440 minutes.
 
+Alternatively pass `verify-source-credit` as the third argument. This credits
+existing available imports from the receipt's approved campaigns (including
+owned backfill campaigns) using fresh provider metadata. It backs up and verifies
+source channel ID, source title, the owned verification field and availability.
+Authors, memberships, local engagement, status, slugs and dates are retained.
+Unrelated member posts are not relabeled. Aggregate reconciliation retains
+provider gaps and actual verified import timestamps.
+
 ## Source credit and controlled backfill
 
 `catalog-ingestion-policy.php` has `plan` and `apply` modes with a private
@@ -120,12 +134,18 @@ the editorial curator's member library remain correct if presentation is off.
 The old homepage “publish here first” claim is replaced with truthful curation
 copy while this presentation is enabled.
 
-`catalog-backfill.php` accepts `plan`, `prepare` or `publish`, a root-only complete
+`catalog-backfill.php` accepts `plan`, `prepare` or `publish`, a root-only reviewed
 inventory receipt, one approved campaign ID, and a batch limit of 1–20. Run with
 the full native plugins and theme, through the same strict-file CLI entry point.
 The receipt must be under four hours old and bound to the source's current
 playlist fingerprint. Start with `prepare` and inspect a single draft before
 enabling source presentation and running a one-item `publish` canary.
+
+The optional fifth argument `adopt-managed-drafts` includes untouched native
+drafts created since the November 3 safeguard under the approved source's curator
+and campaign. Older editorial holds, revised drafts and pending posts remain
+untouched. Only identifiable eligible items in a fresh receipt are processed,
+including when an explicitly observed terminal provider gap remains unresolved.
 
 The backfill uses checked provider metadata with WordPress's standard draft,
 thumbnail and publishing APIs and the installed native player fields. It does
@@ -141,3 +161,38 @@ receipts record created drafts before later checks, allowing recovery without
 exposing credentials or playlist identifiers. Only the thumbnail is copied;
 video playback remains the provider embed. Removing a presentation marker is not a database rollback; any
 publication rollback must name the exact new records and return them to draft.
+
+## Dedicated verified publishing job
+
+`catalog-sync.py` and the matching systemd service/timer compose the verified
+operators. The two approved campaign IDs are fixed in source. Each hourly run:
+
+1. Takes a nonblocking lock, verifies installed release hashes and checks origin
+   health, the existing recovery failure counter and at least 1 GiB of free disk.
+   A 256 MiB private archive ceiling stops unchecked receipt growth.
+2. Inventories both approved playlists into a new root-only receipt, preserving
+   unresolved provider counts. A failed request never becomes a zero snapshot.
+3. Publishes at most 20 eligible items per source, with current provider checks
+   and site health between batches. Vendor templates are never invoked.
+4. Reconciles source credit and coverage with before-state receipts. Large files
+   created in that run are compressed with exact byte recovery verified.
+
+Install committed operator files root-owned and not writable by others beneath
+`/opt/bitnami/oktv-catalog-releases/COMMIT/`. The root-owned configuration
+`/etc/oktv-catalog-sync.json` names that directory in `release` and a `sha256`
+map for the six PHP files listed in the runner. It contains no credentials.
+Install the runner at `/usr/local/sbin/oktv-catalog-sync.py` and the units in
+`/etc/systemd/system/`.
+
+Run the installed runner with `--check`, validate the units, then start one actual
+service run and inspect its private status and the public site before enabling
+the timer. Enable only the timer. Root-private status is under
+`/var/lib/oktv-catalog-sync/`; receipts are under
+`/var/backups/oktv-recovery/catalog-sync/`. The journal receives aggregate counts
+and fixed failure labels only. An administrator sees a stale-source notice if
+the last completed check is over four hours old.
+
+Pause with `systemctl disable --now oktv-catalog-sync.timer`. Allow an active
+bounded run to finish before maintenance. Native draft intake, source display
+and the outage healthguard remain intact. Revert only the named release and
+receipt-owned records; never restore a whole production database over later work.

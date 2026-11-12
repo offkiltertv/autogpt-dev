@@ -178,24 +178,28 @@ final class CatalogQuality
             echo '<div class="notice notice-info inline"><p>No completed source inventory has been recorded yet. Importer activity alone does not establish coverage.</p></div></div>';
             return;
         }
-        echo '<p>Last completed inventory: <strong>' . esc_html((string) ($snapshot['checked_at'] ?? 'Unknown')) . '</strong> (UTC).</p>';
+        echo '<p>Last source check: <strong>' . esc_html((string) ($snapshot['checked_at'] ?? 'Unknown')) . '</strong> (UTC).</p>';
+        $checked = strtotime((string) ($snapshot['checked_at'] ?? '') . ' UTC');
+        if (!$checked || time() - $checked > 14400) {
+            echo '<div class="notice notice-warning inline"><p>The source check is over four hours old. Check the verified publishing job before treating these counts as current.</p></div>';
+        }
         if (!empty($snapshot['last_error'])) {
             echo '<div class="notice notice-warning inline"><p>The latest attempt failed. These counts are from the last completed check.</p></div>';
         }
-        echo '<table class="widefat striped"><thead><tr><th>Source</th><th>Eligible videos</th><th>Published</th><th>Draft</th><th>Missing</th><th>Unavailable at source</th><th>Last verified import (UTC)</th></tr></thead><tbody>';
+        echo '<table class="widefat striped"><thead><tr><th>Source</th><th>Eligible videos</th><th>Published</th><th>Draft</th><th>Missing</th><th>Unavailable at source</th><th>Embedding restricted</th><th>Unknown availability</th><th>Unreturned playlist items</th><th>Last verified import (UTC)</th></tr></thead><tbody>';
         foreach (($snapshot['sources'] ?? []) as $source) {
             if (!is_array($source)) {
                 continue;
             }
             echo '<tr><th scope="row">' . esc_html((string) ($source['label'] ?? 'Source')) . '</th>';
-            foreach (['eligible', 'published', 'draft', 'missing', 'unavailable'] as $field) {
+            foreach (['eligible', 'published', 'draft', 'missing', 'unavailable', 'not_embeddable', 'unknown', 'unresolved_items'] as $field) {
                 $value = isset($source[$field]) && is_int($source[$field]) && $source[$field] >= 0
                     ? (string) $source[$field] : 'Unknown';
                 echo '<td>' . esc_html($value) . '</td>';
             }
             echo '<td>' . esc_html((string) ($source['last_import_at'] ?? 'No verified import recorded')) . '</td></tr>';
         }
-        echo '</tbody></table><p>Unavailable counts are provider results. Placeholder titles are excluded from discovery without asserting permanent deletion. A source becoming available again can be reconciled on a later check.</p></div>';
+        echo '</tbody></table><p>Missing counts cover the identifiers returned by YouTube. Unreturned playlist items remain unresolved; they do not count as completed imports. Drafts may include existing editorial holds. Unavailable and embedding-restricted sources are excluded from discovery while their pages and discussions are retained.</p></div>';
     }
 }
 
