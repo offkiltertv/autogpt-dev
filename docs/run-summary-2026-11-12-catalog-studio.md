@@ -64,8 +64,8 @@ review the archive during normal monthly operations.
 
 The existing outage healthguard and traffic admission protections remain in
 place. The healthguard failure counter was zero after both publishing runs.
-No PHP worker increase, service reboot, identity activation or network exposure
-was introduced by this continuation.
+No PHP worker increase, service reboot, identity activation or origin firewall
+change was introduced by this continuation.
 
 ## Studio pilot
 
@@ -81,13 +81,22 @@ API restart. A host can open another rehearsal in the same room; previous guest
 admission does not carry into it. Physical media rooms rotate on transitions and
 removal, and a random initial epoch prevents room reuse across an API restart.
 
-The November 12 local receipts record 192 passing ordinary regression tests,
+The November 12 local receipts record 195 passing ordinary regression tests,
 18 separately passing real-PostgreSQL storage/sign-in tests, **22 passing native
 host/two-guest media checks**, and a passing API-restart chat persistence check.
 Type checking, lint and both ordinary/pilot web builds passed. The ordinary web
 build excludes the studio module. The pilot media module retains a size warning.
 No real camera, microphone, channel account or external stream destination was
 used in those native checks.
+
+The final local socket audit found that restricting the signalling listener did
+not also restrict the media listeners. The pilot was paused and corrected with
+an explicit loopback interface/IP filter, disabled TCP fallback, generated
+private media keys and a startup socket guard. All 22 native media checks passed
+again with the service listening only on 127.0.0.1 ports 7880/TCP and 7882/UDP.
+Three regression checks refuse wildcard, LAN, overlay and external IPv6 sockets.
+The accepted studio implementation revision is `f8c1439`; its updated local
+receipt is `e91234f`. No firewall or shared network setting was changed for this.
 
 The browser transport disconnected while opening the local preview and remained
 unavailable. No final studio screenshots, desktop/mobile visual acceptance,
