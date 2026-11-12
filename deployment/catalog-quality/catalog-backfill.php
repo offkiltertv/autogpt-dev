@@ -10,6 +10,7 @@ require_once __DIR__.'/catalog-verified-import.php';
 global $wpdb;
 if(wp_parse_url(home_url('/'),PHP_URL_HOST)!=='www.offkilter.tv')throw new \RuntimeException('Unexpected site.');
 $mode=$args[0]??'';$path=$args[1]??'';$sourceId=(int)($args[2]??0);$limit=(int)($args[3]??1);
+$adoptManagedDrafts=($args[4]??'')==='adopt-managed-drafts';
 if(!in_array($mode,['plan','prepare','publish'],true)||$limit<1||$limit>20||!is_file($path)||is_link($path))throw new \RuntimeException('Pass plan/prepare/publish, a private receipt, approved source and batch size 1–20.');
 $stat=stat($path);$real=realpath($path);
 if(!$real||!str_starts_with($real,'/var/backups/oktv-recovery/')||$stat['uid']!==0||($stat['mode']&0077)!==0||$stat['size']>32*1024*1024)throw new \RuntimeException('Receipt must remain root-only.');
@@ -71,6 +72,15 @@ try{
   foreach($records as $record)if($record['status']==='draft'&&(get_post_meta($record['id'],'_oktv_backfill_source',true)===(string)$sourceId||($recoverable[$record['id']]??'')===$video)){
    if((int)get_post_field('post_author',$record['id'])!==$curator)throw new \RuntimeException('recoverable_draft_author_changed');
    $postId=$record['id'];break;
+  }
+  if(!$postId&&$adoptManagedDrafts)foreach($records as $record){
+   $candidate=$record['id'];$campaign=(int)get_post_meta($candidate,'wp_automatic_camp',true);
+   $managedCampaign=$campaign===$sourceId||(get_post_type($campaign)==='wp_automatic'&&get_post_meta($campaign,'_oktv_backfill_source',true)===(string)$sourceId);
+   // The prior safeguards deliberately sent these native imports to draft.
+   // Pre-existing editorial holds and revised drafts are not adopted.
+   if($record['status']==='draft'&&$managedCampaign&&(int)get_post_field('post_author',$candidate)===$curator
+      &&get_post_field('post_modified_gmt',$candidate)>='2026-11-03 00:00:00'
+      &&!$wpdb->get_var($wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE post_type='revision' AND post_parent=%d LIMIT 1",$candidate))){$postId=$candidate;break;}
   }
   if(!$postId&&$records){$result['items'][]=['video_id'=>$video,'status'=>'existing_draft_preserved'];continue;}
   $response=wp_remote_get(add_query_arg(['part'=>'snippet,status,contentDetails','id'=>$video,'key'=>$key],'https://www.googleapis.com/youtube/v3/videos'),['timeout'=>20,'redirection'=>0]);

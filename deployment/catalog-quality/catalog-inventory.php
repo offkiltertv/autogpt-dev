@@ -39,7 +39,7 @@ final class CatalogInventory
         return $value;
     }
 
-    public function playlist(string $id): array
+    public function playlist(string $id, bool $observeTerminalGap = false): array
     {
         $id = self::playlist_id($id);
         $items = []; $tokens = []; $token = ''; $total = null; $rows = 0;
@@ -65,8 +65,15 @@ final class CatalogInventory
             $token = $body['nextPageToken'] ?? '';
             if (!is_string($token) || strlen($token) > 2048) { throw new \RuntimeException('playlist_page_token_invalid'); }
             if ($token === '') {
-                if ($rows !== $total) { throw new \RuntimeException('playlist_response_incomplete'); }
-                return ['reported_total'=>$total,'item_count'=>$rows,'ids'=>array_keys($items),'pages'=>$page+1];
+                if ($rows !== $total && !($observeTerminalGap && $rows > 0 && $total > $rows && $total - $rows <= 5)) { throw new \RuntimeException('playlist_response_incomplete'); }
+                return ['reported_total'=>$total,'item_count'=>$rows,'ids'=>array_keys($items),'pages'=>$page+1,'complete'=>$rows===$total,'unresolved_items'=>$total-$rows];
+            }
+            // Some provider inventories terminate with an empty, self-repeating
+            // page while their reported total retains an inaccessible entry.
+            // Explicit observation mode retains that discrepancy; it never
+            // fabricates an identifier or claims a complete source inventory.
+            if ($observeTerminalGap && $page > 0 && !$body['items'] && isset($tokens[$token]) && $rows > 0 && $total > $rows && $total - $rows <= 5) {
+                return ['reported_total'=>$total,'item_count'=>$rows,'ids'=>array_keys($items),'pages'=>$page+1,'complete'=>false,'unresolved_items'=>$total-$rows];
             }
             if (isset($tokens[$token])) { throw new \RuntimeException('playlist_pagination_loop'); }
             $tokens[$token] = true;
@@ -138,7 +145,7 @@ global $wpdb;
 
 $mode=$args[0]??'audit';
 $campaignIds=array_slice($args??[],1);
-if(!in_array($mode,['audit','snapshot'],true)||!$campaignIds||count($campaignIds)>10){throw new \RuntimeException('Pass audit or snapshot and one to ten campaign IDs.');}
+if(!in_array($mode,['audit','audit-observed','snapshot'],true)||!$campaignIds||count($campaignIds)>10){throw new \RuntimeException('Pass audit, audit-observed or snapshot and one to ten campaign IDs.');}
 foreach($campaignIds as $id)if(!ctype_digit((string)$id)||(int)$id<1)throw new \RuntimeException('Invalid campaign identifier.');
 $pool=(string)get_option('wp_automatic_yt_tocken','');
 preg_match_all('/AIza[A-Za-z0-9_-]{35}/',$pool,$keys);
@@ -148,7 +155,7 @@ $requests=0;
 $client=new CatalogInventory(static function(string $resource,array $params) use($apiKey,&$requests):array{
     if(!in_array($resource,['playlistItems','videos'],true))throw new \RuntimeException('provider_resource_not_allowed');
     $params['key']=$apiKey;
-    $response=wp_remote_get(add_query_arg($params,'https://www.googleapis.com/youtube/v3/'.$resource),['timeout'=>25,'redirection'=>0]);
+    $response=wp_remote_get(add_query_arg($params,'https://www.googleapis.com/youtube/v3/'.$resource),['timeout'=>25,'redirection'=>0,'headers'=>['Cache-Control'=>'no-cache']]);
     $requests++;
     if(is_wp_error($response))throw new \RuntimeException('youtube_transport_error');
     $body=json_decode(wp_remote_retrieve_body($response),true);
@@ -170,7 +177,7 @@ foreach($campaignIds as $rawId){
     $options=CatalogInventory::decode_config($row['camp_options']);
     if(!in_array('OPT_YT_PLAYLIST',$options,true))throw new \RuntimeException('source_is_not_playlist');
     $playlistId=CatalogInventory::playlist_id((string)($config['cg_yt_playlist']??''));
-    $playlist=$client->playlist($playlistId);
+    $playlist=$client->playlist($playlistId,$mode==='audit-observed');
     $sources[$id]=['label'=>get_the_title($id),'playlist'=>$playlist,'source_fingerprint'=>hash('sha256',$playlistId),'interval_minutes'=>(int)($config['cg_update_every']??0)*(int)($config['cg_update_unit']??0)];
     foreach($playlist['ids'] as $video)$all[$video]=true;
 }
@@ -181,7 +188,7 @@ foreach($sources as $id=>$source){
     $coverage=CatalogInventory::reconcile($source['playlist']['ids'],$details,$library);
     $sources[$id]['coverage']=$coverage;
     unset($coverage['missing_ids']);
-    $summary['sources'][]=['campaign_id'=>$id,'label'=>$source['label'],'reported_total'=>$source['playlist']['reported_total'],'unique_videos'=>count($source['playlist']['ids']),'interval_minutes'=>$source['interval_minutes']]+$coverage;
+    $summary['sources'][]=['campaign_id'=>$id,'label'=>$source['label'],'reported_total'=>$source['playlist']['reported_total'],'enumerated_items'=>$source['playlist']['item_count'],'inventory_complete'=>$source['playlist']['complete'],'unresolved_items'=>$source['playlist']['unresolved_items'],'unique_videos'=>count($source['playlist']['ids']),'interval_minutes'=>$source['interval_minutes']]+$coverage;
 }
 $receipt=getenv('OKTV_CATALOG_RECEIPT');
 if($receipt!==false&&$receipt!==''){

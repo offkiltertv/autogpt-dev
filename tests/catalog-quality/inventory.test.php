@@ -20,6 +20,11 @@ $client=new Inventory(fn()=>['pageInfo'=>['totalResults'=>2],'items'=>[['content
 fails(fn()=>$client->playlist($config['cg_yt_playlist']),'playlist_response_incomplete');
 $client=new Inventory(fn()=>['pageInfo'=>['totalResults'=>2],'items'=>[],'nextPageToken'=>'same']);
 fails(fn()=>$client->playlist($config['cg_yt_playlist']),'playlist_pagination_loop');
+$calls=0;$client=new Inventory(function()use(&$calls){$calls++;return ['pageInfo'=>['totalResults'=>2],'items'=>$calls===1?[['contentDetails'=>['videoId'=>'aaaaaaaaaaa']]]:[],'nextPageToken'=>'terminal'];});
+$observed=$client->playlist($config['cg_yt_playlist'],true);
+check($observed['complete']===false&&$observed['unresolved_items']===1&&$observed['ids']===['aaaaaaaaaaa'],'Explicit observation retains a terminal provider discrepancy without inventing coverage');
+$client=new Inventory(fn()=>['pageInfo'=>['totalResults'=>2],'items'=>[['contentDetails'=>['videoId'=>'aaaaaaaaaaa']]],'nextPageToken'=>'repeated']);
+fails(fn()=>$client->playlist($config['cg_yt_playlist'],true),'playlist_pagination_loop');
 $client=new Inventory(fn()=>['pageInfo'=>['totalResults'=>9000],'items'=>[]]);
 fails(fn()=>$client->playlist($config['cg_yt_playlist']),'playlist_changed_or_exceeds_bound');
 $available=['status'=>['privacyStatus'=>'public','embeddable'=>true,'uploadStatus'=>'processed'],'snippet'=>['title'=>'A real title']];
