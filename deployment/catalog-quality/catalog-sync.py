@@ -22,7 +22,7 @@ STATE = Path('/var/lib/oktv-catalog-sync')
 RUNTIME = Path('/run/oktv-catalog-sync')
 PHP = '/opt/bitnami/php/bin/php'
 WP = '/opt/bitnami/wp-cli/bin/wp-cli.phar'
-MAX_RECEIPTS = 256 * 1024 * 1024
+MAX_RECEIPTS = 2 * 1024 * 1024 * 1024
 OPERATORS = ('catalog-inventory.php', 'catalog-backfill.php', 'catalog-reconcile.php',
              'catalog-verified-import.php', 'oktv-catalog-quality.php', 'oktv-source-attribution.php')
 

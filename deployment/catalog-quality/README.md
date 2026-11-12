@@ -169,7 +169,9 @@ operators. The two approved campaign IDs are fixed in source. Each hourly run:
 
 1. Takes a nonblocking lock, verifies installed release hashes and checks origin
    health, the existing recovery failure counter and at least 1 GiB of free disk.
-   A 256 MiB private archive ceiling stops unchecked receipt growth.
+   A 2 GiB private archive ceiling stops unchecked receipt growth. Review this
+   private archive during normal monthly operations; retain publication and
+   metadata before-state receipts when moving older diagnostic inventories.
 2. Inventories both approved playlists into a new root-only receipt, preserving
    unresolved provider counts. A failed request never becomes a zero snapshot.
 3. Publishes at most 20 eligible items per source, with current provider checks
